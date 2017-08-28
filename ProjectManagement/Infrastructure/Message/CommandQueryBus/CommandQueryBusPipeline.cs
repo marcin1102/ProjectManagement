@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Infrastructure.Message.Handlers;
+using Infrastructure.Message.Pipeline;
 
 namespace Infrastructure.Message.CommandQueryBus
 {
@@ -23,7 +24,7 @@ namespace Infrastructure.Message.CommandQueryBus
             var wrapperType = typeof(AsyncCommandHandlerWrapper<>).MakeGenericType(commandType);
 
             var handler = container.Resolve(handlerType);
-            var wrapper = (AsyncCommandHandlerWrapper)Activator.CreateInstance(wrapperType, handler);
+            var wrapper = (AsyncCommandHandlerWrapper)Activator.CreateInstance(wrapperType, container, handler);
             return wrapper.HandleAsync(command);
         }
 
@@ -40,35 +41,23 @@ namespace Infrastructure.Message.CommandQueryBus
         private class AsyncCommandHandlerWrapper<TCommand> : AsyncCommandHandlerWrapper
             where TCommand : ICommand
         {
+            private readonly IComponentContext container;
             private readonly IAsyncCommandHandler<TCommand> handler;
 
-            public AsyncCommandHandlerWrapper(IAsyncCommandHandler<TCommand> handler)
+            public AsyncCommandHandlerWrapper(IComponentContext container, IAsyncCommandHandler<TCommand> handler)
             {
+                this.container = container;
                 this.handler = handler;
             }
 
             public override Task HandleAsync(ICommand command)
             {
                 var tCommand = (TCommand) command;
-                return handler.HandleAsync(tCommand);
+                var pipelineBuilder = container.Resolve<PipelineBuilder>();
+                var pipelineFirstItem = pipelineBuilder.BuildPipeline(tCommand, handler);
+                return pipelineFirstItem.HandleAsync(tCommand);
             }
         }
 
-    }
-
-    public class PipelineBuilder
-    {
-        private readonly IContainer container;
-
-        public PipelineBuilder(IContainer container)
-        {
-            this.container = container;
-        }
-
-        public IAsyncCommandHandler<TCommand> BuildCommandHandler<TCommand>(TCommand command, IAsyncCommandHandler<TCommand> handler)
-            where TCommand : ICommand
-        {
-            return null;
-        }
     }
 }
