@@ -9,7 +9,7 @@ namespace ProjectManagement
 {
     public class ProjectManagementBootstrap : ModuleBootstrap
     {
-        protected ProjectManagementBootstrap(ContainerBuilder builder) : base(builder)
+        public ProjectManagementBootstrap(ContainerBuilder builder) : base(builder)
         {
         }
 
@@ -20,12 +20,12 @@ namespace ProjectManagement
 
         public override void RegisterEventHandlers()
         {
-            throw new NotImplementedException();
+
         }
 
         public override void RegisterQueryHandlers()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

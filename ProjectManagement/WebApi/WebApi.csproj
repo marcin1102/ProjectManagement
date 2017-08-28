@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\UserManagement\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -16,7 +17,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\ProjectManagement.Contracts\ProjectManagement.Contracts.csproj" />
+    <ProjectReference Include="..\ProjectManagement\ProjectManagement.csproj" />
     <ProjectReference Include="..\UserManagement.Contracts\UserManagement.Contracts.csproj" />
+    <ProjectReference Include="..\UserManagement\UserManagement.csproj" />
   </ItemGroup>
 
 </Project>

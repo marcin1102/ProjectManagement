@@ -8,7 +8,7 @@ namespace Infrastructure.WebApi
 {
     public class BaseController : Controller
     {
-        private readonly ICommandQueryBus commandQueryBus;
+        protected readonly ICommandQueryBus commandQueryBus;
 
         public BaseController(ICommandQueryBus commandQueryBus)
         {
