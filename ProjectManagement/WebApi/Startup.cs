@@ -60,7 +60,7 @@ namespace ProjectManagement.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(x =>
                     {
-                        x.RoutePrefix = "swagger";
+                        x.RoutePrefix = "swagger/ui";
                         x.SwaggerEndpoint("/swagger/v1/swagger.json", "Docs");
                     });
             }

@@ -20,7 +20,7 @@ namespace ProjectManagement
 
         public override void RegisterEventHandlers()
         {
-
+            RegisterAsyncQueryHandler<TestQuery, TestResponse, TestQueryHandler>();
         }
 
         public override void RegisterQueryHandlers()

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +13,20 @@ namespace WebApi.Controllers.ProjectManagement
         {
         }
 
+        [HttpPost]
+        [Route("test")]
+        public async Task<IActionResult> TestEndpoint([FromBody] TestCommand command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Created("api/project-management/test", command.TestValue);
+        }
+
         [HttpGet]
         [Route("test")]
-        public async Task<IActionResult> TestEndpoint([FromQuery] int testValue)
+        public async Task<IActionResult> TestEndpoint()
         {
-            await commandQueryBus.SendAsync(new TestCommand(testValue));
-            return Ok(testValue);
+            var response = await commandQueryBus.SendAsync(new TestQuery());
+            return Ok(response);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Autofac;
 using Infrastructure.Message.Handlers;
 using Infrastructure.Message.Pipeline.PipelineItems;
-using Infrastructure.Message.Pipeline.PipelineItems.DefaultCommandPipelineItems;
+using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using System.Linq;
+using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
 
 namespace Infrastructure.Message.Pipeline
 {
@@ -15,11 +16,11 @@ namespace Infrastructure.Message.Pipeline
             this.container = container;
         }
 
-        public CommandPipelineItem<TCommand> BuildPipeline<TCommand>(TCommand command, IAsyncCommandHandler<TCommand> handler)
+        public CommandPipelineItem<TCommand> BuildCommandPipeline<TCommand>(TCommand command, IAsyncCommandHandler<TCommand> handler)
             where TCommand : ICommand
         {
             var commandType = command.GetType();
-            var pipelineItemsTypes = PredefinedCommandPipelines.TransactionCommandPipeline;
+            var pipelineItemsTypes = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline;
 
             var pipelineItems = pipelineItemsTypes
                 .Select(x => x.MakeGenericType(commandType))
@@ -33,5 +34,24 @@ namespace Infrastructure.Message.Pipeline
 
             return pipelineItems.First();
         }
+
+        public QueryPipelineItem<TQuery, TResponse> BuildQueryPipeline<TQuery, TResponse>(TQuery query, IAsyncQueryHandler<TQuery, TResponse> handler)
+            where TQuery : IQuery<TResponse>
+        {
+            var queryType = query.GetType();
+            var responseType = typeof(TResponse);
+            var pipelineItemsTypes = PredefinedQueryPipelines.DefaultQueryPipeline;
+
+            var pipelineItems = pipelineItemsTypes
+                .Select(x => x.MakeGenericType(queryType, responseType))
+                .Select(x => container.Resolve(x))
+                .Select(x => (QueryPipelineItem<TQuery, TResponse>)x)
+                .ToList();
+
+            var lastItem = pipelineItems.Aggregate((current, next) => current.SetNextPipelineItem(next));
+            lastItem.SetNextHandler(handler);
+            return pipelineItems.First();
+        }
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Infrastructure.Message.Pipeline.PipelineItems.DefaultCommandPipelineItems
+namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
 {
     public class TransactionalExecutionPipelineItem<TCommand> : CommandPipelineItem<TCommand>
         where TCommand : ICommand
