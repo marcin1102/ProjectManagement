@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.Bootstrap;
+using Infrastructure.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,7 @@ namespace ProjectManagement.WebApi
     {
         public IContainer ApplicationContainer { get; private set; }
         public IConfigurationRoot Configuration { get; private set; }
+        public ILoggerFactory LoggerFactory { get; private set; }
 
         public Startup(IHostingEnvironment env)
         {
@@ -41,8 +43,8 @@ namespace ProjectManagement.WebApi
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterInfrastructureComponents();
-            builder.RegisterAppModules();
+            builder.RegisterInfrastructureComponents(Configuration);
+            builder.RegisterAppModules(Configuration, LoggerFactory);
 
             builder.Populate(services);
             ApplicationContainer = builder.Build();
@@ -51,7 +53,7 @@ namespace ProjectManagement.WebApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
-            loggerFactory.AddConsole();
+            LoggerFactory = loggerFactory.AddConsole();
 
             if (env.IsDevelopment())
             {

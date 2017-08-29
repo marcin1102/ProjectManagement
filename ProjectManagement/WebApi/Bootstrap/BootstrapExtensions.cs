@@ -1,13 +1,15 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ProjectManagement;
 
 namespace WebApi.Bootstrap
 {
     public static class BootstrapExtensions
     {
-        public static void RegisterAppModules(this ContainerBuilder builder)
+        public static void RegisterAppModules(this ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory loggerFactory)
         {
-            new ProjectManagementBootstrap(builder);
+            new ProjectManagementBootstrap(builder, configuration, loggerFactory);
         }
     }
 }

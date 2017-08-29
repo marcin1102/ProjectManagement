@@ -3,22 +3,28 @@ using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.Message.Pipeline;
 using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
+using Infrastructure.Settings;
+using Infrastructure.Storage.EF;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Bootstrap
 {
     public static class InfrastructureBootstrap
     {
-        public static void RegisterInfrastructureComponents(this ContainerBuilder builder)
+        public static void RegisterInfrastructureComponents(this ContainerBuilder builder, IConfigurationRoot configuration)
         {
+            builder.RegisterSettings(configuration);
+            builder.RegisterEfComponents(configuration);
+
             builder
                 .RegisterType<CommandQueryBusPipeline>()
                 .As<ICommandQueryBus>()
-                .InstancePerDependency();
+                .InstancePerRequest();
 
             builder
                 .RegisterType<PipelineBuilder>()
                 .AsSelf()
-                .InstancePerDependency();
+                .InstancePerRequest();
 
             builder.RegisterPredefinedPipelineItems();
         }
@@ -35,7 +41,7 @@ namespace Infrastructure.Bootstrap
             {
                 builder
                     .RegisterGeneric(item)
-                    .InstancePerDependency();
+                    .InstancePerRequest();
             }
         }
 
@@ -45,7 +51,7 @@ namespace Infrastructure.Bootstrap
             {
                 builder
                     .RegisterGeneric(item)
-                    .InstancePerDependency();
+                    .InstancePerRequest();
             }
         }
     }
