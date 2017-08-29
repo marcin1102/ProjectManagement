@@ -20,7 +20,7 @@ namespace Infrastructure.Storage.EF
                 var dbContextOptions = new DbContextOptionsBuilder()
                 .UseNpgsql(globalSettings.ConnectionString).Options;
                 return new DbContext(dbContextOptions);
-            }).As<DbContext>().InstancePerRequest();
+            }).As<DbContext>().InstancePerLifetimeScope();
         }
     }
 }

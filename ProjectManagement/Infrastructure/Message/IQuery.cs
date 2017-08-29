@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Message
 {
-    public interface IQuery<out TResponse>
+    public interface IQuery<TResponse>
     {
     }
 }

@@ -19,12 +19,12 @@ namespace Infrastructure.Bootstrap
             builder
                 .RegisterType<CommandQueryBusPipeline>()
                 .As<ICommandQueryBus>()
-                .InstancePerRequest();
+                .InstancePerLifetimeScope();
 
             builder
                 .RegisterType<PipelineBuilder>()
                 .AsSelf()
-                .InstancePerRequest();
+                .InstancePerLifetimeScope();
 
             builder.RegisterPredefinedPipelineItems();
         }
@@ -41,7 +41,7 @@ namespace Infrastructure.Bootstrap
             {
                 builder
                     .RegisterGeneric(item)
-                    .InstancePerRequest();
+                    .InstancePerLifetimeScope();
             }
         }
 
@@ -51,7 +51,7 @@ namespace Infrastructure.Bootstrap
             {
                 builder
                     .RegisterGeneric(item)
-                    .InstancePerRequest();
+                    .InstancePerLifetimeScope();
             }
         }
     }

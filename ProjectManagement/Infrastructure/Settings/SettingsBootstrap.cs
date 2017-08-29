@@ -18,7 +18,9 @@ namespace Infrastructure.Settings
             builder.Register(x =>
             {
                 return configuration.GetSection("GlobalSettings").Get<GlobalSettings>();
-            }).As<GlobalSettings>();
+            })
+            .As<GlobalSettings>()
+            .InstancePerDependency();
         }
     }
 }
