@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Infrastructure.Message.CommandQueryBus;
+using Infrastructure.Message.EventDispatcher;
 using Infrastructure.Message.Pipeline;
 using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
@@ -24,6 +25,11 @@ namespace Infrastructure.Bootstrap
             builder
                 .RegisterType<PipelineBuilder>()
                 .AsSelf()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<DomainEventDispatcher>()
+                .As<IDomainEventDispatcher>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterPredefinedPipelineItems();

@@ -1,20 +1,17 @@
-﻿using System;
-using Infrastructure.Bootstrap;
+﻿using Infrastructure.Bootstrap;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
-using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
+using Infrastructure.Storage.EF;
 
 namespace ProjectManagement
 {
     public class ProjectManagementBootstrap : ModuleBootstrap
     {
-        private const string SCHEMA = "project-management";
-
         private readonly IConfigurationRoot configuration;
         private readonly ILoggerFactory logger;
 
@@ -29,14 +26,10 @@ namespace ProjectManagement
         {
             var globalSettings = configuration.GetSection(nameof(GlobalSettings)).Get<GlobalSettings>();
 
-            builder.Register(x =>
+            builder.AddDbContext<ProjectManagementContext>(options =>
             {
-                var dbContextOptions = new DbContextOptionsBuilder<ProjectManagementContext>()
-               .UseNpgsql(globalSettings.ConnectionString).UseLoggerFactory(logger).Options;
-                return new ProjectManagementContext(dbContextOptions, SCHEMA);
-            })
-            .As<ProjectManagementContext>()
-            .InstancePerRequest();
+                options.UseNpgsql(globalSettings.ConnectionString, x => x.MigrationsAssembly("ProjectManagement")).UseLoggerFactory(logger);
+            });
         }
 
         public override void RegisterCommandHandlers()
@@ -46,7 +39,7 @@ namespace ProjectManagement
 
         public override void RegisterEventHandlers()
         {
-
+            RegisterAsyncEventHandler<TestDomainEvent, TestEventHandler>();
         }
 
         public override void RegisterQueryHandlers()

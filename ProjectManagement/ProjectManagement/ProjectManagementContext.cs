@@ -1,20 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Infrastructure.Storage.EF;
+﻿using Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManagement
 {
     public class ProjectManagementContext : BaseDbContext
     {
-        public ProjectManagementContext(DbContextOptions<ProjectManagementContext> options, string schema) : base(options, schema)
+        private const string SCHEMA = "project-management";
+
+        public ProjectManagementContext(DbContextOptions<ProjectManagementContext> options) : base(options)
         {
         }
 
+        public DbSet<Project.Model.Project> Projects { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema(schema);
+            modelBuilder.Entity<Project.Model.Project>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.Name).IsRequired(true);
+                x.ToTable(nameof(Project.Model.Project));
+            });
+
+            modelBuilder.HasDefaultSchema(SCHEMA);
             base.OnModelCreating(modelBuilder);
         }
     }

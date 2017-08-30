@@ -4,10 +4,8 @@ namespace Infrastructure.Storage.EF
 {
     public class BaseDbContext : DbContext
     {
-        protected string schema;
-        public BaseDbContext(DbContextOptions options, string schema) : base(options)
+        public BaseDbContext(DbContextOptions options) : base(options)
         {
-            this.schema = schema;
         }
     }
 }

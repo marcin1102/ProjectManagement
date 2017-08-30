@@ -18,8 +18,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Message\EventBus\" />
-  </ItemGroup>
-
 </Project>

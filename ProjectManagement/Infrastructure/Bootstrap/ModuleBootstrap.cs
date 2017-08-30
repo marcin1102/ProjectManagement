@@ -31,7 +31,7 @@ namespace Infrastructure.Bootstrap
             builder
                 .RegisterType<THandler>()
                 .As<IAsyncCommandHandler<TCommand>>()
-                .InstancePerDependency();
+                .InstancePerLifetimeScope();
         }
 
         protected void RegisterAsyncQueryHandler<TQuery, TResponse , THandler>()
@@ -41,7 +41,7 @@ namespace Infrastructure.Bootstrap
             builder
                 .RegisterType<THandler>()
                 .As<IAsyncQueryHandler<TQuery, TResponse>>()
-                .InstancePerDependency();
+                .InstancePerLifetimeScope();
         }
 
         protected void RegisterAsyncEventHandler<TEvent, THandler>()
@@ -51,7 +51,8 @@ namespace Infrastructure.Bootstrap
             builder
                 .RegisterType<THandler>()
                 .As<IAsyncEventHandler<TEvent>>()
-                .InstancePerDependency();
+                .AsSelf()
+                .InstancePerLifetimeScope();
         }
     }
 }

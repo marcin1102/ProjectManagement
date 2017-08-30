@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using Infrastructure.Settings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
+
+namespace Infrastructure.Storage.EF
+{
+    public class DbContextFactory<TContext> : IDbContextFactory<TContext>
+        where TContext : DbContext
+    {
+        protected readonly GlobalSettings globalSettings;
+        public DbContextFactory()
+        {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() ?? "development";
+
+            var builder = new ConfigurationBuilder()
+                                  .SetBasePath(AppContext.BaseDirectory)
+                                  .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                                  .AddJsonFile($"appsettings.{environment}.json", optional: false)
+                                  .AddEnvironmentVariables();
+
+            var configuration = builder.Build();
+            globalSettings = configuration.GetSection("GlobalSettings").Get<GlobalSettings>();
+        }
+
+        public TContext Create(DbContextFactoryOptions options)
+        {
+            var builder = new DbContextOptionsBuilder<TContext>();
+            var assembly = typeof(TContext).GetTypeInfo().Assembly;
+
+            builder.UseNpgsql(globalSettings.ConnectionString, x => x.MigrationsAssembly(assembly.FullName));
+            return Activator.CreateInstance(typeof(TContext), builder.Options) as TContext;
+        }
+    }
+}
