@@ -19,6 +19,7 @@ namespace ProjectManagement
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Name).IsRequired(true);
+                x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(Project.Model.Project));
             });
 

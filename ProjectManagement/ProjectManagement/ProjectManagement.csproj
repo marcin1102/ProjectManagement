@@ -7,11 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ProjectManagement.Contracts\ProjectManagement.Contracts.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Project\Handlers\" />
-    <Folder Include="Project\Repository\" />
-  </ItemGroup>
   
    <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />

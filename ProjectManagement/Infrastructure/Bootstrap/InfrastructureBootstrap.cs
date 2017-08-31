@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Infrastructure.Message;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.Message.EventDispatcher;
 using Infrastructure.Message.Pipeline;
@@ -16,49 +17,7 @@ namespace Infrastructure.Bootstrap
         {
             builder.RegisterSettings(configuration);
             builder.RegisterEfComponents(configuration);
-
-            builder
-                .RegisterType<CommandQueryBusPipeline>()
-                .As<ICommandQueryBus>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<PipelineBuilder>()
-                .AsSelf()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<DomainEventDispatcher>()
-                .As<IDomainEventDispatcher>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterPredefinedPipelineItems();
-        }
-
-        public static void RegisterPredefinedPipelineItems(this ContainerBuilder builder)
-        {
-            builder.RegisterPredefinedCommandPipelineItems();
-            builder.RegisterPredefinedQueryPipelineItems();
-        }
-
-        public static void RegisterPredefinedCommandPipelineItems(this ContainerBuilder builder)
-        {
-            foreach (var item in PredefinedCommandPipelines.TransactionalCommandExecutionPipeline)
-            {
-                builder
-                    .RegisterGeneric(item)
-                    .InstancePerLifetimeScope();
-            }
-        }
-
-        public static void RegisterPredefinedQueryPipelineItems(this ContainerBuilder builder)
-        {
-            foreach (var item in PredefinedQueryPipelines.DefaultQueryPipeline)
-            {
-                builder
-                    .RegisterGeneric(item)
-                    .InstancePerLifetimeScope();
-            }
+            builder.RegisterMessagingComponents();
         }
     }
 }

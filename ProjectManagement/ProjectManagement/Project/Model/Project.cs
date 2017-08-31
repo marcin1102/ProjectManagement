@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using Infrastructure.Storage;
+using ProjectManagement.Contracts.Project.Events;
 
 namespace ProjectManagement.Project.Model
 {
-    public class Project : IAggregateRoot
+    public class Project : AggregateRoot
     {
-        public Project() { }
-        public Project(Guid id, string name)
+        public Project(Guid id, string name) : base()
         {
             Id = id;
             Name = name;
             Version = 0;
+            Update(new ProjectCreated(Id, Name, Version));
         }
 
         public Guid Id { get; private set; }

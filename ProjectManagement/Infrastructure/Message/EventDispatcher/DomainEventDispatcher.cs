@@ -13,11 +13,11 @@ namespace Infrastructure.Message.EventDispatcher
 {
     public class DomainEventDispatcher : IDomainEventDispatcher
     {
-        private readonly IComponentContext container;
+        private readonly IEventBroker eventBroker;
 
-        public DomainEventDispatcher(IComponentContext container)
+        public DomainEventDispatcher(IEventBroker eventBroker)
         {
-            this.container = container;
+            this.eventBroker = eventBroker;
         }
 
         public async Task Dispatch<TEvent>(TEvent @event)
@@ -28,10 +28,10 @@ namespace Infrastructure.Message.EventDispatcher
             var assemblies = assembliesNames.Where(assemblyName => projectsNames.Any(projectName => assemblyName.Name == projectName))
                 .Select(x => Assembly.Load(x));
 
+
             foreach (var assembly in assemblies)
             {
-                var broker = new EventBroker(container);
-                await broker.DeliverEventTo(@event, assembly);
+                await eventBroker.DeliverEventTo(@event, assembly);
             }
         }
     }

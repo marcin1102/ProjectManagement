@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using Infrastructure.Message;
 
-namespace ProjectManagement.Contracts
+namespace ProjectManagement.Contracts.Project.Events
 {
-    public class TestDomainEvent : IDomainEvent
+    public class ProjectCreated : IDomainEvent
     {
-        public TestDomainEvent(Guid aggregateId, long aggregateVersion)
+        public ProjectCreated(Guid id, string name, long aggregateVersion)
         {
-            Id = aggregateId;
+            Id = id;
+            Name = name;
             AggregateVersion = aggregateVersion;
         }
 
         public Guid Id { get; private set; }
+        public string Name { get; private set; }
         public long AggregateVersion { get; private set; }
     }
 }

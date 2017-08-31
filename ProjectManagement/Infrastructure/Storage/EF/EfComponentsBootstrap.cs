@@ -1,6 +1,5 @@
 ﻿using System;
 using Autofac;
-using Autofac.Builder;
 using Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +16,12 @@ namespace Infrastructure.Storage.EF
         public static void RegisterDbContext(this ContainerBuilder builder, IConfigurationRoot configuration)
         {
             var globalSettings = configuration.GetSection(nameof(GlobalSettings)).Get<GlobalSettings>();
+
             builder.AddDbContext<DbContext>(options =>
+                options.UseNpgsql(globalSettings.ConnectionString)
+                );
+
+            builder.AddDbContext<EventContext.EventContext>(options =>
                 options.UseNpgsql(globalSettings.ConnectionString)
                 );
         }

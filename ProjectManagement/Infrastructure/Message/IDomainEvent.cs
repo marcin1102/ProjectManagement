@@ -4,7 +4,7 @@ namespace Infrastructure.Message
 {
     public interface IDomainEvent
     {
-        Guid AggregateId { get; }
+        Guid Id { get; }
         long AggregateVersion { get; }
     }
 }

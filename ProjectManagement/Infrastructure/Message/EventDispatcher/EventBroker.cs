@@ -9,7 +9,13 @@ using Infrastructure.Message.Handlers;
 
 namespace Infrastructure.Message.EventDispatcher
 {
-    public class EventBroker
+    public interface IEventBroker
+    {
+        Task DeliverEventTo<TEvent>(TEvent @event, Assembly assemblyToDeliverEvent)
+            where TEvent : IDomainEvent;
+    }
+
+    public class EventBroker : IEventBroker
     {
         private readonly Type eventHandlerType = typeof(IAsyncEventHandler<>);
         private readonly IComponentContext context;

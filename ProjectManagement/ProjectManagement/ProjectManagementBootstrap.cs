@@ -7,6 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
 using Infrastructure.Storage.EF;
+using ProjectManagement.Contracts.Project.Commands;
+using ProjectManagement.Project.Handlers;
+using System;
+using ProjectManagement.Project.Repository;
 
 namespace ProjectManagement
 {
@@ -20,6 +24,15 @@ namespace ProjectManagement
             this.configuration = configuration;
             this.logger = logger;
             RegisterModuleComponents();
+            RegisterRepositories();
+        }
+
+        private void RegisterRepositories()
+        {
+            builder
+                .RegisterType<ProjectRepository>()
+                .AsSelf()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterModuleComponents()
@@ -35,6 +48,8 @@ namespace ProjectManagement
         public override void RegisterCommandHandlers()
         {
             RegisterAsyncCommandHandler<TestCommand, TestCommandHandler>();
+
+            RegisterAsyncCommandHandler<CreateProject, ProjectCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
