@@ -3,18 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Infrastructure.Storage.EF.EventContext;
+using ProjectManagement;
 
-namespace Infrastructure.Migrations
+namespace ProjectManagement.Migrations
 {
-    [DbContext(typeof(EventContext))]
-    [Migration("20170831115321_EventStore")]
-    partial class EventStore
+    [DbContext(typeof(ProjectManagementContext))]
+    [Migration("20170831125504_Project")]
+    partial class Project
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasDefaultSchema("Events")
+                .HasDefaultSchema("project-management")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "1.1.2");
 
@@ -36,6 +36,21 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventEnvelope");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Project.Model.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<long>("Version");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Project");
                 });
         }
     }

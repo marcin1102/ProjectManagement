@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.Storage.EF.EventContext;
+using Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Infrastructure.Message.EventDispatcher
 {
@@ -19,11 +17,11 @@ namespace Infrastructure.Message.EventDispatcher
     public class EventManager : IEventManager
     {
         private readonly IDomainEventDispatcher eventDispatcher;
-        private readonly EventContext dbContext;
+        private readonly BaseDbContext dbContext;
         private readonly ILogger logger;
         private readonly DbSet<EventEnvelope> Query;
 
-        public EventManager(IDomainEventDispatcher eventDispatcher, EventContext dbContext, ILoggerFactory logger)
+        public EventManager(IDomainEventDispatcher eventDispatcher, BaseDbContext dbContext, ILoggerFactory logger)
         {
             this.eventDispatcher = eventDispatcher;
             this.dbContext = dbContext;

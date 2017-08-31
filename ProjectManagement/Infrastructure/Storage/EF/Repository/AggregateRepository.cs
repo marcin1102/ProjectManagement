@@ -10,7 +10,6 @@ namespace Infrastructure.Storage.EF.Repository
     public class AggregateRepository<TAggregate> : Repository<TAggregate>
         where TAggregate : class, IAggregateRoot
     {
-        protected readonly DbContext dbContext;
         private readonly IEventManager eventManager;
 
         public AggregateRepository(DbContext dbContext, IEventManager eventManager) : base(dbContext)

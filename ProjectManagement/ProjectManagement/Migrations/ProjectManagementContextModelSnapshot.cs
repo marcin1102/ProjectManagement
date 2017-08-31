@@ -17,6 +17,26 @@ namespace ProjectManagement.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "1.1.2");
 
+            modelBuilder.Entity("Infrastructure.Message.EventEnvelope", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<bool>("Delivered");
+
+                    b.Property<string>("DomainEvent")
+                        .IsRequired();
+
+                    b.Property<string>("DomainEventType")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventEnvelope");
+                });
+
             modelBuilder.Entity("ProjectManagement.Project.Model.Project", b =>
                 {
                     b.Property<Guid>("Id")
