@@ -11,7 +11,7 @@ namespace WebApi.Bootstrap
         public static void RegisterAppModules(this ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory loggerFactory)
         {
             new ProjectManagementBootstrap(builder, configuration, loggerFactory);
-            new UserManagementBootstrap(builder);
+            new UserManagementBootstrap(builder, configuration, loggerFactory);
         }
     }
 }
