@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Infrastructure.Settings;
+using Infrastructure.Storage.EF.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -11,6 +12,7 @@ namespace Infrastructure.Storage.EF
         public static void RegisterEfComponents(this ContainerBuilder builder, IConfigurationRoot configuration)
         {
             builder.RegisterDbContext(configuration);
+            builder.RegisterAggregateRepository();
         }
 
         public static void RegisterDbContext(this ContainerBuilder builder, IConfigurationRoot configuration)
@@ -33,10 +35,13 @@ namespace Infrastructure.Storage.EF
                 })
                 .AsSelf()
                 .InstancePerLifetimeScope();
+        }
 
-            //builder.AddDbContext<DbContext>(options =>
-            //    options.UseNpgsql(globalSettings.ConnectionString)
-            //    );
+        public static void RegisterAggregateRepository(this ContainerBuilder builder)
+        {
+            builder
+                .RegisterGeneric(typeof(AggregateRepository<>))
+                .InstancePerLifetimeScope();
         }
 
         public static void AddDbContext<TContext>(this ContainerBuilder builder, Action<DbContextOptionsBuilder<TContext>> optionsAction)

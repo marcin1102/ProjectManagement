@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Project.Commands;
@@ -21,7 +19,7 @@ namespace ProjectManagement.Project.Handlers
         {
             command.CreatedId = Guid.NewGuid();
             var project = new Model.Project(command.CreatedId, command.Name);
-            return repository.Add(project);
+            return repository.AddAsync(project);
         }
     }
 }

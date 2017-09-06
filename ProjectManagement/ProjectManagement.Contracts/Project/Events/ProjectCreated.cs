@@ -7,15 +7,14 @@ namespace ProjectManagement.Contracts.Project.Events
 {
     public class ProjectCreated : IDomainEvent
     {
-        public ProjectCreated(Guid id, string name, long aggregateVersion)
+        public ProjectCreated(Guid id, string name)
         {
             Id = id;
             Name = name;
-            AggregateVersion = aggregateVersion;
         }
 
         public Guid Id { get; private set; }
         public string Name { get; private set; }
-        public long AggregateVersion { get; private set; }
+        public long AggregateVersion { get; set; }
     }
 }

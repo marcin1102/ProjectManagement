@@ -9,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectManagement.Contracts;
+using UserManagement.Contracts.User.Commands;
+using UserManagement.Contracts.User.Queries;
+using UserManagement.User.Handlers;
+using UserManagement.User.Repository;
 
 namespace UserManagement
 {
@@ -22,6 +26,15 @@ namespace UserManagement
             this.configuration = configuration;
             this.logger = logger;
             RegisterModuleComponents();
+            RegisterRepositories();
+        }
+
+        private void RegisterRepositories()
+        {
+            builder
+                .RegisterType<UserRepository>()
+                .AsSelf()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterModuleComponents()
@@ -36,15 +49,17 @@ namespace UserManagement
 
         public override void RegisterCommandHandlers()
         {
+            RegisterAsyncCommandHandler<CreateUser, UserCommandHandler>();
+            RegisterAsyncCommandHandler<GrantRole, UserCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
         {
-            RegisterAsyncEventHandler<TestDomainEvent, TestEventHandler>();
         }
 
         public override void RegisterQueryHandlers()
         {
+            RegisterAsyncQueryHandler<GetUser, UserResponse, UserQueryHandler>();
         }
     }
 }

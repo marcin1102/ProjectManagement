@@ -18,6 +18,7 @@ namespace Infrastructure.Message.EventDispatcher
     public class EventBroker : IEventBroker
     {
         private readonly Type eventHandlerType = typeof(IAsyncEventHandler<>);
+        private readonly Type eventHandlerWrapperType = typeof(EventHandlerWrapper<>);
         private readonly IComponentContext context;
 
         public EventBroker(IComponentContext context)
@@ -31,14 +32,39 @@ namespace Infrastructure.Message.EventDispatcher
             var domainEventType = @event.GetType();
             var genericEventHandlerType = eventHandlerType.MakeGenericType(domainEventType);
             var subscribersTypes = assemblyToDeliverEvent.GetTypes().Where(type => type.GetInterfaces().Contains(genericEventHandlerType));
+            var wrapperGenericType = eventHandlerWrapperType.MakeGenericType(domainEventType);
+
             var subscribers = subscribersTypes
                 .Select(x => context.Resolve(x))
-                .Select(x => (IAsyncEventHandler<TEvent>)x)
                 .ToList();
 
-            foreach (var subscriber in subscribers)
+            var wrappers = subscribers.Select(x => (EventHandlerWrapper)Activator.CreateInstance(wrapperGenericType, x));
+
+            foreach (var wrapper in wrappers)
             {
-                await subscriber.HandleAsync(@event);
+                await wrapper.HandleAsync(@event);
+            }
+        }
+
+        private abstract class EventHandlerWrapper
+        {
+            public abstract Task HandleAsync(IDomainEvent @event);
+        }
+
+        private class EventHandlerWrapper<TEvent> : EventHandlerWrapper
+            where TEvent : IDomainEvent
+        {
+            private readonly IAsyncEventHandler<TEvent> handler;
+
+            public EventHandlerWrapper(IAsyncEventHandler<TEvent> handler)
+            {
+                this.handler = handler;
+            }
+
+            public override Task HandleAsync(IDomainEvent @event)
+            {
+                var castedEvent = (TEvent)@event;
+                return handler.HandleAsync(castedEvent);
             }
         }
     }

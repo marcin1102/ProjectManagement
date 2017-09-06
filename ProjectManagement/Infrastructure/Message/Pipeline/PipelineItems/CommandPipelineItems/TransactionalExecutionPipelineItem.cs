@@ -20,7 +20,6 @@ namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
                 try
                 {
                     await NextHandler.HandleAsync(command);
-                    await context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch

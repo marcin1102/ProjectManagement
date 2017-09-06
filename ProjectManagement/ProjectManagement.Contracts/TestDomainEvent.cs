@@ -7,13 +7,12 @@ namespace ProjectManagement.Contracts
 {
     public class TestDomainEvent : IDomainEvent
     {
-        public TestDomainEvent(Guid aggregateId, long aggregateVersion)
+        public TestDomainEvent(Guid aggregateId)
         {
             Id = aggregateId;
-            AggregateVersion = aggregateVersion;
         }
 
         public Guid Id { get; private set; }
-        public long AggregateVersion { get; private set; }
+        public long AggregateVersion { get; set; }
     }
 }

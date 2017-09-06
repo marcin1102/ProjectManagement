@@ -9,11 +9,8 @@ namespace ProjectManagement.Project.Repository
 {
     public class ProjectRepository : AggregateRepository<Model.Project>
     {
-        private readonly ProjectManagementContext context;
-
         public ProjectRepository(ProjectManagementContext context, IEventManager eventManager) : base(context, eventManager)
         {
-            this.context = context;
         }
     }
 }

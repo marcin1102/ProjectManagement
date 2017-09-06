@@ -8,15 +8,13 @@ namespace ProjectManagement.Project.Model
 {
     public class Project : AggregateRoot
     {
-        public Project(Guid id, string name) : base()
+        public Project(Guid id, string name) : base(id)
         {
-            Id = id;
             Name = name;
             Version = 0;
-            Update(new ProjectCreated(Id, Name, Version));
+            Update(new ProjectCreated(Id, Name));
         }
 
-        public Guid Id { get; private set; }
         public string Name { get; private set; }
         //ICollection<Member>
         public long Version { get; private set; }

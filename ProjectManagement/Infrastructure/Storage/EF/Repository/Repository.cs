@@ -20,22 +20,24 @@ namespace Infrastructure.Storage.EF.Repository
             dbSet = dbContext.Set<TEntity>();
         }
 
-        public virtual Task Add(TEntity entity)
+        public virtual async Task AddAsync(TEntity entity)
         {
-            return Query.AddAsync(entity);
+            await Query.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
         }
 
-        public virtual void Update(TEntity entity)
+        public virtual Task Update(TEntity entity)
         {
             Query.Update(entity);
+            return dbContext.SaveChangesAsync();
         }
 
-        public virtual Task<TEntity> Get(Guid id)
+        public virtual Task<TEntity> GetAsync(Guid id)
         {
             return Query.SingleAsync(x => x.Id == id);
         }
 
-        public virtual Task<TEntity> Find(Guid id)
+        public virtual Task<TEntity> FindAsync(Guid id)
         {
             return Query.SingleOrDefaultAsync(x => x.Id == id);
         }

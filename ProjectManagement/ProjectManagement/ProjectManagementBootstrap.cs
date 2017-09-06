@@ -11,6 +11,9 @@ using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Project.Handlers;
 using System;
 using ProjectManagement.Project.Repository;
+using UserManagement.Contracts.User.Events;
+using ProjectManagement.User.Handlers;
+using ProjectManagement.User.Repository;
 
 namespace ProjectManagement
 {
@@ -31,7 +34,10 @@ namespace ProjectManagement
         {
             builder
                 .RegisterType<ProjectRepository>()
-                .AsSelf()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<UserRepository>()
                 .InstancePerLifetimeScope();
         }
 
@@ -47,19 +53,17 @@ namespace ProjectManagement
 
         public override void RegisterCommandHandlers()
         {
-            RegisterAsyncCommandHandler<TestCommand, TestCommandHandler>();
-
             RegisterAsyncCommandHandler<CreateProject, ProjectCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
         {
-            RegisterAsyncEventHandler<TestDomainEvent, TestEventHandler>();
+            RegisterAsyncEventHandler<UserCreated, UserEventHandler>();
+            RegisterAsyncEventHandler<RoleGranted, UserEventHandler>();
         }
 
         public override void RegisterQueryHandlers()
         {
-            RegisterAsyncQueryHandler<TestQuery, TestResponse, TestQueryHandler>();
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FluentValidation.AspNetCore;
 using Infrastructure.Bootstrap;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Builder;
@@ -35,7 +37,7 @@ namespace ProjectManagement.WebApi
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc().AddFluentValidation();
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });

@@ -6,19 +6,31 @@ namespace Infrastructure.Storage
 {
     public class AggregateRoot : IAggregateRoot
     {
-        public Queue<IDomainEvent> PendingEvents { get; private set; }
+        private Queue<IDomainEvent> pendingEvents = new Queue<IDomainEvent>();
+        public Queue<IDomainEvent> PendingEvents
+        {
+            get => pendingEvents;
+            private set => pendingEvents = new Queue<IDomainEvent>(value);
+        }
+
         public Guid Id { get; private set; }
         public long Version { get; private set; }
 
-        public AggregateRoot()
+        protected AggregateRoot()
         {
-            PendingEvents = new Queue<IDomainEvent>();
+        }
+
+        protected AggregateRoot(Guid id)
+        {
+            Id = id;
+            Version = 0;
         }
 
         public void Update(IDomainEvent @event)
         {
-            Version = Version++;
-            PendingEvents.Enqueue(@event);
+            Version += 1;
+            @event.AggregateVersion = Version;
+            pendingEvents.Enqueue(@event);
         }
     }
 }
