@@ -6,13 +6,13 @@ namespace UserManagement.Contracts.User.Events
 {
     public class RoleGranted : IDomainEvent
     {
-        public RoleGranted(Guid id, Role role)
+        public RoleGranted(Guid userId, Role role)
         {
-            Id = id;
+            UserId = userId;
             Role = role;
         }
 
-        public Guid Id { get; private set; }
+        public Guid UserId { get; private set; }
         public Role Role { get; private set; }
         public long AggregateVersion { get; set; }
     }

@@ -4,25 +4,43 @@ using System.Text;
 using Autofac;
 using Infrastructure.Message;
 using Infrastructure.Message.Handlers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Bootstrap
 {
     public abstract class ModuleBootstrap
     {
-        public ContainerBuilder builder { get; private set; }
-        protected ModuleBootstrap(ContainerBuilder builder)
+        protected ContainerBuilder builder { get; private set; }
+        protected IConfigurationRoot configuration;
+        protected ILoggerFactory logger;
+        protected IComponentContext context;
+
+        protected ModuleBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger)
         {
             this.builder = builder;
+            this.configuration = configuration;
+            this.logger = logger;
 
             RegisterCommandHandlers();
             RegisterEventHandlers();
             RegisterQueryHandlers();
+            RegisterPipelineItems();
+        }
+
+        public void Run(IComponentContext context)
+        {
+            this.context = context;
+            RegisterCommandPipelines();
         }
 
         public abstract void RegisterCommandHandlers();
         public abstract void RegisterQueryHandlers();
         public abstract void RegisterEventHandlers();
+
+        public virtual void RegisterPipelineItems() { }
+        public virtual void RegisterCommandPipelines() { }
 
         protected void RegisterAsyncCommandHandler<TCommand, THandler>()
             where TCommand : class, ICommand

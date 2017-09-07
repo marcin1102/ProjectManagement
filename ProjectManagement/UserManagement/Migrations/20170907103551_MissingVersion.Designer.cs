@@ -3,17 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using ProjectManagement;
+using UserManagement;
 
-namespace ProjectManagement.Migrations
+namespace UserManagement.Migrations
 {
-    [DbContext(typeof(ProjectManagementContext))]
-    partial class ProjectManagementContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UserManagementContext))]
+    [Migration("20170907103551_MissingVersion")]
+    partial class MissingVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasDefaultSchema("project-management")
+                .HasDefaultSchema("user-management")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "1.1.2");
 
@@ -37,25 +38,9 @@ namespace ProjectManagement.Migrations
                     b.ToTable("EventEnvelope");
                 });
 
-            modelBuilder.Entity("ProjectManagement.Project.Model.Project", b =>
+            modelBuilder.Entity("UserManagement.User.Model.User", b =>
                 {
                     b.Property<Guid>("Id");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<long>("Version");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Project");
-                });
-
-            modelBuilder.Entity("ProjectManagement.User.Model.User", b =>
-                {
-                    b.Property<Guid>("Id");
-
-                    b.Property<long>("AggregateVersion");
 
                     b.Property<string>("Email")
                         .IsRequired();
@@ -69,7 +54,11 @@ namespace ProjectManagement.Migrations
                     b.Property<string>("Role")
                         .IsRequired();
 
+                    b.Property<long>("Version");
+
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Email");
 
                     b.ToTable("User");
                 });

@@ -39,8 +39,7 @@ namespace UserManagement.Migrations
 
             modelBuilder.Entity("UserManagement.User.Model.User", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<string>("Email")
                         .IsRequired();
@@ -53,6 +52,8 @@ namespace UserManagement.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired();
+
+                    b.Property<long>("Version");
 
                     b.HasKey("Id");
 

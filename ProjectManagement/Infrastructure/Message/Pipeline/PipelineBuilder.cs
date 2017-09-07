@@ -10,17 +10,19 @@ namespace Infrastructure.Message.Pipeline
     public class PipelineBuilder
     {
         private readonly IComponentContext container;
+        private readonly PipelineItemsConfiguration pipelineConfiguration;
 
-        public PipelineBuilder(IComponentContext container)
+        public PipelineBuilder(IComponentContext container, PipelineItemsConfiguration pipelineConfiguration)
         {
             this.container = container;
+            this.pipelineConfiguration = pipelineConfiguration;
         }
 
         public CommandPipelineItem<TCommand> BuildCommandPipeline<TCommand>(TCommand command, IAsyncCommandHandler<TCommand> handler)
             where TCommand : ICommand
         {
             var commandType = command.GetType();
-            var pipelineItemsTypes = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline;
+            var pipelineItemsTypes = pipelineConfiguration.GetCommandPipelineItems<TCommand>();
 
             var pipelineItems = pipelineItemsTypes
                 .Select(x => x.MakeGenericType(commandType))
@@ -40,7 +42,7 @@ namespace Infrastructure.Message.Pipeline
         {
             var queryType = query.GetType();
             var responseType = typeof(TResponse);
-            var pipelineItemsTypes = PredefinedQueryPipelines.DefaultQueryPipeline;
+            var pipelineItemsTypes = pipelineConfiguration.GetQueryPIpelineITems<TQuery, TResponse>();
 
             var pipelineItems = pipelineItemsTypes
                 .Select(x => x.MakeGenericType(queryType, responseType))

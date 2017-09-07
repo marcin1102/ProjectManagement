@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using Autofac;
+using Infrastructure.Bootstrap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectManagement;
@@ -10,8 +13,25 @@ namespace WebApi.Bootstrap
     {
         public static void RegisterAppModules(this ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory loggerFactory)
         {
-            new ProjectManagementBootstrap(builder, configuration, loggerFactory);
-            new UserManagementBootstrap(builder, configuration, loggerFactory);
+            var projectManagementBootstrap = new ProjectManagementBootstrap(builder, configuration, loggerFactory);
+            var userManagementBootstrap = new UserManagementBootstrap(builder, configuration, loggerFactory);
+            builder
+                .RegisterInstance<ProjectManagementBootstrap>(projectManagementBootstrap)
+                .As<ModuleBootstrap>()
+                .AsSelf();
+            builder
+                .RegisterInstance<UserManagementBootstrap>(userManagementBootstrap)
+                .As<ModuleBootstrap>()
+                .AsSelf();
+        }
+
+        public static void UseAppModules(this IContainer container)
+        {
+            var modules = container.Resolve<IEnumerable<ModuleBootstrap>>();
+            foreach (var module in modules)
+            {
+                module.Run(container);
+            }
         }
     }
 }

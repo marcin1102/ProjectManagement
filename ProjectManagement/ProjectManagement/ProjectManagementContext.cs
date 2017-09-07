@@ -19,7 +19,9 @@ namespace ProjectManagement
             modelBuilder.Entity<Project.Model.Project>(x =>
             {
                 x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
                 x.Property(y => y.Name).IsRequired(true);
+                x.Property(y => y.Version);
                 x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(Project.Model.Project));
             });
@@ -27,10 +29,12 @@ namespace ProjectManagement
             modelBuilder.Entity<User.Model.User>(x =>
             {
                 x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
                 x.Property(y => y.FirstName).IsRequired(true);
                 x.Property(y => y.LastName).IsRequired(true);
                 x.Property(y => y.Email).IsRequired(true);
                 x.Property(y => y.Role).IsRequired(true);
+                x.Property(y => y.AggregateVersion);
                 x.ToTable(nameof(User.Model.User));
             });
 

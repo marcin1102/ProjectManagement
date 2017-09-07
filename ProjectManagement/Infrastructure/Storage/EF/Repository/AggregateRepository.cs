@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 using Infrastructure.Message.EventDispatcher;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,16 +27,16 @@ namespace Infrastructure.Storage.EF.Repository
         public virtual async Task AddAsync(TAggregate aggregate)
         {
             await Query.AddAsync(aggregate);
+            await dbContext.SaveChangesAsync();
             await eventManager.PublishEventsAsync(aggregate.PendingEvents);
         }
 
-        public async Task Update(TAggregate entity, long version)
+        public async Task Update(TAggregate aggregate, long version)
         {
-            var aggregate = await GetAsync(entity.Id);
-            if (version < aggregate.Version)
-                throw new Exception("The aggregate was modified by someone else. Get newest changes and try again");
+            if (version != aggregate.Version - 1)
+                throw new ConcurrentModificationException(aggregate.Id, typeof(TAggregate).Name);
 
-            Query.Update(entity);
+            dbContext.Entry(aggregate).State = EntityState.Modified;
             await dbContext.SaveChangesAsync();
             await eventManager.PublishEventsAsync(aggregate.PendingEvents);
         }

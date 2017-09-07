@@ -1,12 +1,8 @@
 ﻿using Autofac;
 using Infrastructure.Message;
-using Infrastructure.Message.CommandQueryBus;
-using Infrastructure.Message.EventDispatcher;
-using Infrastructure.Message.Pipeline;
-using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
-using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
 using Infrastructure.Settings;
 using Infrastructure.Storage.EF;
+using Infrastructure.WebApi;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Bootstrap
@@ -18,6 +14,7 @@ namespace Infrastructure.Bootstrap
             builder.RegisterSettings(configuration);
             builder.RegisterEfComponents(configuration);
             builder.RegisterMessagingComponents();
+            builder.AddMvcFilters();
         }
     }
 }

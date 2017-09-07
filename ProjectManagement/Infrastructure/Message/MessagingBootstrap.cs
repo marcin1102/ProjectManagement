@@ -5,6 +5,7 @@ using Autofac;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.Message.EventDispatcher;
 using Infrastructure.Message.Pipeline;
+using Infrastructure.Message.Pipeline.PipelineItems;
 using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
 
@@ -40,13 +41,21 @@ namespace Infrastructure.Message
                 .InstancePerLifetimeScope();
 
 
-            builder.RegisterPredefinedPipelineItems();
+            builder.RegisterPipelineItems();
         }
 
-        public static void RegisterPredefinedPipelineItems(this ContainerBuilder builder)
+        public static void RegisterPipelineItems(this ContainerBuilder builder)
         {
+            builder.RegisterPipelineItemsConfiguration();
             builder.RegisterPredefinedCommandPipelineItems();
             builder.RegisterPredefinedQueryPipelineItems();
+        }
+
+        public static void RegisterPipelineItemsConfiguration(this ContainerBuilder builder)
+        {
+            builder
+                .RegisterType<PipelineItemsConfiguration>()
+                .SingleInstance();
         }
 
         public static void RegisterPredefinedCommandPipelineItems(this ContainerBuilder builder)

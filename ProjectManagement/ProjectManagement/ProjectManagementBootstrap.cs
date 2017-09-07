@@ -14,18 +14,18 @@ using ProjectManagement.Project.Repository;
 using UserManagement.Contracts.User.Events;
 using ProjectManagement.User.Handlers;
 using ProjectManagement.User.Repository;
+using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
+using System.Linq;
+using Infrastructure.Message.Pipeline.PipelineItems;
+using ProjectManagement.PipelineItems;
+using System.Collections.Generic;
 
 namespace ProjectManagement
 {
     public class ProjectManagementBootstrap : ModuleBootstrap
     {
-        private readonly IConfigurationRoot configuration;
-        private readonly ILoggerFactory logger;
-
-        public ProjectManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder)
+        public ProjectManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
         {
-            this.configuration = configuration;
-            this.logger = logger;
             RegisterModuleComponents();
             RegisterRepositories();
         }
@@ -64,6 +64,26 @@ namespace ProjectManagement
 
         public override void RegisterQueryHandlers()
         {
+        }
+
+        public override void RegisterPipelineItems()
+        {
+            builder
+                .RegisterGeneric(typeof(UserAuthorizationPipelineItem<>))
+                .InstancePerLifetimeScope();
+        }
+
+        public override void RegisterCommandPipelines()
+        {
+            var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline.ToList();
+            var pipelineConfiguration = context.Resolve<PipelineItemsConfiguration>();
+
+            var createProjectPipeline = new List<Type>
+            {
+                typeof(UserAuthorizationPipelineItem<>)
+            }.Concat(defaultCommandPipeline);
+
+            pipelineConfiguration.SetCommandPipeline<CreateProject>(createProjectPipeline);
         }
     }
 }

@@ -21,10 +21,12 @@ namespace UserManagement
             modelBuilder.Entity<User.Model.User>(x =>
             {
                 x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
                 x.HasAlternateKey(y => y.Email);
                 x.Property(y => y.FirstName).IsRequired();
                 x.Property(y => y.LastName).IsRequired();
                 x.Property(y => y.Role).IsRequired();
+                x.Property(y => y.Version);
                 x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(User.Model.User));
             });

@@ -33,17 +33,21 @@ namespace UserManagement.Contracts.User.Commands
         public CreateUserValidator()
         {
             RuleFor(x => x.FirstName)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("First name cannot be null or empty")
+                .WithErrorCode("400");
 
             RuleFor(x => x.LastName)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Last name cannot be null or empty")
+                .WithErrorCode("400");
 
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .Must(email =>
-                {
-                    return Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
-                });
+                .WithMessage("Email cannot be null or empty")
+                .EmailAddress()
+                .WithMessage("Email adress is not valid")
+                .WithErrorCode("400");
         }
     }
 

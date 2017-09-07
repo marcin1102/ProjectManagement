@@ -18,13 +18,8 @@ namespace UserManagement
 {
     public class UserManagementBootstrap : ModuleBootstrap
     {
-        private readonly IConfigurationRoot configuration;
-        private readonly ILoggerFactory logger;
-
-        public UserManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder)
+        public UserManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
         {
-            this.configuration = configuration;
-            this.logger = logger;
             RegisterModuleComponents();
             RegisterRepositories();
         }

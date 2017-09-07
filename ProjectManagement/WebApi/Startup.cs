@@ -8,13 +8,18 @@ using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Infrastructure.Bootstrap;
 using Infrastructure.Settings;
+using Infrastructure.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Converters;
+using ProjectManagement.Contracts.Project.Commands;
 using Swashbuckle.AspNetCore.Swagger;
+using UserManagement;
+using UserManagement.Contracts.User.Commands;
 using WebApi.Bootstrap;
 
 namespace ProjectManagement.WebApi
@@ -37,10 +42,16 @@ namespace ProjectManagement.WebApi
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddFluentValidation();
+            services.AddMvc(options => options.AddFilters())
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<CreateUser>().RegisterValidatorsFromAssemblyContaining<CreateProject>())
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                });
+
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                x.SwaggerDoc("api", new Info { Title = "DDD-app" });
             });
 
             var builder = new ContainerBuilder();
@@ -48,8 +59,11 @@ namespace ProjectManagement.WebApi
             builder.RegisterInfrastructureComponents(Configuration);
             builder.RegisterAppModules(Configuration, LoggerFactory);
 
+
             builder.Populate(services);
             ApplicationContainer = builder.Build();
+
+            ApplicationContainer.UseAppModules();
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
@@ -59,17 +73,16 @@ namespace ProjectManagement.WebApi
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseMvc();
                 app.UseSwagger();
                 app.UseSwaggerUI(x =>
                     {
                         x.RoutePrefix = "swagger/ui";
-                        x.SwaggerEndpoint("/swagger/v1/swagger.json", "Docs");
+                        x.SwaggerEndpoint("/swagger/api/swagger.json", "Docs");
                     });
             }
 
-            appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+            appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
     }
 }
