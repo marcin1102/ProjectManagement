@@ -4,4 +4,16 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0-preview-20170810-02" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta5-build3769" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\ProjectManagement.Contracts\ProjectManagement.Contracts.csproj" />
+    <ProjectReference Include="..\ProjectManagement\ProjectManagement.csproj" />
+    <ProjectReference Include="..\UserManagement.Contracts\UserManagement.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

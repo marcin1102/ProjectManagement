@@ -23,13 +23,11 @@ namespace Infrastructure.Message.EventDispatcher
         public async Task Dispatch<TEvent>(TEvent @event)
             where TEvent : IDomainEvent
         {
-            var assembliesNames = Assembly.GetEntryAssembly().GetReferencedAssemblies();
-            var projectsNames = ProjectsNamesProvider.GetDomainProjectsNames();
-            var assemblies = assembliesNames.Where(assemblyName => projectsNames.Any(projectName => assemblyName.Name == projectName))
-                .Select(x => Assembly.Load(x));
+            //var assembliesNames = AssemblyNamesProvider.assemblyNames
+            //var projectsNames = ProjectsNamesProvider.GetDomainProjectsNames();
+            //var assemblies = AssembliesProvider.assemblies.Select(x => Assembly.Load(x)).ToList();
 
-
-            foreach (var assembly in assemblies)
+            foreach (var assembly in AssembliesProvider.assemblies)
             {
                 await eventBroker.DeliverEventTo(@event, assembly);
             }

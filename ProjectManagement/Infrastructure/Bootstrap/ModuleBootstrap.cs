@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Autofac;
 using Infrastructure.Message;
 using Infrastructure.Message.Handlers;
+using Infrastructure.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,6 +29,8 @@ namespace Infrastructure.Bootstrap
             RegisterEventHandlers();
             RegisterQueryHandlers();
             RegisterPipelineItems();
+
+            AddAssemblyToProvider();
         }
 
         public void Run(IComponentContext context)
@@ -41,6 +45,10 @@ namespace Infrastructure.Bootstrap
 
         public virtual void RegisterPipelineItems() { }
         public virtual void RegisterCommandPipelines() { }
+        public virtual void AddAssemblyToProvider()
+        {
+            AssembliesProvider.assemblies.Add(this.GetType().GetTypeInfo().Assembly);
+        }
 
         protected void RegisterAsyncCommandHandler<TCommand, THandler>()
             where TCommand : class, ICommand

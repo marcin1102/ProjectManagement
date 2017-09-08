@@ -19,6 +19,7 @@ using System.Linq;
 using Infrastructure.Message.Pipeline.PipelineItems;
 using ProjectManagement.PipelineItems;
 using System.Collections.Generic;
+using ProjectManagement.Contracts.Project.Queries;
 
 namespace ProjectManagement
 {
@@ -65,6 +66,7 @@ namespace ProjectManagement
 
         public override void RegisterQueryHandlers()
         {
+            RegisterAsyncQueryHandler<GetProject, ProjectResponse, ProjectQueryHandler>();
         }
 
         public override void RegisterPipelineItems()

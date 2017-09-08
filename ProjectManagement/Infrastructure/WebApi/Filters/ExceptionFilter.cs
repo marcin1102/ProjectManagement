@@ -40,6 +40,13 @@ namespace Infrastructure.WebApi.Exceptions
                         StatusCode = (int)HttpStatusCode.Conflict
                     };
                     break;
+                case DomainException ex:
+                    logger.LogDebug(ex.Message, ex);
+                    context.Result = new ObjectResult(ex.GetResult())
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest
+                    };
+                    break;
                 default:
                     logger.LogDebug(context.Exception.Message, context.Exception);
                     context.Result = new ObjectResult(context.Exception.InnerException)
