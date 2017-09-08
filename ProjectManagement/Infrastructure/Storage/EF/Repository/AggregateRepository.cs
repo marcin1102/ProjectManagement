@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Exceptions;
 using Infrastructure.Message.EventDispatcher;
@@ -48,7 +46,7 @@ namespace Infrastructure.Storage.EF.Repository
 
         public virtual Task<TAggregate> FindAsync(Guid id)
         {
-            return Query.SingleOrDefaultAsync(x => x.Id == id);
+            return Query.SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, typeof(TAggregate).Name);
         }
     }
 }

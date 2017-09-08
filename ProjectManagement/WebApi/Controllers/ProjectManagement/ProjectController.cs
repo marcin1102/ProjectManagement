@@ -22,5 +22,12 @@ namespace WebApi.Controllers.ProjectManagement
             await commandQueryBus.SendAsync(command);
             return Created("api/project-management/", command.CreatedId);
         }
+
+        [HttpPatch("assign-member")]
+        public async Task<IActionResult> AssignMember([FromBody] AssignUserToProject command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Ok();
+        }
     }
 }

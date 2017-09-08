@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions.DomainExceptions;
+using Infrastructure.Exceptions;
 using Infrastructure.Message.Handlers;
 using UserManagement.Contracts.User.Commands;
 using UserManagement.User.Repository;
@@ -28,8 +28,6 @@ namespace UserManagement.User.Handlers
         public async Task HandleAsync(GrantRole command)
         {
             var user = await repository.FindAsync(command.UserId);
-            if (user == null)
-                throw new EntityDoesNotExist(command.UserId, nameof(Model.User));
 
             user.GrantRole(command.Role);
             await repository.Update(user, command.AggregateVersion);

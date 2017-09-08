@@ -33,6 +33,9 @@ namespace ProjectManagement.User.Model
                 role = (Role)Enum.Parse(typeof(Role), value);
             }
         }
+
+        public ICollection<ProjectUser.ProjectUser> Projects { get; private set; }
+
         public long AggregateVersion { get; set; }
 
         public void GrantRole(Role role, long version)

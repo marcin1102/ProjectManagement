@@ -54,6 +54,7 @@ namespace ProjectManagement
         public override void RegisterCommandHandlers()
         {
             RegisterAsyncCommandHandler<CreateProject, ProjectCommandHandler>();
+            RegisterAsyncCommandHandler<AssignUserToProject, ProjectCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -78,12 +79,13 @@ namespace ProjectManagement
             var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline.ToList();
             var pipelineConfiguration = context.Resolve<PipelineItemsConfiguration>();
 
-            var createProjectPipeline = new List<Type>
+            var authorizationPipeline = new List<Type>
             {
                 typeof(UserAuthorizationPipelineItem<>)
             }.Concat(defaultCommandPipeline);
 
-            pipelineConfiguration.SetCommandPipeline<CreateProject>(createProjectPipeline);
+            pipelineConfiguration.SetCommandPipeline<CreateProject>(authorizationPipeline);
+            pipelineConfiguration.SetCommandPipeline<AssignUserToProject>(authorizationPipeline);
         }
     }
 }

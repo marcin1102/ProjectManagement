@@ -13,6 +13,7 @@ namespace ProjectManagement
 
         public DbSet<Project.Model.Project> Projects { get; set; }
         public DbSet<User.Model.User> Users { get; set; }
+        public DbSet<ProjectUser.ProjectUser> ProjectsUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +23,7 @@ namespace ProjectManagement
                 x.Property(y => y.Id).ValueGeneratedNever();
                 x.Property(y => y.Name).IsRequired(true);
                 x.Property(y => y.Version);
+                x.HasMany(y => y.Members);
                 x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(Project.Model.Project));
             });
@@ -34,8 +36,17 @@ namespace ProjectManagement
                 x.Property(y => y.LastName).IsRequired(true);
                 x.Property(y => y.Email).IsRequired(true);
                 x.Property(y => y.Role).IsRequired(true);
+                x.HasMany(y => y.Projects);
                 x.Property(y => y.AggregateVersion);
                 x.ToTable(nameof(User.Model.User));
+            });
+
+            modelBuilder.Entity<ProjectUser.ProjectUser>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.ProjectId);
+                x.Property(y => y.UserId);
+                x.ToTable(nameof(ProjectUser.ProjectUser));
             });
 
             modelBuilder.HasDefaultSchema(SCHEMA);
