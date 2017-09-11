@@ -7,12 +7,13 @@ using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
 
 namespace Infrastructure.Message.Pipeline
 {
+
     public class PipelineBuilder
     {
         private readonly IComponentContext container;
-        private readonly PipelineItemsConfiguration pipelineConfiguration;
+        private readonly IPipelineItemsConfiguration pipelineConfiguration;
 
-        public PipelineBuilder(IComponentContext container, PipelineItemsConfiguration pipelineConfiguration)
+        public PipelineBuilder(IComponentContext container, IPipelineItemsConfiguration pipelineConfiguration)
         {
             this.container = container;
             this.pipelineConfiguration = pipelineConfiguration;

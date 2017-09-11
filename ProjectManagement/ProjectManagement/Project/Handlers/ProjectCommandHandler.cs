@@ -29,7 +29,7 @@ namespace ProjectManagement.Project.Handlers
 
         public async Task HandleAsync(AssignUserToProject command)
         {
-            var project = await projectRepository.FindAsync(command.ProjectId);
+            var project = await projectRepository.GetAsync(command.ProjectId);
 
             project.AssignUser(command.UserToAssignId);
             await projectRepository.Update(project, command.ProjectVersion);

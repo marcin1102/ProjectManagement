@@ -27,7 +27,7 @@ namespace UserManagement.User.Handlers
 
         public async Task HandleAsync(GrantRole command)
         {
-            var user = await repository.FindAsync(command.UserId);
+            var user = await repository.GetAsync(command.UserId);
 
             user.GrantRole(command.Role);
             await repository.Update(user, command.AggregateVersion);

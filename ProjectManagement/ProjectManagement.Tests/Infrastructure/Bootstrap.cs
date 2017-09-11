@@ -15,8 +15,13 @@ using Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NSubstitute;
+using ProjectManagement.Contracts.Label.Commands;
+using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Contracts.Project.Queries;
+using ProjectManagement.Label.Handlers;
+using ProjectManagement.Label.Repository;
 using ProjectManagement.PipelineItems;
 using ProjectManagement.Project.Handlers;
 using ProjectManagement.Project.Repository;
@@ -28,6 +33,7 @@ namespace ProjectManagement.Tests.Infrastructure
 {
     public class Bootstrap : ModuleBootstrap
     {
+        private DbContextOptions<ProjectManagementContext> options;
         public Bootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
         {
         }
@@ -45,33 +51,48 @@ namespace ProjectManagement.Tests.Infrastructure
             builder.RegisterMessagingComponents();
             RegisterRepositories(builder);
 
+            RegisterSubstitutes(builder);
+
             context = builder.Build();
 
             RegisterCommandPipelines();
-            EnsureDatabaseIsClear(context);
+            EnsureDatabaseIsClear();
 
             return new ProjectManagementModule(
                 context: context
             );
         }
 
-        private void EnsureDatabaseIsClear(IComponentContext context)
+        private void RegisterSubstitutes(ContainerBuilder builder)
         {
-            var db = context.Resolve<DbContext>();
-            db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
-            db.Dispose();
+            var genericFakeCommandPipelineItem = typeof(FakeCommandPIpelineItem<>);
+
+            builder
+                .RegisterGeneric(genericFakeCommandPipelineItem)
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<FakePipelineItemsConfiguration>()
+                .As<IPipelineItemsConfiguration>()
+                .SingleInstance();
+        }
+
+        private void EnsureDatabaseIsClear()
+        {
+            using(var db = new ProjectManagementContext(options))
+            {
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+            }
         }
 
         public void RegisterDbContext(ContainerBuilder builder, string connectionString)
         {
-            builder.Register<DbContextOptions<ProjectManagementContext>>(x =>
-            {
-                var dbContextOptionsBuilder = new DbContextOptionsBuilder<ProjectManagementContext>();
-                dbContextOptionsBuilder.UseNpgsql(connectionString: connectionString);
-                return dbContextOptionsBuilder.Options;
-            })
-           .InstancePerDependency();
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<ProjectManagementContext>();
+            dbContextOptionsBuilder.UseNpgsql(connectionString: connectionString);
+            options = dbContextOptionsBuilder.Options;
+
+            builder.RegisterInstance<DbContextOptions<ProjectManagementContext>>(options);
 
             builder.Register<ProjectManagementContext>(x =>
             {
@@ -93,17 +114,29 @@ namespace ProjectManagement.Tests.Infrastructure
             builder
                 .RegisterType<UserRepository>()
                 .InstancePerDependency();
+
+            builder
+                .RegisterType<LabelRepository>()
+                .InstancePerLifetimeScope();
         }
 
         public override void RegisterCommandHandlers()
         {
+            //Project
             RegisterAsyncCommandHandler<CreateProject, ProjectCommandHandler>();
             RegisterAsyncCommandHandler<AssignUserToProject, ProjectCommandHandler>();
+
+            //Label
+            RegisterAsyncCommandHandler<CreateLabel, LabelCommandHandler>();
         }
 
         public override void RegisterQueryHandlers()
         {
+            //Project
             RegisterAsyncQueryHandler<GetProject, ProjectResponse, ProjectQueryHandler>();
+
+            //Label
+            RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -121,8 +154,8 @@ namespace ProjectManagement.Tests.Infrastructure
 
         public override void RegisterCommandPipelines()
         {
-            var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline.ToList();
-            var pipelineConfiguration = context.Resolve<PipelineItemsConfiguration>();
+            var defaultCommandPipeline = new List<Type> { typeof(FakeCommandPIpelineItem<>) };
+            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
 
             var authorizationPipeline = new List<Type>
             {

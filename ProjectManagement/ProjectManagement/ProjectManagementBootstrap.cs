@@ -20,6 +20,10 @@ using Infrastructure.Message.Pipeline.PipelineItems;
 using ProjectManagement.PipelineItems;
 using System.Collections.Generic;
 using ProjectManagement.Contracts.Project.Queries;
+using ProjectManagement.Contracts.Label.Commands;
+using ProjectManagement.Label.Handlers;
+using ProjectManagement.Contracts.Label.Queries;
+using ProjectManagement.Label.Repository;
 
 namespace ProjectManagement
 {
@@ -40,6 +44,10 @@ namespace ProjectManagement
             builder
                 .RegisterType<UserRepository>()
                 .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<LabelRepository>()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterModuleComponents()
@@ -54,8 +62,12 @@ namespace ProjectManagement
 
         public override void RegisterCommandHandlers()
         {
+            //Project
             RegisterAsyncCommandHandler<CreateProject, ProjectCommandHandler>();
             RegisterAsyncCommandHandler<AssignUserToProject, ProjectCommandHandler>();
+
+            //Label
+            RegisterAsyncCommandHandler<CreateLabel, LabelCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -66,7 +78,11 @@ namespace ProjectManagement
 
         public override void RegisterQueryHandlers()
         {
+            //Project
             RegisterAsyncQueryHandler<GetProject, ProjectResponse, ProjectQueryHandler>();
+
+            //Label
+            RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
         }
 
         public override void RegisterPipelineItems()
@@ -78,7 +94,7 @@ namespace ProjectManagement
 
         public override void RegisterCommandPipelines()
         {
-            var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline.ToList();
+            var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline().ToList();
             var pipelineConfiguration = context.Resolve<PipelineItemsConfiguration>();
 
             var authorizationPipeline = new List<Type>

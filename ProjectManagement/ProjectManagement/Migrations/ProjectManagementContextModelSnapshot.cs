@@ -119,6 +119,8 @@ namespace ProjectManagement.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<Guid>("ProjectId");
+
                     b.HasKey("Id");
 
                     b.ToTable("Labels");

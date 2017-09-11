@@ -52,7 +52,8 @@ namespace ProjectManagement.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    ProjectId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Project.Queries;
 using ProjectManagement.Project.Repository;
@@ -21,6 +19,9 @@ namespace ProjectManagement.Project.Handlers
         public async Task<ProjectResponse> HandleAsync(GetProject query)
         {
             var project = await repository.FindAsync(query.Id);
+
+            if (project == null)
+                throw new EntityDoesNotExist(query.Id, nameof(Model.Project));
 
             return new ProjectResponse(project.Id, project.Name, project.Version);
         }

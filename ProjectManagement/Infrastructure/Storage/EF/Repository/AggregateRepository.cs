@@ -41,12 +41,12 @@ namespace Infrastructure.Storage.EF.Repository
 
         public virtual Task<TAggregate> GetAsync(Guid id)
         {
-            return Query.SingleAsync(x => x.Id == id);
+            return Query.SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, typeof(TAggregate).Name);
         }
 
         public virtual Task<TAggregate> FindAsync(Guid id)
         {
-            return Query.SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, typeof(TAggregate).Name);
+            return Query.SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }

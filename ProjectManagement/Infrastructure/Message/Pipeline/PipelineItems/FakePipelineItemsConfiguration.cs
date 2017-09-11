@@ -7,19 +7,7 @@ using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
 
 namespace Infrastructure.Message.Pipeline.PipelineItems
 {
-    public interface IPipelineItemsConfiguration
-    {
-        void SetCommandPipeline<TCommand>(IEnumerable<Type> pipelineItems)
-            where TCommand : ICommand;
-        void SetQueryPipeline<TQuery, TResponse>(IEnumerable<Type> pipelineItems)
-            where TQuery : IQuery<TResponse>;
-        IEnumerable<Type> GetCommandPipelineItems<TCommand>()
-            where TCommand : ICommand;
-        IEnumerable<Type> GetQueryPIpelineITems<TQuery, TResponse>()
-            where TQuery : IQuery<TResponse>;
-    }
-
-    public class PipelineItemsConfiguration : IPipelineItemsConfiguration
+    public class FakePipelineItemsConfiguration : IPipelineItemsConfiguration
     {
         private IDictionary<string, IEnumerable<Type>> commandPipelineItems = new Dictionary<string, IEnumerable<Type>>();
         private IDictionary<string, IEnumerable<Type>> queryPipelineItems = new Dictionary<string, IEnumerable<Type>>();
@@ -42,7 +30,7 @@ namespace Infrastructure.Message.Pipeline.PipelineItems
             IEnumerable<Type> pipelineItems;
             return commandPipelineItems.TryGetValue(typeof(TCommand).FullName, out pipelineItems)
                 ? pipelineItems
-                : PredefinedCommandPipelines.TransactionalCommandExecutionPipeline();
+                : new List<Type> { typeof(FakeCommandPIpelineItem<>) };
         }
 
         public IEnumerable<Type> GetQueryPIpelineITems<TQuery, TResponse>()

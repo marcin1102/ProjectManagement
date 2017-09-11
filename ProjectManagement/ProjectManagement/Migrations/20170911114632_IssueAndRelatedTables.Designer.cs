@@ -9,7 +9,7 @@ using ProjectManagement.Contracts.Issue.Enums;
 namespace ProjectManagement.Migrations
 {
     [DbContext(typeof(ProjectManagementContext))]
-    [Migration("20170911083722_IssueAndRelatedTables")]
+    [Migration("20170911114632_IssueAndRelatedTables")]
     partial class IssueAndRelatedTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,6 +119,8 @@ namespace ProjectManagement.Migrations
                     b.Property<string>("Description");
 
                     b.Property<string>("Name");
+
+                    b.Property<Guid>("ProjectId");
 
                     b.HasKey("Id");
 

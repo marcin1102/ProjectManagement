@@ -55,12 +55,13 @@ namespace Infrastructure.Message
         {
             builder
                 .RegisterType<PipelineItemsConfiguration>()
+                .As<IPipelineItemsConfiguration>()
                 .SingleInstance();
         }
 
         public static void RegisterPredefinedCommandPipelineItems(this ContainerBuilder builder)
         {
-            foreach (var item in PredefinedCommandPipelines.TransactionalCommandExecutionPipeline)
+            foreach (var item in PredefinedCommandPipelines.TransactionalCommandExecutionPipeline())
             {
                 builder
                     .RegisterGeneric(item)
