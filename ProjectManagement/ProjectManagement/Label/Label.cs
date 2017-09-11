@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Infrastructure.Storage.EF;
+
+namespace ProjectManagement.Label
+{
+    public class Label : IEntity
+    {
+        private Label()
+        { }
+        public Label(Guid id, string name, string description)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Issues = new List<IssueLabel.IssueLabel>();
+        }
+
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public ICollection<IssueLabel.IssueLabel> Issues { get; private set; }
+    }
+}
