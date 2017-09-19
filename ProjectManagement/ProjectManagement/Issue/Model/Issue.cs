@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using ProjectManagement.Contracts.Issue.Enums;
 using System;
 using System.Collections.Generic;
+using ProjectManagement.Contracts.Issue.Events;
+using System.Linq;
 
 namespace ProjectManagement.Issue.Model
 {
@@ -48,6 +50,19 @@ namespace ProjectManagement.Issue.Model
             Comments = new List<Comment.Comment>();
             subtasks = new List<IssueSubtasks.IssueSubtask>();
             labels = new List<IssueLabel.IssueLabel>();
+        }
+
+        public override void Created()
+        {
+            Update(new IssueCreated(Id, ProjectId, Title, Description, Type, Reporter.Id, Assignee?.Id, labels.Select(x => x.Id).ToList()));
+        }
+
+        public void AssignLabels(ICollection<Guid> labelsIds)
+        {
+            foreach (var labelId in labelsIds)
+            {
+                labels.Add(new IssueLabel.IssueLabel(Id, labelId));
+            }
         }
     }
 }

@@ -32,5 +32,7 @@ namespace Infrastructure.Storage
             @event.AggregateVersion = Version;
             pendingEvents.Enqueue(@event);
         }
+
+        public virtual void Created() { }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Storage.EF
 {
-    public class DbContextFactory<TContext> : IDbContextFactory<TContext>
+    public class DbContextFactory<TContext> : IDesignTimeDbContextFactory<TContext>
         where TContext : DbContext
     {
         protected readonly GlobalSettings globalSettings;
@@ -27,7 +25,7 @@ namespace Infrastructure.Storage.EF
             globalSettings = configuration.GetSection("GlobalSettings").Get<GlobalSettings>();
         }
 
-        public TContext Create(DbContextFactoryOptions options)
+        public TContext CreateDbContext(string[] args)
         {
             var builder = new DbContextOptionsBuilder<TContext>();
             var assembly = typeof(TContext).GetTypeInfo().Assembly;

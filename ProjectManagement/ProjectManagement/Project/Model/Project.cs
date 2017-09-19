@@ -11,12 +11,11 @@ namespace ProjectManagement.Project.Model
 {
     public class Project : AggregateRoot
     {
-        public Project() { }
+        private Project() { }
 
         public Project(Guid id, string name) : base(id)
         {
             Name = name;
-            Update(new ProjectCreated(Id, Name));
         }
 
         public string Name { get; private set; }
@@ -36,6 +35,11 @@ namespace ProjectManagement.Project.Model
         {
             if (Members.Any(x => x.UserId == userId))
                 throw new UserAlreadyAssignedToProject(userId, Id);
+        }
+
+        public override void Created()
+        {
+            Update(new ProjectCreated(Id, Name));
         }
     }
 }

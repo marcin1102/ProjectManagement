@@ -22,15 +22,16 @@ namespace UserManagement.User.Handlers
         {
             command.CreatedId = Guid.NewGuid();
             var user = new Model.User(command.CreatedId, command.FirstName, command.LastName, command.Email, command.Role);
-            return repository.AddAsync(user);
+            return repository.AddAsync(user, user.Version);
         }
 
         public async Task HandleAsync(GrantRole command)
         {
             var user = await repository.GetAsync(command.UserId);
+            var originalVersion = user.Version;
 
             user.GrantRole(command.Role);
-            await repository.Update(user, command.AggregateVersion);
+            await repository.Update(user, originalVersion);
         }
     }
 }

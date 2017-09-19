@@ -7,9 +7,9 @@ namespace ProjectManagement.IssueLabel
     {
         private IssueLabel()
         { }
-        public IssueLabel(Guid id, Guid issueId, Guid labelId)
+        public IssueLabel(Guid issueId, Guid labelId)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             IssueId = issueId;
             LabelId = labelId;
         }

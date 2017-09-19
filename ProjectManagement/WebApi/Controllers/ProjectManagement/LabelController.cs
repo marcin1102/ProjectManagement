@@ -24,15 +24,15 @@ namespace WebApi.Controllers.ProjectManagement
             return Created("api/project-management/labels/", command.CreatedId);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [ProducesResponseType(typeof(LabelResponse), 200)]
         [ProducesResponseType(typeof(ValidationFailureException), 400)]
-        public Task<LabelResponse> GetLabel([FromRoute] Guid labelId)
+        public Task<LabelResponse> GetLabel([FromQuery] GetLabel query)
         {
-            return commandQueryBus.SendAsync(new GetLabel(labelId));
+            return commandQueryBus.SendAsync(query);
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         [ProducesResponseType(typeof(LabelResponse), 200)]
         [ProducesResponseType(typeof(ValidationFailureException), 400)]
         public Task<ICollection<LabelResponse>> GetLabel([FromQuery] GetLabels query)

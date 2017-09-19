@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
-using Infrastructure.Message.Handlers;
+﻿using System.Threading.Tasks;
 using Infrastructure.Providers;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Infrastructure.Message.EventDispatcher
 {

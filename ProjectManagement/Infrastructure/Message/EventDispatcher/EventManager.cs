@@ -53,10 +53,11 @@ namespace Infrastructure.Message.EventDispatcher
             }
         }
 
-        private Task SaveEvents<TEvent>(Queue<TEvent> eventsToSend) where TEvent : IDomainEvent
+        private async Task SaveEvents<TEvent>(Queue<TEvent> eventsToSend) where TEvent : IDomainEvent
         {
             var eventsToSave = eventsToSend.Select(x => new EventEnvelope(x));
-            return  Query.AddRangeAsync(eventsToSave);
+            await Query.AddRangeAsync(eventsToSave);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

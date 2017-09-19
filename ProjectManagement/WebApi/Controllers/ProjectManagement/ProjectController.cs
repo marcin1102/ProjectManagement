@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Project.Commands;
+using ProjectManagement.Contracts.Project.Queries;
 
 namespace WebApi.Controllers.ProjectManagement
 {
-    [Route("api/project-management/")]
+    [Route("api/project-management/projects")]
     public class ProjectController : BaseController
     {
         public ProjectController(ICommandQueryBus commandQueryBus) : base(commandQueryBus)
@@ -28,6 +28,18 @@ namespace WebApi.Controllers.ProjectManagement
         {
             await commandQueryBus.SendAsync(command);
             return Ok();
+        }
+
+        [HttpGet]
+        public Task<ProjectResponse> GetProject([FromQuery] GetProject query)
+        {
+            return commandQueryBus.SendAsync(query);
+        }
+
+        [HttpGet("list")]
+        public Task<ICollection<ProjectResponse>> GetProjects()
+        {
+            return commandQueryBus.SendAsync(new GetProjects());
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Storage.EF.Repository
@@ -34,7 +35,7 @@ namespace Infrastructure.Storage.EF.Repository
 
         public virtual Task<TEntity> GetAsync(Guid id)
         {
-            return Query.SingleAsync(x => x.Id == id);
+            return Query.AsTracking().SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, typeof(TEntity).Name);
         }
 
         public virtual Task<TEntity> FindAsync(Guid id)

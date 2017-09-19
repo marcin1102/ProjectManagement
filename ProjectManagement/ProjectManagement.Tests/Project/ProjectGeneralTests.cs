@@ -38,7 +38,10 @@ namespace ProjectManagement.Tests.Project
             //Act
             await commandQueryBus.SendAsync(createProject);
 
-            var getProject = new GetProject(createProject.CreatedId);
+            var getProject = new GetProject
+            {
+                Id = createProject.CreatedId
+            };
             var createdProject = await commandQueryBus.SendAsync(getProject);
 
             //Assert
@@ -67,7 +70,10 @@ namespace ProjectManagement.Tests.Project
         {
             //Arrange
             var id = Guid.NewGuid();
-            var getProject = new GetProject(id);
+            var getProject = new GetProject
+            {
+                Id = id
+            };
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
             //Assert

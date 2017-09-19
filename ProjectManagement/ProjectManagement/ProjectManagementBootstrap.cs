@@ -25,6 +25,12 @@ using ProjectManagement.Label.Handlers;
 using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Label.Repository;
 using ProjectManagement.Label.Searcher;
+using ProjectManagement.Project.Searchers;
+using ProjectManagement.Contracts.Issue.Commands;
+using ProjectManagement.Issue.Handlers;
+using ProjectManagement.Issue.Repository;
+using ProjectManagement.Issue.Factory;
+using ProjectManagement.Contracts.Issue.Queries;
 
 namespace ProjectManagement
 {
@@ -35,10 +41,24 @@ namespace ProjectManagement
             RegisterModuleComponents();
             RegisterRepositories();
             RegisterSearchers();
+            RegisterFactories();
+        }
+
+        private void RegisterFactories()
+        {
+            builder
+               .RegisterType<IssueFactory>()
+               .As<IIssueFactory>()
+               .InstancePerLifetimeScope();
         }
 
         private void RegisterSearchers()
         {
+            builder
+               .RegisterType<ProjectSearcher>()
+               .As<IProjectSearcher>()
+               .InstancePerLifetimeScope();
+
             builder
                .RegisterType<LabelSearcher>()
                .As<ILabelsSearcher>()
@@ -57,6 +77,10 @@ namespace ProjectManagement
 
             builder
                 .RegisterType<LabelRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<IssueRepository>()
                 .InstancePerLifetimeScope();
         }
 
@@ -78,6 +102,9 @@ namespace ProjectManagement
 
             //Label
             RegisterAsyncCommandHandler<CreateLabel, LabelCommandHandler>();
+
+            //Issue
+            RegisterAsyncCommandHandler<CreateIssue, IssueCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -90,10 +117,14 @@ namespace ProjectManagement
         {
             //Project
             RegisterAsyncQueryHandler<GetProject, ProjectResponse, ProjectQueryHandler>();
+            RegisterAsyncQueryHandler<GetProjects, ICollection<ProjectResponse>, ProjectQueryHandler>();
 
             //Label
             RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
             RegisterAsyncQueryHandler<GetLabels, ICollection<LabelResponse>, LabelQueryHandler>();
+
+            //Issue
+            RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
         }
 
         public override void RegisterPipelineItems()

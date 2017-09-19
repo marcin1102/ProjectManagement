@@ -56,6 +56,7 @@ namespace ProjectManagement
             modelBuilder.Entity<Issue.Model.Issue>(x =>
             {
                 x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
                 x.Property(y => y.Version);
                 x.Property(y => y.ProjectId).IsRequired();
                 x.HasOne(y => y.Reporter).WithMany();

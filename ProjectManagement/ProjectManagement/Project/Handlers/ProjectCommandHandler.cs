@@ -24,7 +24,8 @@ namespace ProjectManagement.Project.Handlers
         {
             command.CreatedId = Guid.NewGuid();
             var project = new Model.Project(command.CreatedId, command.Name);
-            return projectRepository.AddAsync(project);
+            project.Created();
+            return projectRepository.AddAsync(project, project.Version);
         }
 
         public async Task HandleAsync(AssignUserToProject command)

@@ -42,7 +42,7 @@ namespace ProjectManagement.Tests.Label
             await commandQueryBus.SendAsync(createLabel);
 
             //Assert
-            var result = await commandQueryBus.SendAsync(new GetLabel(createLabel.CreatedId));
+            var result = await commandQueryBus.SendAsync(new GetLabel { Id = createLabel.CreatedId});
             Assert.Equal(createLabel.CreatedId, result.Id);
             Assert.Equal(seededData.ProjectId, result.ProjectId);
             Assert.Equal(labelName, result.Name);
@@ -62,7 +62,10 @@ namespace ProjectManagement.Tests.Label
             }
 
             var projectId = seededData.ProjectId;
-            var getLabels = new GetLabels(projectId);
+            var getLabels = new GetLabels
+            {
+                ProjectId = projectId
+            };
             //Act
             var response = await commandQueryBus.SendAsync(getLabels);
 

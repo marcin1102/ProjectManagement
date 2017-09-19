@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
@@ -15,11 +16,12 @@ namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
 
         public override async Task HandleAsync(TCommand command)
         {
-            using(var transaction = context.Database.BeginTransaction())
+            using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
                     await NextHandler.HandleAsync(command);
+                    await context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch

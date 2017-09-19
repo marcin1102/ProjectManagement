@@ -6,12 +6,7 @@ namespace ProjectManagement.Contracts.Label.Queries
 {
     public class GetLabel : IQuery<LabelResponse>
     {
-        public GetLabel(Guid id)
-        {
-            Id = id;
-        }
-
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
     }
 
     public class LabelResponse
