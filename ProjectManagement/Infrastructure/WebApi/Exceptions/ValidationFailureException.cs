@@ -5,7 +5,7 @@ using FluentValidation.Results;
 
 namespace Infrastructure.WebApi.Filters
 {
-    internal class ValidationFailureException : Exception
+    public class ValidationFailureException : Exception
     {
         public ValidationFailureException(ValidationFailure validationFailure)
         {

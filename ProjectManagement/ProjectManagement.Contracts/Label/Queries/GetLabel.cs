@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation;
 using Infrastructure.Message;
 
 namespace ProjectManagement.Contracts.Label.Queries
@@ -12,6 +13,7 @@ namespace ProjectManagement.Contracts.Label.Queries
 
         public Guid Id { get; private set; }
     }
+
     public class LabelResponse
     {
         public LabelResponse(Guid id, Guid projectId, string name, string description)
@@ -26,5 +28,13 @@ namespace ProjectManagement.Contracts.Label.Queries
         public Guid ProjectId { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
+    }
+
+    public class GetLabelValidator : AbstractValidator<GetLabel>
+    {
+        public GetLabelValidator()
+        {
+            RuleFor(x => x.Id).NotEmpty();
+        }
     }
 }

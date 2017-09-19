@@ -48,5 +48,42 @@ namespace ProjectManagement.Tests.Label
             Assert.Equal(labelName, result.Name);
             Assert.Equal(labelDesc, result.Description);
         }
+
+        [Fact]
+        public async Task GetLabelsPerProject_ProjectAndLabelsExistsInSystem_LabelsReturned()
+        {
+            //Arrange
+            var labelsCount = 5;
+            var commands = GenerateCreateLabelCommands(labelsCount);
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+            foreach (var command in commands)
+            {
+                await commandQueryBus.SendAsync(command);
+            }
+
+            var projectId = seededData.ProjectId;
+            var getLabels = new GetLabels(projectId);
+            //Act
+            var response = await commandQueryBus.SendAsync(getLabels);
+
+            //Assert
+            var assertValues = response.Select(entity => commands.Any(command => command.CreatedId == entity.Id));
+            foreach (var assertValue in assertValues)
+            {
+                Assert.True(assertValue, "One of returned labels is incorrect(never created probably)");
+            }
+        }
+
+        private ICollection<CreateLabel> GenerateCreateLabelCommands(int labelsCount)
+        {
+            var commands = new List<CreateLabel>();
+            for (int i = 0; i < labelsCount; i++)
+            {
+                var labelName = "TEST_NAME" + random.Next(100000, 999999).ToString();
+                var labelDesc = "TEST_DESC" + random.Next(100000, 999999).ToString();
+                commands.Add(new CreateLabel(seededData.ProjectId, labelName, labelDesc));
+            }
+            return commands;
+        }
     }
 }

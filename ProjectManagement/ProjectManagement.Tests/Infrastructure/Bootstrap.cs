@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Infrastructure.Bootstrap;
 using Infrastructure.Message;
-using Infrastructure.Message.CommandQueryBus;
-using Infrastructure.Message.EventDispatcher;
 using Infrastructure.Message.Pipeline.PipelineItems;
 using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using Infrastructure.Providers;
@@ -15,23 +12,12 @@ using Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using ProjectManagement.Contracts.Label.Commands;
-using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Contracts.Project.Commands;
-using ProjectManagement.Contracts.Project.Queries;
-using ProjectManagement.Label.Handlers;
-using ProjectManagement.Label.Repository;
 using ProjectManagement.PipelineItems;
-using ProjectManagement.Project.Handlers;
-using ProjectManagement.Project.Repository;
-using ProjectManagement.User.Handlers;
-using ProjectManagement.User.Repository;
-using UserManagement.Contracts.User.Events;
 
 namespace ProjectManagement.Tests.Infrastructure
 {
-    public class Bootstrap : ModuleBootstrap
+    public class Bootstrap : ProjectManagementBootstrap
     {
         private DbContextOptions<ProjectManagementContext> options;
         public Bootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
@@ -49,7 +35,6 @@ namespace ProjectManagement.Tests.Infrastructure
                 .As<ILoggerFactory>();
 
             builder.RegisterMessagingComponents();
-            RegisterRepositories(builder);
 
             RegisterSubstitutes(builder);
 
@@ -105,46 +90,6 @@ namespace ProjectManagement.Tests.Infrastructure
             .InstancePerDependency();
         }
 
-        public void RegisterRepositories(ContainerBuilder builder)
-        {
-            builder
-               .RegisterType<ProjectRepository>()
-               .InstancePerDependency();
-
-            builder
-                .RegisterType<UserRepository>()
-                .InstancePerDependency();
-
-            builder
-                .RegisterType<LabelRepository>()
-                .InstancePerLifetimeScope();
-        }
-
-        public override void RegisterCommandHandlers()
-        {
-            //Project
-            RegisterAsyncCommandHandler<CreateProject, ProjectCommandHandler>();
-            RegisterAsyncCommandHandler<AssignUserToProject, ProjectCommandHandler>();
-
-            //Label
-            RegisterAsyncCommandHandler<CreateLabel, LabelCommandHandler>();
-        }
-
-        public override void RegisterQueryHandlers()
-        {
-            //Project
-            RegisterAsyncQueryHandler<GetProject, ProjectResponse, ProjectQueryHandler>();
-
-            //Label
-            RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
-        }
-
-        public override void RegisterEventHandlers()
-        {
-            RegisterAsyncEventHandler<UserCreated, UserEventHandler>();
-            RegisterAsyncEventHandler<RoleGranted, UserEventHandler>();
-        }
-
         public override void RegisterPipelineItems()
         {
             builder
@@ -165,7 +110,6 @@ namespace ProjectManagement.Tests.Infrastructure
             pipelineConfiguration.SetCommandPipeline<CreateProject>(authorizationPipeline);
             pipelineConfiguration.SetCommandPipeline<AssignUserToProject>(authorizationPipeline);
         }
-
         public override void AddAssemblyToProvider()
         {
             AssembliesProvider.assemblies.Add(typeof(ProjectManagementBootstrap).GetTypeInfo().Assembly);

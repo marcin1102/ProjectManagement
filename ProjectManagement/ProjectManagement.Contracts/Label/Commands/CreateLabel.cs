@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation;
 using Infrastructure.Message;
 using Newtonsoft.Json;
 
@@ -20,5 +21,15 @@ namespace ProjectManagement.Contracts.Label.Commands
 
         [JsonIgnore]
         public Guid CreatedId { get; set; }
+    }
+
+    public class CreateLabelValidator : AbstractValidator<CreateLabel>
+    {
+        public CreateLabelValidator()
+        {
+            RuleFor(x => x.ProjectId).NotEmpty();
+            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Description).NotEmpty();
+        }
     }
 }

@@ -24,6 +24,7 @@ using ProjectManagement.Contracts.Label.Commands;
 using ProjectManagement.Label.Handlers;
 using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Label.Repository;
+using ProjectManagement.Label.Searcher;
 
 namespace ProjectManagement
 {
@@ -33,6 +34,15 @@ namespace ProjectManagement
         {
             RegisterModuleComponents();
             RegisterRepositories();
+            RegisterSearchers();
+        }
+
+        private void RegisterSearchers()
+        {
+            builder
+               .RegisterType<LabelSearcher>()
+               .As<ILabelsSearcher>()
+               .InstancePerLifetimeScope();
         }
 
         private void RegisterRepositories()
@@ -83,6 +93,7 @@ namespace ProjectManagement
 
             //Label
             RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
+            RegisterAsyncQueryHandler<GetLabels, ICollection<LabelResponse>, LabelQueryHandler>();
         }
 
         public override void RegisterPipelineItems()
@@ -95,7 +106,7 @@ namespace ProjectManagement
         public override void RegisterCommandPipelines()
         {
             var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline().ToList();
-            var pipelineConfiguration = context.Resolve<PipelineItemsConfiguration>();
+            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
 
             var authorizationPipeline = new List<Type>
             {
