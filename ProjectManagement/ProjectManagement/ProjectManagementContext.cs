@@ -82,6 +82,9 @@ namespace ProjectManagement
             modelBuilder.Entity<IssueSubtasks.IssueSubtask>(x =>
             {
                 x.HasKey(y => y.Id);
+                x.Property(y => y.ProjectId).IsRequired();
+                x.Property(y => y.IssueId).IsRequired();
+                x.Property(y => y.SubtaskId).IsRequired();
                 x.ToTable(nameof(IssueSubtasks.IssueSubtask));
             });
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Project.Model;
 
@@ -11,6 +12,7 @@ namespace ProjectManagement.Project.Searchers
     public interface IProjectSearcher
     {
         Task<List<Model.Project>> GetProjects();
+        Task<bool> IsUserProjectMember(Guid projectId, Guid userId);
     }
 
     public class ProjectSearcher : IProjectSearcher
@@ -25,6 +27,12 @@ namespace ProjectManagement.Project.Searchers
         public Task<List<Model.Project>> GetProjects()
         {
             return db.Projects.ToListAsync();
+        }
+
+        public async Task<bool> IsUserProjectMember(Guid projectId, Guid userId)
+        {
+            var project = await db.Projects.Where(x => x.Id == projectId).Include(x => x.Members).SingleOrDefaultAsync() ?? throw new EntityDoesNotExist(projectId, nameof(Model.Project));
+            return project.Members.Any(x => x.UserId == userId);
         }
     }
 }

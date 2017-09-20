@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ProjectManagement.Comment
+namespace ProjectManagement.Contracts.Issue.Comment
 {
     public class Comment
     {
@@ -14,6 +12,6 @@ namespace ProjectManagement.Comment
 
         public Guid MemberId { get; private set; }
         public string Content { get; private set; }
-        public DateTime CreatedAt { get; private set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

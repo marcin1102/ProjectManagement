@@ -7,16 +7,17 @@ namespace ProjectManagement.IssueSubtasks
 {
     public class IssueSubtask : IEntity
     {
-        private IssueSubtask() { }
-
-        public IssueSubtask(Guid id, Guid issueId, Guid subtaskId)
+        public IssueSubtask(Guid projectId, Guid issueId, Guid subtaskId)
         {
-            Id = id;
+            ProjectId = projectId;
             IssueId = issueId;
             SubtaskId = subtaskId;
         }
 
+        private IssueSubtask() { }
+
         public Guid Id { get; private set; }
+        public Guid ProjectId { get; private set; }
         public Guid IssueId { get; private set; }
         public Guid SubtaskId { get; private set; }
     }

@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Project.Exceptions
     public class UserAlreadyAssignedToProject : DomainException
     {
         public UserAlreadyAssignedToProject(Guid userId, Guid projectId)
-            : base(projectId, "Project", "ProjectManagement", $"User with id `{userId}` is already assigned to Project with id `{projectId}`")
+            : base("ProjectManagement", $"User with id `{userId}` is already assigned to Project with id `{projectId}`")
         {
             UserId = userId;
             ProjectId = projectId;

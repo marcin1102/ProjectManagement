@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Infrastructure.Message;
 using ProjectManagement.Contracts.Issue.Enums;
 
 namespace ProjectManagement.Contracts.Issue.Queries
 {
-    public class GetIssue : IQuery<IssueResponse>
+    public class GetIssues : IQuery<ICollection<IssueListItem>>
     {
-        public Guid Id { get; set; }
+        public Guid ProjectId { get; set; }
+        public Guid? ReporterId { get; set; }
+        public Guid? AssigneeId { get; set; }
     }
 
-    public class IssueResponse
+    public class IssueListItem
     {
-        public IssueResponse(Guid id, Guid projectId, string title, string description, IssueType type, Status status,
-            Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt, ICollection<Comment.Comment> comments,
-            ICollection<Guid> subtasksIds, ICollection<Guid> labelsIds)
+        public IssueListItem(Guid id, Guid projectId, string title, string description, IssueType type, Status status, Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt)
         {
             Id = id;
             ProjectId = projectId;
@@ -26,9 +27,6 @@ namespace ProjectManagement.Contracts.Issue.Queries
             AssigneeId = assigneeId;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
-            Comments = comments;
-            SubtasksIds = subtasksIds;
-            LabelsIds = labelsIds;
         }
 
         public Guid Id { get; private set; }
@@ -41,8 +39,5 @@ namespace ProjectManagement.Contracts.Issue.Queries
         public Guid? AssigneeId { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
-        public ICollection<Comment.Comment> Comments { get; private set; }
-        public ICollection<Guid> SubtasksIds { get; private set; }
-        public ICollection<Guid> LabelsIds { get; private set; }
     }
 }

@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using ProjectManagement.Contracts.Issue.Events;
 using System.Linq;
+using ProjectManagement.Contracts.Issue.Comment;
+using ProjectManagement.Contracts.Exceptions;
+using ProjectManagement.Providers;
+using ProjectManagement.IssueSubtasks;
 
 namespace ProjectManagement.Issue.Model
 {
@@ -21,17 +25,17 @@ namespace ProjectManagement.Issue.Model
         public DateTime UpdatedAt { get; private set; }
 
         public string comments { get; private set; }
-        public ICollection<Comment.Comment> Comments {
-            get => JsonConvert.DeserializeObject<List<Comment.Comment>>(comments);
+        public ICollection<Comment> Comments {
+            get => JsonConvert.DeserializeObject<List<Comment>>(comments);
             set {
                 comments = JsonConvert.SerializeObject(value);
             }
         }
 
-        private List<IssueSubtasks.IssueSubtask> subtasks;
+        private ICollection<IssueSubtasks.IssueSubtask> subtasks;
         public IEnumerable<IssueSubtasks.IssueSubtask> Subtasks => subtasks;
 
-        private List<IssueLabel.IssueLabel> labels;
+        private ICollection<IssueLabel.IssueLabel> labels;
         public IEnumerable<IssueLabel.IssueLabel> Labels => labels;
 
         private Issue() { }
@@ -47,7 +51,7 @@ namespace ProjectManagement.Issue.Model
             Assignee = assignee;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
-            Comments = new List<Comment.Comment>();
+            Comments = new List<Comment>();
             subtasks = new List<IssueSubtasks.IssueSubtask>();
             labels = new List<IssueLabel.IssueLabel>();
         }
@@ -59,10 +63,47 @@ namespace ProjectManagement.Issue.Model
 
         public void AssignLabels(ICollection<Guid> labelsIds)
         {
-            foreach (var labelId in labelsIds)
+            var labelsIdsToAdd = labelsIds.Except(labels.Select(x => x.LabelId));
+            var labelsIdsToRemove = labels.Select(x => x.LabelId).Except(labelsIds).ToList();
+            var labelsToRemove = labels.Where(x => labelsIdsToRemove.Any(y => x.LabelId == y)).ToList();
+
+            foreach (var add in labelsIdsToAdd)
             {
-                labels.Add(new IssueLabel.IssueLabel(Id, labelId));
+                labels.Add(new IssueLabel.IssueLabel(Id, add));
             }
+            foreach (var remove in labelsToRemove)
+            {
+                labels.Remove(remove);
+            }
+        }
+
+        public void Comment(Comment comment)
+        {
+            var commentsToUpdate = Comments.ToList();
+            comment.CreatedAt = DateTime.Now;
+            commentsToUpdate.Add(comment);
+            Comments = commentsToUpdate;
+        }
+
+        public void AddSubtask(Guid subtaskId, IssueType subtaskType)
+        {
+            CheckIfSubtaskCanBeAdded(subtaskId, subtaskType);
+            subtasks.Add(new IssueSubtask(ProjectId, Id, subtaskId));
+        }
+
+        private void CheckIfSubtaskCanBeAdded(Guid subtaskId, IssueType subtaskType)
+        {
+            if (Type == IssueType.Bug)
+                throw new CannotAddSubtaskToBug(DomainInformationProvider.Name);
+
+            if (Type == IssueType.Nfr && subtaskType != IssueType.Bug)
+                throw new NfrsCanHaveOnlyBugs(DomainInformationProvider.Name);
+
+            if (Type == IssueType.Task && subtaskType == IssueType.Nfr)
+                throw new CannotAddNfrAsSubtask(DomainInformationProvider.Name);
+
+            if (subtasks.Any(x => x.SubtaskId == subtaskId))
+                throw new IssueIsSubtaskAlready(Id, subtaskId, "ProjectManagement");
         }
     }
 }

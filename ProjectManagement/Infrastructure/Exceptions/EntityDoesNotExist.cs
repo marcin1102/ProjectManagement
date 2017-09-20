@@ -13,5 +13,10 @@ namespace Infrastructure.Exceptions
             EntityId = entityId;
             EntityName = entityName;
         }
+
+        public EntityDoesNotExist(string message)
+            : base(message)
+        {
+        }
     }
 }

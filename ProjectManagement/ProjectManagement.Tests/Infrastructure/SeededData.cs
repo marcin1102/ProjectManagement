@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Infrastructure.Message;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.Message.EventDispatcher;
+using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Project.Commands;
+using ProjectManagement.Tests.Issue;
 using UserManagement.Contracts.User.Enums;
 using UserManagement.Contracts.User.Events;
 
@@ -17,6 +19,9 @@ namespace ProjectManagement.Tests.Infrastructure
         public Guid UserAssignedToProjectId { get; private set; }
         public Guid UserNotAssignedToProjectId { get; private set; }
         public Guid ProjectId { get; private set; }
+        public Guid TaskId { get; private set; }
+        public Guid NfrId { get; private set; }
+        public Guid BugId { get; private set; }
         public const string ProjectName = "TEST_PROJECT";
 
         public SeededData()
@@ -44,6 +49,19 @@ namespace ProjectManagement.Tests.Infrastructure
             ProjectId = createProject.CreatedId;
 
             Task.Run(() => commandQueryBus.SendAsync(new AssignUserToProject(AdminId, ProjectId, UserAssignedToProjectId, 1))).Wait();
+
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Task);
+            Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
+            TaskId = createIssue.CreatedId;
+
+            createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Nfr);
+            Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
+            NfrId = createIssue.CreatedId;
+
+            createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Bug);
+            Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
+            BugId = createIssue.CreatedId;
+
         }
     }
 }

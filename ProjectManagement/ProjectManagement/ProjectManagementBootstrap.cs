@@ -31,6 +31,7 @@ using ProjectManagement.Issue.Handlers;
 using ProjectManagement.Issue.Repository;
 using ProjectManagement.Issue.Factory;
 using ProjectManagement.Contracts.Issue.Queries;
+using ProjectManagement.Issue.Searchers;
 
 namespace ProjectManagement
 {
@@ -62,6 +63,11 @@ namespace ProjectManagement
             builder
                .RegisterType<LabelSearcher>()
                .As<ILabelsSearcher>()
+               .InstancePerLifetimeScope();
+
+            builder
+               .RegisterType<IssueSearcher>()
+               .As<IIssueSearcher>()
                .InstancePerLifetimeScope();
         }
 
@@ -105,6 +111,9 @@ namespace ProjectManagement
 
             //Issue
             RegisterAsyncCommandHandler<CreateIssue, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<AssignLabelsToIssue, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<CommentIssue, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<AddSubtask, IssueCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -125,6 +134,7 @@ namespace ProjectManagement
 
             //Issue
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
+            RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
         }
 
         public override void RegisterPipelineItems()
