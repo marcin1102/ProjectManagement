@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectManagement.Contracts.Project.Commands;
-using ProjectManagement.PipelineItems;
 
 namespace ProjectManagement.Tests.Infrastructure
 {
@@ -90,26 +89,6 @@ namespace ProjectManagement.Tests.Infrastructure
             .InstancePerDependency();
         }
 
-        public override void RegisterPipelineItems()
-        {
-            builder
-                .RegisterGeneric(typeof(UserAuthorizationPipelineItem<>))
-                .InstancePerDependency();
-        }
-
-        public override void RegisterCommandPipelines()
-        {
-            var defaultCommandPipeline = new List<Type> { typeof(FakeCommandPIpelineItem<>) };
-            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
-
-            var authorizationPipeline = new List<Type>
-            {
-                typeof(UserAuthorizationPipelineItem<>)
-            }.Concat(defaultCommandPipeline);
-
-            pipelineConfiguration.SetCommandPipeline<CreateProject>(authorizationPipeline);
-            pipelineConfiguration.SetCommandPipeline<AssignUserToProject>(authorizationPipeline);
-        }
         public override void AddAssemblyToProvider()
         {
             AssembliesProvider.assemblies.Add(typeof(ProjectManagementBootstrap).GetTypeInfo().Assembly);

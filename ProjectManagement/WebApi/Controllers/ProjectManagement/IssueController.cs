@@ -57,5 +57,26 @@ namespace WebApi.Controllers.ProjectManagement
             await commandQueryBus.SendAsync(command);
             return Ok();
         }
+
+        [HttpPatch("mark-as-in-progress")]
+        public async Task<IActionResult> MarkAsInProgress([FromBody] MarkAsInProgress command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Ok();
+        }
+
+        [HttpPatch("mark-as-done")]
+        public async Task<IActionResult> MarkAsDone([FromBody] MarkAsDone command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Ok();
+        }
+
+        [HttpPatch("assign-assignee")]
+        public async Task<IActionResult> AssignAssignee([FromBody] AssignAssigneeToIssue command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Ok();
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Infrastructure.Exceptions;
 
-namespace ProjectManagement.Contracts.Exceptions
+namespace ProjectManagement.Contracts.DomainExceptions
 {
     public class CannotAddNfrAsSubtask : DomainException
     {

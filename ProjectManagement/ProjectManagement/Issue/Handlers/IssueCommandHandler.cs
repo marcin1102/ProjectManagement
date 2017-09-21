@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure.Exceptions;
 using Infrastructure.Message.Handlers;
-using ProjectManagement.Contracts.Exceptions;
+using ProjectManagement.Contracts.DomainExceptions;
 using ProjectManagement.Contracts.Issue.Commands;
 using ProjectManagement.Issue.Factory;
 using ProjectManagement.Issue.Repository;
@@ -11,7 +11,8 @@ using ProjectManagement.Issue.Searchers;
 using ProjectManagement.Label.Searcher;
 using ProjectManagement.Project.Repository;
 using ProjectManagement.Project.Searchers;
-using ProjectManagement.Providers;
+using ProjectManagement.Services;
+using ProjectManagement.User.Repository;
 
 namespace ProjectManagement.Issue.Handlers
 {
@@ -19,94 +20,128 @@ namespace ProjectManagement.Issue.Handlers
         IAsyncCommandHandler<CreateIssue>,
         IAsyncCommandHandler<AssignLabelsToIssue>,
         IAsyncCommandHandler<CommentIssue>,
-        IAsyncCommandHandler<AddSubtask>
+        IAsyncCommandHandler<AddSubtask>,
+        IAsyncCommandHandler<MarkAsInProgress>,
+        IAsyncCommandHandler<MarkAsDone>,
+        IAsyncCommandHandler<AssignAssigneeToIssue>
     {
-        private readonly IssueRepository repository;
+        private readonly IssueRepository issueRepository;
         private readonly IIssueFactory issueFactory;
         private readonly ProjectRepository projectRepository;
         private readonly ILabelsSearcher labelsSearcher;
-        private readonly IProjectSearcher projectSearcher;
-        private readonly IIssueSearcher searcher;
+        private readonly IIssueSearcher issueSearcher;
+        private readonly IAuthorizationService authorizationService;
+        private readonly UserRepository userRepository;
 
-        public IssueCommandHandler(IssueRepository repository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IProjectSearcher projectSearcher, IIssueSearcher searcher)
+        public IssueCommandHandler(IssueRepository issueRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IIssueSearcher issueSearcher, IAuthorizationService authorizationService, UserRepository userRepository)
         {
-            this.repository = repository;
+            this.issueRepository = issueRepository;
             this.issueFactory = issueFactory;
             this.projectRepository = projectRepository;
             this.labelsSearcher = labelsSearcher;
-            this.projectSearcher = projectSearcher;
-            this.searcher = searcher;
+            this.issueSearcher = issueSearcher;
+            this.authorizationService = authorizationService;
+            this.userRepository = userRepository;
         }
 
         public async Task HandleAsync(CreateIssue command)
         {
-            await ValidateProjectAndReporter(command.ProjectId, command.ReporterId);
+            if (await projectRepository.FindAsync(command.ProjectId) == null)
+                throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
+
+            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
 
             var issue = await issueFactory.GenerateIssue(command);
 
             if (command.LabelsIds != null)
             {
-                await ValidateLabelsExisting(issue.ProjectId, command.LabelsIds);
+                await ValidateLabelsExistence(issue.ProjectId, command.LabelsIds);
                 issue.AssignLabels(command.LabelsIds);
             }
 
+            if(command.SubtasksIds != null)
+            {
+                await ValidateIssuesExistence(command.ProjectId, command.SubtasksIds);
+                issue.AddSubtasks(command.SubtasksIds);
+            }
+
             issue.Created();
-            await repository.AddAsync(issue, issue.Version);
+            await issueRepository.AddAsync(issue, issue.Version);
             command.CreatedId = issue.Id;
         }
 
-        private async Task ValidateProjectAndReporter(Guid projectId, Guid reporterId)
+        private async Task ValidateIssuesExistence(Guid projectId, ICollection<Guid> subtasksIds)
         {
-            if (await projectRepository.FindAsync(projectId) == null)
-                throw new EntityDoesNotExist(projectId, nameof(Project.Model.Project));
-
-            await ValidateUserMembership(projectId, reporterId);
+            var issuesThatDoNotExist = await issueSearcher.DoesIssuesExistInProject(projectId, subtasksIds);
+            if (issuesThatDoNotExist.Count != 0)
+                throw new EntitiesDoesNotExistInScope(issuesThatDoNotExist, nameof(Model.Issue), nameof(Project.Model.Project), projectId);
         }
 
         public async Task HandleAsync(AssignLabelsToIssue command)
         {
-            var issue = await repository.GetAsync(command.IssueId);
-            await ValidateLabelsExisting(issue.ProjectId, command.LabelsIds);
+            var issue = await issueRepository.GetAsync(command.IssueId);
+            await ValidateLabelsExistence(issue.ProjectId, command.LabelsIds);
             issue.AssignLabels(command.LabelsIds);
-            await repository.Update(issue, issue.Version);
+            await issueRepository.Update(issue, issue.Version);
         }
 
         public async Task HandleAsync(CommentIssue command)
         {
-            var issue = await repository.GetAsync(command.IssueId);
-            await ValidateUserMembership(issue.ProjectId, command.Comment.MemberId);
+            var issue = await issueRepository.GetAsync(command.IssueId);
+            await authorizationService.CheckUserMembership(command.Comment.MemberId, issue.ProjectId);
             issue.Comment(command.Comment);
-            await repository.Update(issue, issue.Version);
+            await issueRepository.Update(issue, issue.Version);
         }
 
-        private async Task ValidateUserMembership(Guid projectId, Guid memberId)
+        private async Task ValidateLabelsExistence(Guid projectId, ICollection<Guid> labelsIds)
         {
-            var isUserProjectMember = await projectSearcher.IsUserProjectMember(projectId, memberId);
-            if (!isUserProjectMember)
-                throw new UserIsNotProjectMember(memberId, projectId);
-        }
-
-        private async Task ValidateLabelsExisting(Guid projectId, ICollection<Guid> labelsIds)
-        {
-            var AreLabelsExist = await labelsSearcher.CheckIfLabelsExist(projectId, labelsIds);
-            foreach (var item in AreLabelsExist)
-            {
-                if (!item.Value)
-                    throw new EntityDoesNotExist(item.Key, nameof(Label.Label));
-            }
+            var labelsThatDoNotExist = await labelsSearcher.DoesLabelsExistInScope(projectId, labelsIds);
+            if (labelsThatDoNotExist.Count != 0)
+                throw new EntitiesDoesNotExistInScope(labelsThatDoNotExist, nameof(Label.Label), nameof(Project.Model.Project), projectId);
         }
 
         public async Task HandleAsync(AddSubtask command)
         {
-            var issue = await repository.GetAsync(command.IssueId);
-            var doesSubtaskExistInProject = await searcher.DoesIssueExistInProject(command.SubtaskId, issue.ProjectId);
+            var issue = await issueRepository.GetAsync(command.IssueId);
+            var originaVersion = issue.Version;
+            var doesSubtaskExistInProject = await issueSearcher.DoesIssueExistInProject(command.SubtaskId, issue.ProjectId);
             if (!doesSubtaskExistInProject)
                 throw new EntityDoesNotExistsInScope(command.SubtaskId, nameof(Model.Issue), nameof(Project.Model.Project), issue.ProjectId);
 
-            var subtask = await repository.GetAsync(command.SubtaskId);
+            var subtask = await issueRepository.GetAsync(command.SubtaskId);
 
             issue.AddSubtask(command.SubtaskId, subtask.Type);
-            await repository.Update(issue, issue.Version);
+            await issueRepository.Update(issue, originaVersion);
+        }
+
+        public async Task HandleAsync(MarkAsInProgress command)
+        {
+            var issue = await issueRepository.GetAsync(command.IssueId);
+            var originalVersion = issue.Version;
+            issue.MarkAsInProgress();
+            await issueRepository.Update(issue, originalVersion);
+        }
+
+        public async Task HandleAsync(MarkAsDone command)
+        {
+            var issue = await issueRepository.GetAsync(command.IssueId);
+            var originalVersion = issue.Version;
+            await authorizationService.CheckUserMembership(command.UserId, issue.ProjectId);
+
+            var relatedIssuesStatuses = await issueSearcher.GetRelatedIssuesStatuses(issue.Id);
+            issue.MarkAsDone(relatedIssuesStatuses);
+            await issueRepository.Update(issue, originalVersion);
+        }
+
+        public async Task HandleAsync(AssignAssigneeToIssue command)
+        {
+            var issue = await issueRepository.GetAsync(command.IssueId);
+            var originalVersion = issue.Version;
+            await authorizationService.CheckUserMembership(command.UserId, issue.ProjectId);
+            var assignee = await userRepository.GetAsync(command.UserId);
+
+            issue.AssignAssignee(assignee);
+            await issueRepository.Update(issue, originalVersion);
         }
     }
 }

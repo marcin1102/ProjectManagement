@@ -66,15 +66,13 @@ namespace ProjectManagement.Tests.Label
             {
                 ProjectId = projectId
             };
+            var ids = commands.Select(x => x.CreatedId);
             //Act
             var response = await commandQueryBus.SendAsync(getLabels);
 
             //Assert
-            var assertValues = response.Select(entity => commands.Any(command => command.CreatedId == entity.Id));
-            foreach (var assertValue in assertValues)
-            {
-                Assert.True(assertValue, "One of returned labels is incorrect(never created probably)");
-            }
+            var elementsCount = response.Select(x => x.Id).Where(x => ids.Contains(x)).Count();
+            Assert.Equal(labelsCount, elementsCount);
         }
 
         private ICollection<CreateLabel> GenerateCreateLabelCommands(int labelsCount)

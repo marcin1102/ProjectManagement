@@ -7,6 +7,9 @@ using ProjectManagement.Contracts.Issue.Comment;
 
 namespace ProjectManagement.Contracts.Issue.Commands
 {
+    /// <summary>
+    /// Should be implemented as independent logic. Right now looks like optimistic concurrency as hell.
+    /// </summary>
     public class CommentIssue : ICommand
     {
         public CommentIssue(Guid issueId, Comment.Comment comment)

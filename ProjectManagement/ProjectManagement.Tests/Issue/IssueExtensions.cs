@@ -14,17 +14,25 @@ namespace ProjectManagement.Tests.Issue
         {
             var title = "TITLE_" + random.Next(100000, 999999);
             var description = "DESC" + random.Next(100000, 999999);
-            return new CreateIssue(data.ProjectId, title, description, type, data.UserAssignedToProjectId, null, null);
+            return new CreateIssue(data.ProjectId, title, description, type, data.UserAssignedToProjectId, null, null, null);
         }
 
-        public static void WithAssignee(this CreateIssue command, Guid assigneeId)
+        public static CreateIssue WithAssignee(this CreateIssue command, Guid assigneeId)
         {
             command.SetAssignee(assigneeId);
+            return command;
         }
 
-        public static void WithLabels(this CreateIssue command, ICollection<Guid> labelsIds)
+        public static CreateIssue WithLabels(this CreateIssue command, ICollection<Guid> labelsIds)
         {
             command.SetLabels(labelsIds);
+            return command;
+        }
+
+        public static CreateIssue WithSubtasks(this CreateIssue command, ICollection<Guid> subtasksIds)
+        {
+            command.SetSubtasks(subtasksIds);
+            return command;
         }
     }
 }

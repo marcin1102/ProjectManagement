@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ProjectManagement.Contracts.Interfaces;
+using Infrastructure.Message;
 
 namespace ProjectManagement.Contracts.Project.Commands
 {
-    public class AssignUserToProject : IAuthorizationRequiredCommand
+    public class AssignUserToProject : ICommand
     {
-        public AssignUserToProject(Guid userId, Guid projectId, Guid userToAssignId, long projectVersion)
+        public AssignUserToProject(Guid adminId, Guid projectId, Guid userToAssignId, long projectVersion)
         {
-            UserId = userId;
+            AdminId = adminId;
             ProjectId = projectId;
             UserToAssignId = userToAssignId;
             ProjectVersion = projectVersion;
         }
 
-        public Guid UserId { get; private set; }
+        public Guid AdminId { get; private set; }
         public Guid ProjectId { get; private set; }
         public Guid UserToAssignId { get; private set; }
         public long ProjectVersion { get; private set; }

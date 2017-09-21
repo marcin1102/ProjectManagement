@@ -1,7 +1,6 @@
 ﻿using Infrastructure.Bootstrap;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
-using ProjectManagement.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Infrastructure.Settings;
@@ -9,15 +8,10 @@ using Microsoft.Extensions.Logging;
 using Infrastructure.Storage.EF;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Project.Handlers;
-using System;
 using ProjectManagement.Project.Repository;
 using UserManagement.Contracts.User.Events;
 using ProjectManagement.User.Handlers;
 using ProjectManagement.User.Repository;
-using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
-using System.Linq;
-using Infrastructure.Message.Pipeline.PipelineItems;
-using ProjectManagement.PipelineItems;
 using System.Collections.Generic;
 using ProjectManagement.Contracts.Project.Queries;
 using ProjectManagement.Contracts.Label.Commands;
@@ -32,6 +26,7 @@ using ProjectManagement.Issue.Repository;
 using ProjectManagement.Issue.Factory;
 using ProjectManagement.Contracts.Issue.Queries;
 using ProjectManagement.Issue.Searchers;
+using ProjectManagement.Services;
 
 namespace ProjectManagement
 {
@@ -43,6 +38,15 @@ namespace ProjectManagement
             RegisterRepositories();
             RegisterSearchers();
             RegisterFactories();
+            RegisterServices();
+        }
+
+        private void RegisterServices()
+        {
+            builder
+                .RegisterType<AuthorizationService>()
+                .As<IAuthorizationService>()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterFactories()
@@ -114,6 +118,9 @@ namespace ProjectManagement
             RegisterAsyncCommandHandler<AssignLabelsToIssue, IssueCommandHandler>();
             RegisterAsyncCommandHandler<CommentIssue, IssueCommandHandler>();
             RegisterAsyncCommandHandler<AddSubtask, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<MarkAsInProgress, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<MarkAsDone, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToIssue, IssueCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -135,27 +142,6 @@ namespace ProjectManagement
             //Issue
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
             RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
-        }
-
-        public override void RegisterPipelineItems()
-        {
-            builder
-                .RegisterGeneric(typeof(UserAuthorizationPipelineItem<>))
-                .InstancePerLifetimeScope();
-        }
-
-        public override void RegisterCommandPipelines()
-        {
-            var defaultCommandPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline().ToList();
-            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
-
-            var authorizationPipeline = new List<Type>
-            {
-                typeof(UserAuthorizationPipelineItem<>)
-            }.Concat(defaultCommandPipeline);
-
-            pipelineConfiguration.SetCommandPipeline<CreateProject>(authorizationPipeline);
-            pipelineConfiguration.SetCommandPipeline<AssignUserToProject>(authorizationPipeline);
         }
     }
 }

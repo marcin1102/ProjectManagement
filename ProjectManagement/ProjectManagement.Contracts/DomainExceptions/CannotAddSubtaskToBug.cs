@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Exceptions;
 
-namespace ProjectManagement.Contracts.Exceptions
+namespace ProjectManagement.Contracts.DomainExceptions
 {
     public class CannotAddSubtaskToBug : DomainException
     {

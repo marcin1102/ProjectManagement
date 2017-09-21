@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Infrastructure.Message.CommandQueryBus;
-using ProjectManagement.Contracts.Exceptions;
+using ProjectManagement.Contracts.DomainExceptions;
 using ProjectManagement.Contracts.Issue.Commands;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Issue.Queries;
@@ -22,6 +21,7 @@ namespace ProjectManagement.Tests.Issue
         private readonly IComponentContext context;
         private readonly SeededData seededData;
         private readonly Random random;
+
         public IssueTests(ProjectManagementFixture fixture)
         {
             this.fixture = fixture;
@@ -30,11 +30,18 @@ namespace ProjectManagement.Tests.Issue
             random = new Random();
         }
 
+        List<Guid> GetRandomElements(ICollection<Guid> collection) => collection.OrderBy(x => Guid.NewGuid()).Take(2).ToList();
+
         [Fact]
-        public async Task CreateIssue_BasicCorrectData_IssueCreated()
+        public async Task CreateIssue_CorrectData_IssueCreated()
         {
             //Arrange
-            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task);
+            var createIssue = IssueExtensions
+                .GenerateBasicCreateIssueCommand(seededData, IssueType.Task)
+                .WithLabels(GetRandomElements(seededData.LabelsIds))
+                .WithSubtasks(new List<Guid> { seededData.BugId} )
+                .WithAssignee(seededData.UserAssignedToProjectId);
+
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
             //Act
@@ -48,6 +55,9 @@ namespace ProjectManagement.Tests.Issue
 
             //Assert
             Assert.Equal(createIssue.CreatedId, response.Id);
+            Assert.Equal(createIssue.LabelsIds.Count, response.LabelsIds.Count);
+            Assert.Equal(createIssue.SubtasksIds.Count, response.SubtasksIds.Count);
+            Assert.Equal(createIssue.AssigneeId, response.AssigneeId);
         }
 
         [Fact]
@@ -123,6 +133,111 @@ namespace ProjectManagement.Tests.Issue
             var subtasks = response.SubtasksIds;
             Assert.Equal(1, subtasks.Count);
             Assert.Equal(seededData.BugId, response.SubtasksIds.SingleOrDefault());
+        }
+
+        [Fact]
+        public async Task MarkIssueAsInProgress_CorrectData_IssueMarkedAsInProgress()
+        {
+            //Arrange
+            var userId = seededData.UserAssignedToProjectId;
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Bug);
+
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+            await commandQueryBus.SendAsync(createIssue);
+
+            var issueId = createIssue.CreatedId;
+            //Act
+            var markAsInProgress = new MarkAsInProgress(issueId, userId);
+            await commandQueryBus.SendAsync(markAsInProgress);
+
+            //Assert
+            var getIssue = new GetIssue { Id = issueId };
+            var response = await commandQueryBus.SendAsync(getIssue);
+            Assert.Equal(Status.InProgress, response.Status);
+        }
+
+        [Fact]
+        public async Task MarkIssueAsInProgress_IssueIsInProgressAlready_CannotChangeIssueStatusThrown()
+        {
+            //Arrange
+            var userId = seededData.UserAssignedToProjectId;
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Bug);
+
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+            await commandQueryBus.SendAsync(createIssue);
+
+            var issueId = createIssue.CreatedId;
+
+            //Act
+            var markAsInProgress = new MarkAsInProgress(issueId, userId);
+            await commandQueryBus.SendAsync(markAsInProgress);
+
+            //Assert
+            await Assert.ThrowsAsync<CannotChangeIssueStatus>(async () => await commandQueryBus.SendAsync(markAsInProgress));
+        }
+
+        [Fact]
+        public async Task MarkIssueAsDone_IssueIsMarkedAsToDo_CannotChangeIssueStatusThrown()
+        {
+            //Arrange
+            var userId = seededData.UserAssignedToProjectId;
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Bug);
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+
+            //Act
+            await commandQueryBus.SendAsync(createIssue);
+            var issueId = createIssue.CreatedId;
+
+            //Assert
+            await Assert.ThrowsAsync<CannotChangeIssueStatus>(async () => await commandQueryBus.SendAsync(new MarkAsDone(issueId, userId)));
+        }
+
+        [Fact]
+        public async Task MarkIssueAsDone_AllCasesAreValid_IssueMarkedAsDone()
+        {
+            //Arrange
+            var userId = seededData.UserAssignedToProjectId;
+            var createBug = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Bug);
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+
+            await commandQueryBus.SendAsync(createBug);
+            var bugId = createBug.CreatedId;
+
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task).WithSubtasks(new List<Guid> { bugId });
+            await commandQueryBus.SendAsync(createIssue);
+            var issueId = createIssue.CreatedId;
+
+            await commandQueryBus.SendAsync(new MarkAsInProgress(issueId, userId));
+            await commandQueryBus.SendAsync(new MarkAsInProgress(bugId, userId));
+            await commandQueryBus.SendAsync(new MarkAsDone(bugId, userId));
+
+            //Act
+            await commandQueryBus.SendAsync(new MarkAsDone(issueId, userId));
+
+            //Assert
+            var issue = await commandQueryBus.SendAsync(new GetIssue { Id = issueId });
+            Assert.Equal(Status.Done, issue.Status);
+        }
+
+        [Fact]
+        public async Task MarkIssueAsDone_IssueHasSubtasksThatHaveNotBeenMarkedAsDone_AllRelatedIssuesMustBeDoneThrown()
+        {
+            //Arrange
+            var userId = seededData.UserAssignedToProjectId;
+            var createBug = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Bug);
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+
+            //Act
+            await commandQueryBus.SendAsync(createBug);
+            var bugId = createBug.CreatedId;
+
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task).WithSubtasks(new List<Guid> { bugId });
+            await commandQueryBus.SendAsync(createIssue);
+            var issueId = createIssue.CreatedId;
+            await commandQueryBus.SendAsync(new MarkAsInProgress(issueId, userId));
+
+            //Assert
+            await Assert.ThrowsAsync<AllRelatedIssuesMustBeDone>(async () => await commandQueryBus.SendAsync(new MarkAsDone(issueId, userId)));
         }
     }
 }

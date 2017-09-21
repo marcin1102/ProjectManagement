@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using ProjectManagement.Contracts.Issue.Events;
 using System.Linq;
 using ProjectManagement.Contracts.Issue.Comment;
-using ProjectManagement.Contracts.Exceptions;
 using ProjectManagement.Providers;
 using ProjectManagement.IssueSubtasks;
+using ProjectManagement.Contracts.DomainExceptions;
+using ProjectManagement.User.Model;
 
 namespace ProjectManagement.Issue.Model
 {
@@ -32,8 +33,8 @@ namespace ProjectManagement.Issue.Model
             }
         }
 
-        private ICollection<IssueSubtasks.IssueSubtask> subtasks;
-        public IEnumerable<IssueSubtasks.IssueSubtask> Subtasks => subtasks;
+        private ICollection<IssueSubtask> subtasks;
+        public IEnumerable<IssueSubtask> Subtasks => subtasks;
 
         private ICollection<IssueLabel.IssueLabel> labels;
         public IEnumerable<IssueLabel.IssueLabel> Labels => labels;
@@ -52,13 +53,14 @@ namespace ProjectManagement.Issue.Model
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
             Comments = new List<Comment>();
-            subtasks = new List<IssueSubtasks.IssueSubtask>();
+            subtasks = new List<IssueSubtask>();
             labels = new List<IssueLabel.IssueLabel>();
         }
 
         public override void Created()
         {
-            Update(new IssueCreated(Id, ProjectId, Title, Description, Type, Reporter.Id, Assignee?.Id, labels.Select(x => x.Id).ToList()));
+            Update(new IssueCreated(Id, ProjectId, Title, Description, Type, Reporter.Id, Assignee?.Id,
+                labels.Select(x => x.Id).ToList(), subtasks.Select(x => x.SubtaskId).ToList()));
         }
 
         public void AssignLabels(ICollection<Guid> labelsIds)
@@ -77,6 +79,17 @@ namespace ProjectManagement.Issue.Model
             }
         }
 
+        /// <summary>
+        /// Use only during initialization of a newly created issue instance.
+        /// </summary>
+        public void AddSubtasks(ICollection<Guid> subtasksIds)
+        {
+            foreach (var subtaskId in subtasksIds)
+            {
+                subtasks.Add(new IssueSubtask(ProjectId, Id, subtaskId));
+            }
+        }
+
         public void Comment(Comment comment)
         {
             var commentsToUpdate = Comments.ToList();
@@ -89,6 +102,7 @@ namespace ProjectManagement.Issue.Model
         {
             CheckIfSubtaskCanBeAdded(subtaskId, subtaskType);
             subtasks.Add(new IssueSubtask(ProjectId, Id, subtaskId));
+            Update(new SubtaskAdded(Id, subtaskId));
         }
 
         private void CheckIfSubtaskCanBeAdded(Guid subtaskId, IssueType subtaskType)
@@ -104,6 +118,40 @@ namespace ProjectManagement.Issue.Model
 
             if (subtasks.Any(x => x.SubtaskId == subtaskId))
                 throw new IssueIsSubtaskAlready(Id, subtaskId, "ProjectManagement");
+        }
+
+        public void MarkAsInProgress()
+        {
+            if (Status != Status.Todo)
+                throw new CannotChangeIssueStatus(Id, Status, Status.InProgress, DomainInformationProvider.Name);
+
+            Status = Status.InProgress;
+            UpdatedAt = DateTime.Now;
+            Update(new IssueMarkedAsInProgress(Id));
+        }
+
+        public void MarkAsDone(List<Status> relatedIssuesStatuses)
+        {
+            if (Status != Status.InProgress)
+                throw new CannotChangeIssueStatus(Id, Status, Status.Done, DomainInformationProvider.Name);
+
+            CheckIfRelatedIssuesAreDone(relatedIssuesStatuses);
+            Status = Status.Done;
+            UpdatedAt = DateTime.Now;
+            Update(new IssueMarkedAsDone(Id));
+        }
+
+        private void CheckIfRelatedIssuesAreDone(List<Status> relatedIssuesStatuses)
+        {
+            var areDone = relatedIssuesStatuses.All(x => x == Status.Done);
+            if (!areDone)
+                throw new AllRelatedIssuesMustBeDone(Id, DomainInformationProvider.Name);
+        }
+
+        public void AssignAssignee(User.Model.User assignee)
+        {
+            Assignee = assignee;
+            Update(new AssigneeAssigned(Id, Assignee.Id));
         }
     }
 }

@@ -6,6 +6,7 @@ using Infrastructure.Message;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.Message.EventDispatcher;
 using ProjectManagement.Contracts.Issue.Enums;
+using ProjectManagement.Contracts.Label.Commands;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Tests.Issue;
 using UserManagement.Contracts.User.Enums;
@@ -22,13 +23,16 @@ namespace ProjectManagement.Tests.Infrastructure
         public Guid TaskId { get; private set; }
         public Guid NfrId { get; private set; }
         public Guid BugId { get; private set; }
+        public ICollection<Guid> LabelsIds { get; private set; }
         public const string ProjectName = "TEST_PROJECT";
+        private static Random random = new Random();
 
         public SeededData()
         {
             AdminId = Guid.NewGuid();
             UserAssignedToProjectId = Guid.NewGuid();
             UserNotAssignedToProjectId = Guid.NewGuid();
+            LabelsIds = new List<Guid>();
         }
 
         public void SeedData(ICommandQueryBus commandQueryBus, IEventManager eventManager)
@@ -50,6 +54,15 @@ namespace ProjectManagement.Tests.Infrastructure
 
             Task.Run(() => commandQueryBus.SendAsync(new AssignUserToProject(AdminId, ProjectId, UserAssignedToProjectId, 1))).Wait();
 
+            CreateLabel createLabel;
+            for (int i = 0; i < 5; i++)
+            {
+                createLabel = new CreateLabel(ProjectId, RandomString("NAME_"), RandomString("DESCR_"));
+                Task.Run(() => commandQueryBus.SendAsync(createLabel)).Wait();
+                LabelsIds.Add(createLabel.CreatedId);
+            }
+
+
             var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Task);
             Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
             TaskId = createIssue.CreatedId;
@@ -62,6 +75,13 @@ namespace ProjectManagement.Tests.Infrastructure
             Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
             BugId = createIssue.CreatedId;
 
+        }
+
+        public static string RandomString(string @base = null)
+        {
+            string randomString;
+            randomString = @base != null ? @base : "random";
+            return randomString + random.Next(100000, 999999);
         }
     }
 }

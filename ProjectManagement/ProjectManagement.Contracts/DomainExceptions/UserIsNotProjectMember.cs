@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Exceptions;
 
-namespace ProjectManagement.Contracts.Exceptions
+namespace ProjectManagement.Contracts.DomainExceptions
 {
     public class UserIsNotProjectMember : DomainException
     {
