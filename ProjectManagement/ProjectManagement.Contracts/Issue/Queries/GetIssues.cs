@@ -15,7 +15,7 @@ namespace ProjectManagement.Contracts.Issue.Queries
 
     public class IssueListItem
     {
-        public IssueListItem(Guid id, Guid projectId, string title, string description, IssueType type, Status status, Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt)
+        public IssueListItem(Guid id, Guid projectId, string title, string description, IssueType type, IssueStatus status, Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt)
         {
             Id = id;
             ProjectId = projectId;
@@ -34,7 +34,7 @@ namespace ProjectManagement.Contracts.Issue.Queries
         public string Title { get; private set; }
         public string Description { get; private set; }
         public IssueType Type { get; private set; }
-        public Status Status { get; private set; }
+        public IssueStatus Status { get; private set; }
         public Guid ReporterId { get; private set; }
         public Guid? AssigneeId { get; private set; }
         public DateTime CreatedAt { get; private set; }

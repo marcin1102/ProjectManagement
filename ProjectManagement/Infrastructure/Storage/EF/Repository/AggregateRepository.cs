@@ -22,9 +22,9 @@ namespace Infrastructure.Storage.EF.Repository
             dbSet = dbContext.Set<TAggregate>();
         }
 
-        public virtual async Task AddAsync(TAggregate aggregate, long originalVersion)
+        public virtual async Task AddAsync(TAggregate aggregate)
         {
-            await AddOrUpdate(aggregate, originalVersion);
+            await AddOrUpdate(aggregate, 0);
             await eventManager.PublishEventsAsync(aggregate.PendingEvents);
         }
 

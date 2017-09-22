@@ -153,7 +153,7 @@ namespace ProjectManagement.Tests.Issue
             //Assert
             var getIssue = new GetIssue { Id = issueId };
             var response = await commandQueryBus.SendAsync(getIssue);
-            Assert.Equal(Status.InProgress, response.Status);
+            Assert.Equal(IssueStatus.InProgress, response.Status);
         }
 
         [Fact]
@@ -216,7 +216,7 @@ namespace ProjectManagement.Tests.Issue
 
             //Assert
             var issue = await commandQueryBus.SendAsync(new GetIssue { Id = issueId });
-            Assert.Equal(Status.Done, issue.Status);
+            Assert.Equal(IssueStatus.Done, issue.Status);
         }
 
         [Fact]
@@ -238,6 +238,26 @@ namespace ProjectManagement.Tests.Issue
 
             //Assert
             await Assert.ThrowsAsync<AllRelatedIssuesMustBeDone>(async () => await commandQueryBus.SendAsync(new MarkAsDone(issueId, userId)));
+        }
+
+        [Fact]
+        public async Task AssignIssueToSprint_IssueAssignedToSprint()
+        {
+            //Arrange
+            var userId = seededData.UserAssignedToProjectId;
+            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task);
+            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+
+            await commandQueryBus.SendAsync(createIssue);
+            var issueId = createIssue.CreatedId;
+
+            //Act
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(issueId, seededData.SprintId));
+
+            //Assert
+            var respone = await commandQueryBus.SendAsync(new GetIssue { Id = issueId });
+
+            Assert.Equal(seededData.SprintId, respone.SprintId);
         }
     }
 }

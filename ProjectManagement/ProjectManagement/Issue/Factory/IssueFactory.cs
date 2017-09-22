@@ -35,7 +35,7 @@ namespace ProjectManagement.Issue.Factory
                 title: command.Title,
                 description: command.Description,
                 type: command.Type,
-                status: Status.Todo,
+                status: IssueStatus.Todo,
                 reporter: reporter,
                 assignee: assignee,
                 createdAt: DateTime.Now,

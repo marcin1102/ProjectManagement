@@ -13,7 +13,7 @@ namespace ProjectManagement.Issue.Searchers
     {
         Task<List<Model.Issue>> GetIssues(Guid projectId, Guid? reporterId, Guid? assigneeId);
         Task<bool> DoesIssueExistInProject(Guid issueId, Guid projectId);
-        Task<List<Status>> GetRelatedIssuesStatuses(Guid issueId);
+        Task<List<IssueStatus>> GetRelatedIssuesStatuses(Guid issueId);
 
         /// <summary>
         /// Check existence of issues in project scope
@@ -22,6 +22,8 @@ namespace ProjectManagement.Issue.Searchers
         /// <param name="subtasksIds">Ids of issues to check</param>
         /// <returns>Ids of issues that do not exist in project scope</returns>
         Task<ICollection<Guid>> DoesIssuesExistInProject(Guid projectId, ICollection<Guid> subtasksIds);
+
+        Task<Dictionary<Guid, Guid?>> GetUnfinishedIssues(Guid sprintId);
     }
     public class IssueSearcher : IIssueSearcher
     {
@@ -46,7 +48,7 @@ namespace ProjectManagement.Issue.Searchers
             return db.Issues.AnyAsync(x => x.Id == issueId && x.ProjectId == projectId);
         }
 
-        public Task<List<Status>> GetRelatedIssuesStatuses(Guid issueId)
+        public Task<List<IssueStatus>> GetRelatedIssuesStatuses(Guid issueId)
         {
             var query = from mainIssue in db.Issues
                         where mainIssue.Id == issueId
@@ -61,6 +63,17 @@ namespace ProjectManagement.Issue.Searchers
             var response = new List<Guid>();
             var issuesIds = await db.Issues.Where(x => x.ProjectId == projectId).Where(x => subtasksIds.Contains(x.Id)).Select(x => x.Id).ToListAsync();
             return subtasksIds.Except(issuesIds).ToList();
+        }
+
+        public async Task<Dictionary<Guid, Guid?>> GetUnfinishedIssues(Guid sprintId)
+        {
+            var response = new Dictionary<Guid, Guid?>();
+            var unfinishedIssues = await db.Issues.Where(x => x.SprintId.Value == sprintId && x.Status != IssueStatus.Done).Include(x => x.Assignee).ToListAsync();
+            foreach (var issue in unfinishedIssues)
+            {
+                response.Add(issue.Id, issue.Assignee?.Id);
+            }
+            return response;
         }
     }
 }

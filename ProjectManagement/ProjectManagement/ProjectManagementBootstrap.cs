@@ -27,6 +27,11 @@ using ProjectManagement.Issue.Factory;
 using ProjectManagement.Contracts.Issue.Queries;
 using ProjectManagement.Issue.Searchers;
 using ProjectManagement.Services;
+using ProjectManagement.Contracts.Sprint.Commands;
+using ProjectManagement.Sprint.Handlers;
+using ProjectManagement.Sprint.Repository;
+using ProjectManagement.Contracts.Sprint.Queries;
+using ProjectManagement.Sprint.Searchers;
 
 namespace ProjectManagement
 {
@@ -73,6 +78,11 @@ namespace ProjectManagement
                .RegisterType<IssueSearcher>()
                .As<IIssueSearcher>()
                .InstancePerLifetimeScope();
+
+            builder
+               .RegisterType<SprintSearcher>()
+               .As<ISprintSearcher>()
+               .InstancePerLifetimeScope();
         }
 
         private void RegisterRepositories()
@@ -91,6 +101,10 @@ namespace ProjectManagement
 
             builder
                 .RegisterType<IssueRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<SprintRepository>()
                 .InstancePerLifetimeScope();
         }
 
@@ -121,6 +135,12 @@ namespace ProjectManagement
             RegisterAsyncCommandHandler<MarkAsInProgress, IssueCommandHandler>();
             RegisterAsyncCommandHandler<MarkAsDone, IssueCommandHandler>();
             RegisterAsyncCommandHandler<AssignAssigneeToIssue, IssueCommandHandler>();
+            RegisterAsyncCommandHandler<AssignIssueToSprint, IssueCommandHandler>();
+
+            //Sprint
+            RegisterAsyncCommandHandler<CreateSprint, SprintCommandHandler>();
+            RegisterAsyncCommandHandler<StartSprint, SprintCommandHandler>();
+            RegisterAsyncCommandHandler<FinishSprint, SprintCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
@@ -142,6 +162,9 @@ namespace ProjectManagement
             //Issue
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
             RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
+
+            //Sprint
+            RegisterAsyncQueryHandler<GetSprint, SprintResponse, SprintQueryHandler>();
         }
     }
 }

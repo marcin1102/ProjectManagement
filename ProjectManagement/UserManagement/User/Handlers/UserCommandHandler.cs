@@ -22,7 +22,7 @@ namespace UserManagement.User.Handlers
         {
             command.CreatedId = Guid.NewGuid();
             var user = new Model.User(command.CreatedId, command.FirstName, command.LastName, command.Email, command.Role);
-            return repository.AddAsync(user, user.Version);
+            return repository.AddAsync(user);
         }
 
         public async Task HandleAsync(GrantRole command)

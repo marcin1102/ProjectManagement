@@ -9,7 +9,6 @@ using ProjectManagement.Contracts.Issue.Comment;
 using ProjectManagement.Providers;
 using ProjectManagement.IssueSubtasks;
 using ProjectManagement.Contracts.DomainExceptions;
-using ProjectManagement.User.Model;
 
 namespace ProjectManagement.Issue.Model
 {
@@ -19,15 +18,16 @@ namespace ProjectManagement.Issue.Model
         public string Title { get; private set; }
         public string Description { get; private set; }
         public IssueType Type { get; private set; }
-        public Status Status { get; private set; }
+        public IssueStatus Status { get; private set; }
         public User.Model.User Reporter { get; private set; }
         public User.Model.User Assignee { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public Guid? SprintId { get; private set; }
 
         public string comments { get; private set; }
         public ICollection<Comment> Comments {
-            get => JsonConvert.DeserializeObject<List<Comment>>(comments);
+            get => JsonConvert.DeserializeObject<List<Comment>>(comments ?? "");
             set {
                 comments = JsonConvert.SerializeObject(value);
             }
@@ -41,7 +41,7 @@ namespace ProjectManagement.Issue.Model
 
         private Issue() { }
 
-        public Issue(Guid id, Guid projectId, string title, string description, IssueType type, Status status, User.Model.User reporter, User.Model.User assignee, DateTime createdAt, DateTime updatedAt) : base(id)
+        public Issue(Guid id, Guid projectId, string title, string description, IssueType type, IssueStatus status, User.Model.User reporter, User.Model.User assignee, DateTime createdAt, DateTime updatedAt) : base(id)
         {
             ProjectId = projectId;
             Title = title;
@@ -122,28 +122,28 @@ namespace ProjectManagement.Issue.Model
 
         public void MarkAsInProgress()
         {
-            if (Status != Status.Todo)
-                throw new CannotChangeIssueStatus(Id, Status, Status.InProgress, DomainInformationProvider.Name);
+            if (Status != IssueStatus.Todo)
+                throw new CannotChangeIssueStatus(Id, Status, IssueStatus.InProgress, DomainInformationProvider.Name);
 
-            Status = Status.InProgress;
+            Status = IssueStatus.InProgress;
             UpdatedAt = DateTime.Now;
-            Update(new IssueMarkedAsInProgress(Id));
+            Update(new IssueMarkedAsInProgress(Id, Status));
         }
 
-        public void MarkAsDone(List<Status> relatedIssuesStatuses)
+        public void MarkAsDone(List<IssueStatus> relatedIssuesStatuses)
         {
-            if (Status != Status.InProgress)
-                throw new CannotChangeIssueStatus(Id, Status, Status.Done, DomainInformationProvider.Name);
+            if (Status != IssueStatus.InProgress)
+                throw new CannotChangeIssueStatus(Id, Status, IssueStatus.Done, DomainInformationProvider.Name);
 
             CheckIfRelatedIssuesAreDone(relatedIssuesStatuses);
-            Status = Status.Done;
+            Status = IssueStatus.Done;
             UpdatedAt = DateTime.Now;
-            Update(new IssueMarkedAsDone(Id));
+            Update(new IssueMarkedAsDone(Id, Status));
         }
 
-        private void CheckIfRelatedIssuesAreDone(List<Status> relatedIssuesStatuses)
+        private void CheckIfRelatedIssuesAreDone(List<IssueStatus> relatedIssuesStatuses)
         {
-            var areDone = relatedIssuesStatuses.All(x => x == Status.Done);
+            var areDone = relatedIssuesStatuses.All(x => x == IssueStatus.Done);
             if (!areDone)
                 throw new AllRelatedIssuesMustBeDone(Id, DomainInformationProvider.Name);
         }
@@ -152,6 +152,12 @@ namespace ProjectManagement.Issue.Model
         {
             Assignee = assignee;
             Update(new AssigneeAssigned(Id, Assignee.Id));
+        }
+
+        public void AssignToSprint(Guid sprintId)
+        {
+            SprintId = sprintId;
+            Update(new IssueAssignedToSprint(Id, SprintId.Value));
         }
     }
 }

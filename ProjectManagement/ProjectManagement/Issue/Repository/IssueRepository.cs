@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Exceptions;
 using Infrastructure.Message.EventDispatcher;
 using Infrastructure.Storage.EF.Repository;
 using Microsoft.EntityFrameworkCore;
-using ProjectManagement.Issue.Model;
 
 namespace ProjectManagement.Issue.Repository
 {
@@ -17,13 +13,13 @@ namespace ProjectManagement.Issue.Repository
         {
         }
 
-        public override Task AddAsync(Model.Issue aggregate, long originalVersion)
+        public override Task AddAsync(Model.Issue aggregate)
         {
             dbContext.Attach(aggregate.Reporter);
             if (aggregate.Assignee != null)
                 dbContext.Attach(aggregate.Assignee);
 
-            return base.AddAsync(aggregate, originalVersion);
+            return base.AddAsync(aggregate);
         }
 
         public override Task<Model.Issue> FindAsync(Guid id)

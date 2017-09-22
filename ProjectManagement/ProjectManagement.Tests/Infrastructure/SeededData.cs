@@ -11,6 +11,7 @@ using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Tests.Issue;
 using UserManagement.Contracts.User.Enums;
 using UserManagement.Contracts.User.Events;
+using ProjectManagement.Contracts.Sprint.Commands;
 
 namespace ProjectManagement.Tests.Infrastructure
 {
@@ -23,6 +24,7 @@ namespace ProjectManagement.Tests.Infrastructure
         public Guid TaskId { get; private set; }
         public Guid NfrId { get; private set; }
         public Guid BugId { get; private set; }
+        public Guid SprintId { get; private set; }
         public ICollection<Guid> LabelsIds { get; private set; }
         public const string ProjectName = "TEST_PROJECT";
         private static Random random = new Random();
@@ -75,6 +77,9 @@ namespace ProjectManagement.Tests.Infrastructure
             Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
             BugId = createIssue.CreatedId;
 
+            var createSprint = new CreateSprint(ProjectId, RandomString("Sprint_"), DateTime.Now.Date, DateTime.Now.Date.AddDays(14));
+            Task.Run(() => commandQueryBus.SendAsync(createSprint)).Wait();
+            SprintId = createSprint.CreatedId;
         }
 
         public static string RandomString(string @base = null)

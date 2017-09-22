@@ -13,6 +13,7 @@ using ProjectManagement.Project.Repository;
 using ProjectManagement.Project.Searchers;
 using ProjectManagement.Services;
 using ProjectManagement.User.Repository;
+using ProjectManagement.Sprint.Searchers;
 
 namespace ProjectManagement.Issue.Handlers
 {
@@ -23,7 +24,8 @@ namespace ProjectManagement.Issue.Handlers
         IAsyncCommandHandler<AddSubtask>,
         IAsyncCommandHandler<MarkAsInProgress>,
         IAsyncCommandHandler<MarkAsDone>,
-        IAsyncCommandHandler<AssignAssigneeToIssue>
+        IAsyncCommandHandler<AssignAssigneeToIssue>,
+        IAsyncCommandHandler<AssignIssueToSprint>
     {
         private readonly IssueRepository issueRepository;
         private readonly IIssueFactory issueFactory;
@@ -32,8 +34,9 @@ namespace ProjectManagement.Issue.Handlers
         private readonly IIssueSearcher issueSearcher;
         private readonly IAuthorizationService authorizationService;
         private readonly UserRepository userRepository;
+        private readonly ISprintSearcher sprintSearcher;
 
-        public IssueCommandHandler(IssueRepository issueRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IIssueSearcher issueSearcher, IAuthorizationService authorizationService, UserRepository userRepository)
+        public IssueCommandHandler(IssueRepository issueRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IIssueSearcher issueSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher)
         {
             this.issueRepository = issueRepository;
             this.issueFactory = issueFactory;
@@ -42,6 +45,7 @@ namespace ProjectManagement.Issue.Handlers
             this.issueSearcher = issueSearcher;
             this.authorizationService = authorizationService;
             this.userRepository = userRepository;
+            this.sprintSearcher = sprintSearcher;
         }
 
         public async Task HandleAsync(CreateIssue command)
@@ -66,7 +70,7 @@ namespace ProjectManagement.Issue.Handlers
             }
 
             issue.Created();
-            await issueRepository.AddAsync(issue, issue.Version);
+            await issueRepository.AddAsync(issue);
             command.CreatedId = issue.Id;
         }
 
@@ -141,6 +145,18 @@ namespace ProjectManagement.Issue.Handlers
             var assignee = await userRepository.GetAsync(command.UserId);
 
             issue.AssignAssignee(assignee);
+            await issueRepository.Update(issue, originalVersion);
+        }
+
+        public async Task HandleAsync(AssignIssueToSprint command)
+        {
+            var issue = await issueRepository.GetAsync(command.IssueId);            
+            var doesSprintExist = await sprintSearcher.DoesSprintExistInScope(command.SprintId, issue.ProjectId);
+            if (!doesSprintExist)
+                throw new EntityDoesNotExistsInScope(command.SprintId, nameof(Sprint.Model.Sprint), nameof(Project.Model.Project), issue.ProjectId);
+
+            var originalVersion = issue.Version;
+            issue.AssignToSprint(command.SprintId);
             await issueRepository.Update(issue, originalVersion);
         }
     }

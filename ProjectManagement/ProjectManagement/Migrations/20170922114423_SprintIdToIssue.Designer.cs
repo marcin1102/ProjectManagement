@@ -13,9 +13,10 @@ using System;
 namespace ProjectManagement.Migrations
 {
     [DbContext(typeof(ProjectManagementContext))]
-    partial class ProjectManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20170922114423_SprintIdToIssue")]
+    partial class SprintIdToIssue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,8 +181,6 @@ namespace ProjectManagement.Migrations
                     b.Property<DateTime>("StartDate");
 
                     b.Property<int>("Status");
-
-                    b.Property<long>("Version");
 
                     b.Property<string>("unfinishedIssues");
 

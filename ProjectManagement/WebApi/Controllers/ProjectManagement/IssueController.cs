@@ -78,5 +78,12 @@ namespace WebApi.Controllers.ProjectManagement
             await commandQueryBus.SendAsync(command);
             return Ok();
         }
+
+        [HttpPatch("assign-to-sprint")]
+        public async Task<IActionResult> AssignToSprint([FromBody] AssignIssueToSprint command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Ok();
+        }
     }
 }

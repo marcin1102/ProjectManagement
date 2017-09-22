@@ -18,6 +18,7 @@ namespace ProjectManagement
         public DbSet<IssueSubtasks.IssueSubtask> IssuesSubtasks { get; set; }
         public DbSet<IssueLabel.IssueLabel> IssuesLabels { get; set; }
         public DbSet<Issue.Model.Issue> Issues { get; set; }
+        public DbSet<Sprint.Model.Sprint> Sprints { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,7 +26,7 @@ namespace ProjectManagement
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Id).ValueGeneratedNever();
-                x.Property(y => y.Name).IsRequired(true);
+                x.Property(y => y.Name).IsRequired();
                 x.Property(y => y.Version);
                 x.HasMany(y => y.Members);
                 x.Ignore(y => y.PendingEvents);
@@ -36,10 +37,10 @@ namespace ProjectManagement
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Id).ValueGeneratedNever();
-                x.Property(y => y.FirstName).IsRequired(true);
-                x.Property(y => y.LastName).IsRequired(true);
-                x.Property(y => y.Email).IsRequired(true);
-                x.Property(y => y.Role).IsRequired(true);
+                x.Property(y => y.FirstName).IsRequired();
+                x.Property(y => y.LastName).IsRequired();
+                x.Property(y => y.Email).IsRequired();
+                x.Property(y => y.Role).IsRequired();
                 x.HasMany(y => y.Projects);
                 x.Property(y => y.AggregateVersion);
                 x.ToTable(nameof(User.Model.User));
@@ -68,6 +69,7 @@ namespace ProjectManagement
                 x.HasMany(y => y.Labels).WithOne();
                 x.HasMany(y => y.Subtasks).WithOne();
                 x.Property(y => y.comments);
+                x.Property(y => y.SprintId).IsRequired(false);
                 x.Ignore(y => y.Comments);
                 x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(Issue.Model.Issue));
@@ -86,6 +88,21 @@ namespace ProjectManagement
                 x.Property(y => y.IssueId).IsRequired();
                 x.Property(y => y.SubtaskId).IsRequired();
                 x.ToTable(nameof(IssueSubtasks.IssueSubtask));
+            });
+
+            modelBuilder.Entity<Sprint.Model.Sprint>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
+                x.Property(y => y.Name).IsRequired();
+                x.Property(y => y.Status).IsRequired();
+                x.Property(y => y.StartDate).IsRequired();
+                x.Property(y => y.EndDate).IsRequired();
+                x.Property(y => y.unfinishedIssues);
+                x.Property(y => y.Version);
+                x.Ignore(y => y.UnfinishedIssues);
+                x.Ignore(y => y.PendingEvents);
+                x.ToTable(nameof(Sprint.Model.Sprint));
             });
 
             modelBuilder.HasDefaultSchema(SCHEMA);

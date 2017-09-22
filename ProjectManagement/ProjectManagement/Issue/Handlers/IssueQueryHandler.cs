@@ -6,6 +6,7 @@ using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Issue.Queries;
 using ProjectManagement.Issue.Repository;
 using ProjectManagement.Issue.Searchers;
+using Infrastructure.Exceptions;
 
 namespace ProjectManagement.Issue.Handlers
 {
@@ -25,7 +26,10 @@ namespace ProjectManagement.Issue.Handlers
         public async Task<IssueResponse> HandleAsync(GetIssue query)
         {
             var issue = await repository.FindAsync(query.Id);
-            return new IssueResponse(issue.Id, issue.ProjectId, issue.Title, issue.Description, issue.Type, issue.Status,
+            if (issue == null)
+                throw new EntityDoesNotExist(query.Id, nameof(Model.Issue));
+
+            return new IssueResponse(issue.Id, issue.ProjectId, issue.SprintId, issue.Title, issue.Description, issue.Type, issue.Status,
                 issue.Reporter.Id, issue.Assignee?.Id, issue.CreatedAt, issue.UpdatedAt, issue.Comments.OrderBy(x => x.CreatedAt).ToList(),
                 issue.Subtasks.Select(x => x.SubtaskId).ToList(), issue.Labels.Select(x => x.LabelId).ToList());
         }
