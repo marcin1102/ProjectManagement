@@ -3,6 +3,8 @@ using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Sprint.Queries;
 using ProjectManagement.Sprint.Repository;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjectManagement.Sprint.Handlers

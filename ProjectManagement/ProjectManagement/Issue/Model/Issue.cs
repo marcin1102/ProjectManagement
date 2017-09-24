@@ -122,6 +122,9 @@ namespace ProjectManagement.Issue.Model
 
         public void MarkAsInProgress()
         {
+            if (SprintId == null)
+                throw new IssueNotAssignedToSprint(Id, DomainInformationProvider.Name);
+
             if (Status != IssueStatus.Todo)
                 throw new CannotChangeIssueStatus(Id, Status, IssueStatus.InProgress, DomainInformationProvider.Name);
 
@@ -132,6 +135,9 @@ namespace ProjectManagement.Issue.Model
 
         public void MarkAsDone(List<IssueStatus> relatedIssuesStatuses)
         {
+            if (SprintId == null)
+                throw new IssueNotAssignedToSprint(Id, DomainInformationProvider.Name);
+
             if (Status != IssueStatus.InProgress)
                 throw new CannotChangeIssueStatus(Id, Status, IssueStatus.Done, DomainInformationProvider.Name);
 

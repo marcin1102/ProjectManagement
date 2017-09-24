@@ -32,6 +32,8 @@ using ProjectManagement.Sprint.Handlers;
 using ProjectManagement.Sprint.Repository;
 using ProjectManagement.Contracts.Sprint.Queries;
 using ProjectManagement.Sprint.Searchers;
+using ProjectManagement.User.Searchers;
+using ProjectManagement.Contracts.User.Queries;
 
 namespace ProjectManagement
 {
@@ -82,6 +84,11 @@ namespace ProjectManagement
             builder
                .RegisterType<SprintSearcher>()
                .As<ISprintSearcher>()
+               .InstancePerLifetimeScope();
+
+            builder
+               .RegisterType<UserSearcher>()
+               .As<IUserSearcher>()
                .InstancePerLifetimeScope();
         }
 
@@ -162,9 +169,13 @@ namespace ProjectManagement
             //Issue
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
             RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
+            RegisterAsyncQueryHandler<GetUnfinishedIssues, ICollection<IssueListItem>, IssueQueryHandler>();
 
             //Sprint
             RegisterAsyncQueryHandler<GetSprint, SprintResponse, SprintQueryHandler>();
+
+            //User
+            RegisterAsyncQueryHandler<GetUnfinishedIssuesAssignees, ICollection<UserListItem>, UserQueryHandler>();
         }
     }
 }

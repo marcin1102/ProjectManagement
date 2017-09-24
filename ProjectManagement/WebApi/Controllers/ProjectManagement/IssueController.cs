@@ -85,5 +85,11 @@ namespace WebApi.Controllers.ProjectManagement
             await commandQueryBus.SendAsync(command);
             return Ok();
         }
+
+        [HttpGet("unfinished/{sprintId}")]
+        public Task<ICollection<IssueListItem>> Get([FromRoute] Guid sprintId)
+        {
+            return commandQueryBus.SendAsync(new GetUnfinishedIssues { SprintId = sprintId});
+        }
     }
 }

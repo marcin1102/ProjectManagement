@@ -24,7 +24,11 @@ namespace WebApi.Controllers.UserManagement
             await commandQueryBus.SendAsync(command);
             return Created("api/user-management/", command.CreatedId);
         }
-
+        /// <summary>
+        /// TODO: MAKE CONTROLLERS MORE CONSISTENT
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponse), 200)]
         public async Task<UserResponse> Get([FromRoute] Guid id)
@@ -33,7 +37,7 @@ namespace WebApi.Controllers.UserManagement
             return response;
         }
 
-        [HttpPatch("{userId}")]
+        [HttpPatch("grant-role")]
         public async Task<IActionResult> GrantRole([FromBody] GrantRole command)
         {
             await commandQueryBus.SendAsync(command);

@@ -12,7 +12,8 @@ namespace ProjectManagement.Issue.Handlers
 {
     public class IssueQueryHandler :
         IAsyncQueryHandler<GetIssue, IssueResponse>,
-        IAsyncQueryHandler<GetIssues, ICollection<IssueListItem>>
+        IAsyncQueryHandler<GetIssues, ICollection<IssueListItem>>,
+        IAsyncQueryHandler<GetUnfinishedIssues, ICollection<IssueListItem>>
     {
         private readonly IssueRepository repository;
         private readonly IIssueSearcher searcher;
@@ -36,7 +37,18 @@ namespace ProjectManagement.Issue.Handlers
 
         public async Task<ICollection<IssueListItem>> HandleAsync(GetIssues query)
         {
-            var issues = await searcher.GetIssues(query.ProjectId, query.ReporterId, query.AssigneeId);
+            var issues = await searcher.GetIssues(query.ProjectId, query.ReporterId, query.AssigneeId, query.LabelId, query.Status);
+            return ToResponse(issues);
+        }
+
+        public async Task<ICollection<IssueListItem>> HandleAsync(GetUnfinishedIssues query)
+        {
+            var issues = await searcher.GetUnfinishedIssues(query.SprintId);
+            return ToResponse(issues);
+        }
+
+        private ICollection<IssueListItem> ToResponse(List<Model.Issue> issues)
+        {
             return issues.Select(x => new IssueListItem(x.Id, x.ProjectId, x.Title, x.Description, x.Type, x.Status, x.Reporter.Id, x.Assignee?.Id, x.CreatedAt, x.UpdatedAt)).ToList();
         }
     }

@@ -146,6 +146,8 @@ namespace ProjectManagement.Tests.Issue
             await commandQueryBus.SendAsync(createIssue);
 
             var issueId = createIssue.CreatedId;
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(issueId, seededData.SprintId));
+
             //Act
             var markAsInProgress = new MarkAsInProgress(issueId, userId);
             await commandQueryBus.SendAsync(markAsInProgress);
@@ -167,6 +169,7 @@ namespace ProjectManagement.Tests.Issue
             await commandQueryBus.SendAsync(createIssue);
 
             var issueId = createIssue.CreatedId;
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(issueId, seededData.SprintId));
 
             //Act
             var markAsInProgress = new MarkAsInProgress(issueId, userId);
@@ -187,6 +190,7 @@ namespace ProjectManagement.Tests.Issue
             //Act
             await commandQueryBus.SendAsync(createIssue);
             var issueId = createIssue.CreatedId;
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(issueId, seededData.SprintId));
 
             //Assert
             await Assert.ThrowsAsync<CannotChangeIssueStatus>(async () => await commandQueryBus.SendAsync(new MarkAsDone(issueId, userId)));
@@ -207,6 +211,8 @@ namespace ProjectManagement.Tests.Issue
             await commandQueryBus.SendAsync(createIssue);
             var issueId = createIssue.CreatedId;
 
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(issueId, seededData.SprintId));
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(bugId, seededData.SprintId));
             await commandQueryBus.SendAsync(new MarkAsInProgress(issueId, userId));
             await commandQueryBus.SendAsync(new MarkAsInProgress(bugId, userId));
             await commandQueryBus.SendAsync(new MarkAsDone(bugId, userId));
@@ -234,6 +240,7 @@ namespace ProjectManagement.Tests.Issue
             var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task).WithSubtasks(new List<Guid> { bugId });
             await commandQueryBus.SendAsync(createIssue);
             var issueId = createIssue.CreatedId;
+            await commandQueryBus.SendAsync(new AssignIssueToSprint(issueId, seededData.SprintId));
             await commandQueryBus.SendAsync(new MarkAsInProgress(issueId, userId));
 
             //Assert

@@ -11,6 +11,8 @@ namespace ProjectManagement.Contracts.Issue.Queries
         public Guid ProjectId { get; set; }
         public Guid? ReporterId { get; set; }
         public Guid? AssigneeId { get; set; }
+        public Guid? LabelId { get; set; }
+        public IssueStatus? Status { get; set; }
     }
 
     public class IssueListItem

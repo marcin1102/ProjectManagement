@@ -58,7 +58,7 @@ namespace ProjectManagement.Sprint.Handlers
         public async Task HandleAsync(FinishSprint command)
         {
             var sprint = await sprintRepository.GetAsync(command.Id);
-            var unfinishedIssues = await issueSearcher.GetUnfinishedIssues(command.Id);
+            var unfinishedIssues = await issueSearcher.GetUnfinishedIssuesAndAssigneeIds(command.Id);
             var originalVersion = sprint.Version;
 
             sprint.FinishSprint(unfinishedIssues);

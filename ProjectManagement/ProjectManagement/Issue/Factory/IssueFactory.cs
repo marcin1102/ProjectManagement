@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
 using ProjectManagement.Contracts.Issue.Commands;
 using ProjectManagement.Contracts.Issue.Enums;
-using ProjectManagement.Issue.Model;
 using ProjectManagement.Label.Searcher;
 using ProjectManagement.User.Repository;
 

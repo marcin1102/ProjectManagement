@@ -11,7 +11,7 @@ namespace ProjectManagement.Issue.Searchers
 {
     public interface IIssueSearcher
     {
-        Task<List<Model.Issue>> GetIssues(Guid projectId, Guid? reporterId, Guid? assigneeId);
+        Task<List<Model.Issue>> GetIssues(Guid projectId, Guid? reporterId, Guid? assigneeId, Guid? labelId, IssueStatus? status);
         Task<bool> DoesIssueExistInProject(Guid issueId, Guid projectId);
         Task<List<IssueStatus>> GetRelatedIssuesStatuses(Guid issueId);
 
@@ -23,7 +23,8 @@ namespace ProjectManagement.Issue.Searchers
         /// <returns>Ids of issues that do not exist in project scope</returns>
         Task<ICollection<Guid>> DoesIssuesExistInProject(Guid projectId, ICollection<Guid> subtasksIds);
 
-        Task<Dictionary<Guid, Guid?>> GetUnfinishedIssues(Guid sprintId);
+        Task<Dictionary<Guid, Guid?>> GetUnfinishedIssuesAndAssigneeIds(Guid sprintId);
+        Task<List<Model.Issue>> GetUnfinishedIssues(Guid sprintId);
     }
     public class IssueSearcher : IIssueSearcher
     {
@@ -34,12 +35,15 @@ namespace ProjectManagement.Issue.Searchers
             this.db = db;
         }
 
-        public Task<List<Model.Issue>> GetIssues(Guid projectId, Guid? reporterId, Guid? assigneeId)
+        public Task<List<Model.Issue>> GetIssues(Guid projectId, Guid? reporterId, Guid? assigneeId, Guid? labelId, IssueStatus? status)
         {
-            return db.Issues.Include(x => x.Reporter).Include(x => x.Assignee)
+            return db.Issues
                 .Where(x => x.ProjectId == projectId)
-                .Where(x => reporterId == null  || x.Reporter.Id == reporterId)
+                .Include(x => x.Reporter).Include(x => x.Assignee).Include(x => x.Labels)
+                .Where(x => reporterId == null || x.Reporter.Id == reporterId)
                 .Where(x => assigneeId == null || x.Assignee.Id == assigneeId)
+                .Where(x => labelId == null || x.Labels.Any(y => y.LabelId == labelId))
+                .Where(x => status == null || x.Status == status)
                 .ToListAsync();
         }
 
@@ -65,7 +69,7 @@ namespace ProjectManagement.Issue.Searchers
             return subtasksIds.Except(issuesIds).ToList();
         }
 
-        public async Task<Dictionary<Guid, Guid?>> GetUnfinishedIssues(Guid sprintId)
+        public async Task<Dictionary<Guid, Guid?>> GetUnfinishedIssuesAndAssigneeIds(Guid sprintId)
         {
             var response = new Dictionary<Guid, Guid?>();
             var unfinishedIssues = await db.Issues.Where(x => x.SprintId.Value == sprintId && x.Status != IssueStatus.Done).Include(x => x.Assignee).ToListAsync();
@@ -74,6 +78,13 @@ namespace ProjectManagement.Issue.Searchers
                 response.Add(issue.Id, issue.Assignee?.Id);
             }
             return response;
+        }
+
+        public async Task<List<Model.Issue>> GetUnfinishedIssues(Guid sprintId)
+        {
+            var sprint = await db.Sprints.SingleAsync(x => x.Id == sprintId);
+            var issuesIds = sprint.UnfinishedIssues.Select(x => x.IssueId);
+            return await db.Issues.Where(x => issuesIds.Contains(x.Id)).Include(x => x.Assignee).Include(x => x.Reporter).ToListAsync();
         }
     }
 }

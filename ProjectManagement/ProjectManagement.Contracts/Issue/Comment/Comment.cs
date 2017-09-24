@@ -2,6 +2,9 @@
 
 namespace ProjectManagement.Contracts.Issue.Comment
 {
+    /// <summary>
+    /// TODO: A comment should be an entity
+    /// </summary>
     public class Comment
     {
         public Comment(Guid memberId, string content)
