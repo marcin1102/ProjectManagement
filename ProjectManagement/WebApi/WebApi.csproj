@@ -22,6 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\ProjectManagement.Contracts\ProjectManagement.Contracts.csproj" />
+    <ProjectReference Include="..\ProjectManagementView.Contracts\ProjectManagementView.Contracts.csproj" />
+    <ProjectReference Include="..\ProjectManagementView\ProjectManagementView.csproj" />
     <ProjectReference Include="..\ProjectManagement\ProjectManagement.csproj" />
     <ProjectReference Include="..\UserManagement.Contracts\UserManagement.Contracts.csproj" />
     <ProjectReference Include="..\UserManagement\UserManagement.csproj" />

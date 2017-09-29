@@ -42,7 +42,8 @@ namespace ProjectManagement.WebApi
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.AddFilters())
+            services
+                .AddMvc(options => options.AddFilters())
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<CreateUser>().RegisterValidatorsFromAssemblyContaining<CreateProject>())
                 .AddJsonOptions(options =>
                 {
