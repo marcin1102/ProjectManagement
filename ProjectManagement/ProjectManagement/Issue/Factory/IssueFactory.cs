@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ProjectManagement.Contracts.Bug.Commands;
 using ProjectManagement.Contracts.Issue.Commands;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Nfr.Commands;
