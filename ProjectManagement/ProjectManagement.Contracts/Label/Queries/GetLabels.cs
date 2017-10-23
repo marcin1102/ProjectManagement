@@ -8,7 +8,12 @@ namespace ProjectManagement.Contracts.Label.Queries
 {
     public class GetLabels : IQuery<ICollection<LabelResponse>>
     {
-        public Guid ProjectId { get; set; }
+        public GetLabels(Guid projectId)
+        {
+            ProjectId = projectId;
+        }
+
+        public Guid ProjectId { get; private set; }
     }
 
     public class GetLabelsValidator : AbstractValidator<GetLabels>

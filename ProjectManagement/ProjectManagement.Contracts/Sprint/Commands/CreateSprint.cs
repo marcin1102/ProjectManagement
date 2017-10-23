@@ -9,15 +9,15 @@ namespace ProjectManagement.Contracts.Sprint.Commands
 {
     public class CreateSprint : ICommand
     {
-        public CreateSprint(Guid projectId, string name, DateTime start, DateTime end)
+        public CreateSprint(string name, DateTime start, DateTime end)
         {
-            ProjectId = projectId;
             Name = name;
             Start = start;
             End = end;
         }
 
-        public Guid ProjectId { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
         public string Name { get; private set; }
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }

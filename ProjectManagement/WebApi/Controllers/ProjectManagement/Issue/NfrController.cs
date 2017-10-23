@@ -10,7 +10,7 @@ using ProjectManagement.Contracts.Nfr.Commands;
 
 namespace WebApi.Controllers.ProjectManagement.Issue
 {
-    [Route("api/project-management/project/{projectId}/nfrs/")]
+    [Route("api/project-management/projects/{projectId}/nfrs/")]
     public class NfrController : BaseController
     {
         public NfrController(ICommandQueryBus commandQueryBus) : base(commandQueryBus)

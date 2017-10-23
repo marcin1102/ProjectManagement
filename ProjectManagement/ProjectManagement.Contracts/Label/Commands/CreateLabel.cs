@@ -7,14 +7,14 @@ namespace ProjectManagement.Contracts.Label.Commands
 {
     public class CreateLabel : ICommand
     {
-        public CreateLabel(Guid projectId, string name, string description)
+        public CreateLabel(string name, string description)
         {
-            ProjectId = projectId;
             Name = name;
             Description = description;
         }
 
-        public Guid ProjectId { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
 
@@ -27,7 +27,6 @@ namespace ProjectManagement.Contracts.Label.Commands
     {
         public CreateLabelValidator()
         {
-            RuleFor(x => x.ProjectId).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Description).NotEmpty();
         }

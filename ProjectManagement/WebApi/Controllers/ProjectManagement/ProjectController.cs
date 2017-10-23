@@ -23,20 +23,21 @@ namespace WebApi.Controllers.ProjectManagement
             return Created("api/project-management/", command.CreatedId);
         }
 
-        [HttpPatch("assign-member")]
-        public async Task<IActionResult> AssignMember([FromBody] AssignUserToProject command)
+        [HttpPatch("{projectId}/assign-member")]
+        public async Task<IActionResult> AssignMember([FromRoute] Guid projectId, [FromBody] AssignUserToProject command)
         {
+            command.ProjectId = projectId;
             await commandQueryBus.SendAsync(command);
             return Ok();
         }
 
-        [HttpGet]
-        public Task<ProjectResponse> GetProject([FromRoute] Guid id,  GetProject query)
+        [HttpGet("{projectId}")]
+        public Task<ProjectResponse> GetProject([FromRoute] Guid projectId)
         {
-            return commandQueryBus.SendAsync(query);
+            return commandQueryBus.SendAsync(new GetProject(projectId));
         }
 
-        [HttpGet("list")]
+        [HttpGet]
         public Task<ICollection<ProjectResponse>> GetProjects()
         {
             return commandQueryBus.SendAsync(new GetProjects());

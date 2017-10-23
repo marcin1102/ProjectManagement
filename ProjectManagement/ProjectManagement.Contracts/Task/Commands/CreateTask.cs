@@ -12,9 +12,8 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class CreateTask : ICreateIssue
     {
-        public CreateTask(Guid projectId, string title, string description, Guid reporterId, Guid? assigneeId, ICollection<Guid> labelsIds)
+        public CreateTask(string title, string description, Guid reporterId, Guid? assigneeId, ICollection<Guid> labelsIds)
         {
-            ProjectId = projectId;
             Title = title;
             Description = description;
             ReporterId = reporterId;
@@ -22,7 +21,8 @@ namespace ProjectManagement.Contracts.Task.Commands
             LabelsIds = labelsIds;
         }
 
-        public Guid ProjectId { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public Guid ReporterId { get; private set; }

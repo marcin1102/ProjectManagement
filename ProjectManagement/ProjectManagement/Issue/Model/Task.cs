@@ -167,6 +167,7 @@ namespace ProjectManagement.Issue.Model
         #region Bug
         public async void AddBug(IIssueFactory issueFactory, AddBugToTask command)
         {
+            //TODO: Poprawić na metodą nieasynchroniczną
             var bug = await issueFactory.GenerateBug(command);
             Bugs.Add(bug);
             Update(new BugAddedToTask(bug.Id, Id, ProjectId, bug.Title, bug.Description, bug.ReporterId, bug.AssigneeId, bug.Labels.Select(x => x.Id).ToList(), bug.CreatedAt));

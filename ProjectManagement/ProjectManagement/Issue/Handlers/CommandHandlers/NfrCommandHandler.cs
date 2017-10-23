@@ -56,7 +56,6 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
             var issue = await issueFactory.GenerateNfr(command);
 
             await nfrRepository.AddAsync(issue);
-            command.CreatedId = issue.Id;
         }
 
         public async Task HandleAsync(AssignLabelsToNfr command)

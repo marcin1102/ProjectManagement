@@ -61,12 +61,8 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
                 throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
 
             await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
-
             var task = await taskFactory.GenerateTask(command);
-
-            task.Created();
             await taskRepository.AddAsync(task);
-            command.CreatedId = task.Id;
         }
 
         public async Task HandleAsync(AssignLabelsToTask command)

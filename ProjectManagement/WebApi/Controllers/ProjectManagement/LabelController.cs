@@ -10,7 +10,7 @@ using ProjectManagement.Contracts.Label.Queries;
 
 namespace WebApi.Controllers.ProjectManagement
 {
-    [Route("api/project-management/labels/")]
+    [Route("api/project-management/projects/{projectId}/labels/")]
     public class LabelController : BaseController
     {
         public LabelController(ICommandQueryBus commandQueryBus) : base(commandQueryBus)
@@ -18,26 +18,27 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateLabel command)
+        public async Task<IActionResult> Create([FromRoute] Guid projectId, [FromBody] CreateLabel command)
         {
+            command.ProjectId = projectId;
             await commandQueryBus.SendAsync(command);
             return Created("api/project-management/labels/", command.CreatedId);
+        }
+
+        [HttpGet("{labelId}")]
+        [ProducesResponseType(typeof(LabelResponse), 200)]
+        [ProducesResponseType(typeof(ValidationFailureException), 400)]
+        public Task<LabelResponse> GetLabel([FromRoute]Guid projectId, [FromRoute] Guid labelId)
+        {
+            return commandQueryBus.SendAsync(new GetLabel(labelId, projectId));
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(LabelResponse), 200)]
         [ProducesResponseType(typeof(ValidationFailureException), 400)]
-        public Task<LabelResponse> GetLabel([FromQuery] GetLabel query)
+        public Task<ICollection<LabelResponse>> GetLabel([FromRoute] Guid projectId)
         {
-            return commandQueryBus.SendAsync(query);
-        }
-
-        [HttpGet("list")]
-        [ProducesResponseType(typeof(LabelResponse), 200)]
-        [ProducesResponseType(typeof(ValidationFailureException), 400)]
-        public Task<ICollection<LabelResponse>> GetLabel([FromQuery] GetLabels query)
-        {
-            return commandQueryBus.SendAsync(query);
+            return commandQueryBus.SendAsync(new GetLabels(projectId));
         }
     }
 }

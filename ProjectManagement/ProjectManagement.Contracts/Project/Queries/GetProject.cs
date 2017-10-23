@@ -6,7 +6,12 @@ namespace ProjectManagement.Contracts.Project.Queries
 {
     public class GetProject : IQuery<ProjectResponse>
     {
-        public Guid Id { get; set; }
+        public GetProject(Guid id)
+        {
+            Id = id;
+        }
+
+        public Guid Id { get; private set; }
     }
 
     public class ProjectResponse

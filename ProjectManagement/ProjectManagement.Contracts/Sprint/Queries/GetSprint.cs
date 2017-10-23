@@ -9,7 +9,14 @@ namespace ProjectManagement.Contracts.Sprint.Queries
 {
     public class GetSprint : IQuery<SprintResponse>
     {
-        public Guid Id { get; set; }
+        public GetSprint(Guid id, Guid projectId)
+        {
+            Id = id;
+            ProjectId = projectId;
+        }
+
+        public Guid Id { get; private set; }
+        public Guid ProjectId { get; private set; }
     }
 
     public class SprintResponse

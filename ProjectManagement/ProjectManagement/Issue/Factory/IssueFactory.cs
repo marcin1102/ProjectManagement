@@ -16,7 +16,7 @@ namespace ProjectManagement.Issue.Factory
         Task<Model.Task> GenerateTask(CreateTask command);
         Task<Model.Nfr> GenerateNfr(CreateNfr command);
         Task<Model.Bug> GenerateBug<TAddBugTo>(TAddBugTo command)
-            where TAddBugTo : IAddBugTo;
+            where TAddBugTo : class, IAddBugTo;
         Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command);
     }
     public class IssueFactory : IIssueFactory
@@ -94,7 +94,7 @@ namespace ProjectManagement.Issue.Factory
         }
 
         public async Task<Model.Bug> GenerateBug<TAddBugTo>(TAddBugTo command)
-            where TAddBugTo : IAddBugTo
+            where TAddBugTo : class, IAddBugTo
         {
             var reporter = await userRepository.GetAsync(command.ReporterId);
             var assignee = command.AssigneeId.HasValue ? await userRepository.GetAsync(command.AssigneeId.Value) : null;

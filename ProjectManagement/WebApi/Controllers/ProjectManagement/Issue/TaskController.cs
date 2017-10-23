@@ -10,7 +10,7 @@ using ProjectManagement.Contracts.Task.Commands;
 
 namespace WebApi.Controllers.ProjectManagement.Issue
 {
-    [Route("api/project-management/project/{projectId}/tasks/")]
+    [Route("api/project-management/projects/{projectId}/tasks/")]
     public class TaskController : BaseController
     {
         public TaskController(ICommandQueryBus commandQueryBus) : base(commandQueryBus)
@@ -18,8 +18,9 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask([FromBody] CreateTask command)
+        public async Task<IActionResult> CreateTask([FromRoute] Guid projectId, [FromBody] CreateTask command)
         {
+            command.ProjectId = projectId;
             await commandQueryBus.SendAsync(command);
             return Created("api/project-management/tasks/", command.CreatedId);
         }

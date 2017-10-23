@@ -81,6 +81,7 @@ namespace ProjectManagement.WebApi
                         x.RoutePrefix = "swagger/ui";
                         x.SwaggerEndpoint("/swagger/api/swagger.json", "Docs");
                     });
+                app.UsePathBase("/swagger/ui");
             }
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
