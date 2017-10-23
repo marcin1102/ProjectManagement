@@ -6,6 +6,6 @@ namespace ProjectManagement.Contracts.Issue.Enums
 {
     public enum IssueType
     {
-        Task, Bug, Nfr
+        Task, Subtask, Bug, Nfr
     }
 }

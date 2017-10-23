@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Reflection;
 using Autofac;
 using Infrastructure.Bootstrap;
+using Infrastructure.Providers;
 using Infrastructure.Settings;
 using Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ProjectManagement.Contracts;
 using UserManagement.Contracts.User.Commands;
 using UserManagement.Contracts.User.Queries;
 using UserManagement.User.Handlers;
@@ -55,6 +53,11 @@ namespace UserManagement
         public override void RegisterQueryHandlers()
         {
             RegisterAsyncQueryHandler<GetUser, UserResponse, UserQueryHandler>();
+        }
+
+        public override void AddAssemblyToProvider()
+        {
+            AssembliesProvider.assemblies.Add(typeof(UserManagementBootstrap).GetTypeInfo().Assembly);
         }
     }
 }

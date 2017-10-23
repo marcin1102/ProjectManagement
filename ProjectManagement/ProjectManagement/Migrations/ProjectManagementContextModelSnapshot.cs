@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using ProjectManagement;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Sprint.Enums;
@@ -43,7 +44,125 @@ namespace ProjectManagement.Migrations
                     b.ToTable("EventEnvelope");
                 });
 
-            modelBuilder.Entity("ProjectManagement.Issue.Model.Issue", b =>
+            modelBuilder.Entity("ProjectManagement.Comment.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("BugId");
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTimeOffset>("CreatedAt");
+
+                    b.Property<Guid>("MemberId");
+
+                    b.Property<Guid?>("NfrId");
+
+                    b.Property<Guid?>("SubtaskId");
+
+                    b.Property<Guid?>("TaskId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BugId");
+
+                    b.HasIndex("NfrId");
+
+                    b.HasIndex("SubtaskId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Issue.Model.Abstract.IssueLabel", b =>
+                {
+                    b.Property<Guid>("IssueId");
+
+                    b.Property<Guid>("LabelId");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.HasKey("IssueId", "LabelId");
+
+                    b.ToTable("IssuesLabels");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IssueLabel");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Issue.Model.Bug", b =>
+                {
+                    b.Property<Guid>("Id");
+
+                    b.Property<Guid?>("AssigneeId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<Guid?>("NfrId");
+
+                    b.Property<Guid>("ProjectId");
+
+                    b.Property<Guid>("ReporterId");
+
+                    b.Property<Guid?>("SprintId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<Guid?>("TaskId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<long>("Version");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bug");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Issue.Model.Nfr", b =>
+                {
+                    b.Property<Guid>("Id");
+
+                    b.Property<Guid?>("AssigneeId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<Guid?>("NfrId");
+
+                    b.Property<Guid>("ProjectId");
+
+                    b.Property<Guid>("ReporterId");
+
+                    b.Property<Guid?>("SprintId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<Guid?>("TaskId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<long>("Version");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Nfr");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Issue.Model.Subtask", b =>
                 {
                     b.Property<Guid>("Id");
 
@@ -56,7 +175,40 @@ namespace ProjectManagement.Migrations
 
                     b.Property<Guid>("ProjectId");
 
-                    b.Property<Guid?>("ReporterId");
+                    b.Property<Guid>("ReporterId");
+
+                    b.Property<Guid?>("SprintId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<Guid?>("TaskId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<long>("Version");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subtask");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Issue.Model.Task", b =>
+                {
+                    b.Property<Guid>("Id");
+
+                    b.Property<Guid?>("AssigneeId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<Guid>("ProjectId");
+
+                    b.Property<Guid>("ReporterId");
 
                     b.Property<Guid?>("SprintId");
 
@@ -65,73 +217,29 @@ namespace ProjectManagement.Migrations
                     b.Property<string>("Title")
                         .IsRequired();
 
-                    b.Property<int>("Type");
-
                     b.Property<DateTime>("UpdatedAt");
 
                     b.Property<long>("Version");
 
-                    b.Property<string>("comments");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("AssigneeId");
-
-                    b.HasIndex("ReporterId");
-
-                    b.ToTable("Issue");
-                });
-
-            modelBuilder.Entity("ProjectManagement.IssueLabel.IssueLabel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("IssueId");
-
-                    b.Property<Guid>("LabelId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IssueId");
-
-                    b.HasIndex("LabelId");
-
-                    b.ToTable("IssueLabel");
-                });
-
-            modelBuilder.Entity("ProjectManagement.IssueSubtasks.IssueSubtask", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("IssueId");
-
-                    b.Property<Guid>("ProjectId");
-
-                    b.Property<Guid>("SubtaskId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IssueId");
-
-                    b.ToTable("IssueSubtask");
+                    b.ToTable("Task");
                 });
 
             modelBuilder.Entity("ProjectManagement.Label.Label", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<Guid>("ProjectId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Labels");
+                    b.ToTable("Label");
                 });
 
             modelBuilder.Entity("ProjectManagement.Project.Model.Project", b =>
@@ -143,27 +251,11 @@ namespace ProjectManagement.Migrations
 
                     b.Property<long>("Version");
 
+                    b.Property<string>("members");
+
                     b.HasKey("Id");
 
                     b.ToTable("Project");
-                });
-
-            modelBuilder.Entity("ProjectManagement.ProjectUser.ProjectUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("ProjectId");
-
-                    b.Property<Guid>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProjectUser");
                 });
 
             modelBuilder.Entity("ProjectManagement.Sprint.Model.Sprint", b =>
@@ -182,8 +274,6 @@ namespace ProjectManagement.Migrations
                     b.Property<int>("Status");
 
                     b.Property<long>("Version");
-
-                    b.Property<string>("unfinishedIssues");
 
                     b.HasKey("Id");
 
@@ -213,49 +303,63 @@ namespace ProjectManagement.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("ProjectManagement.Issue.Model.Issue", b =>
+            modelBuilder.Entity("ProjectManagement.Issue.Model.BugLabel", b =>
                 {
-                    b.HasOne("ProjectManagement.User.Model.User", "Assignee")
-                        .WithMany()
-                        .HasForeignKey("AssigneeId");
+                    b.HasBaseType("ProjectManagement.Issue.Model.Abstract.IssueLabel");
 
-                    b.HasOne("ProjectManagement.User.Model.User", "Reporter")
-                        .WithMany()
-                        .HasForeignKey("ReporterId");
+
+                    b.ToTable("BugLabel");
+
+                    b.HasDiscriminator().HasValue("BugLabel");
                 });
 
-            modelBuilder.Entity("ProjectManagement.IssueLabel.IssueLabel", b =>
+            modelBuilder.Entity("ProjectManagement.Issue.Model.NfrLabel", b =>
                 {
-                    b.HasOne("ProjectManagement.Issue.Model.Issue")
-                        .WithMany("Labels")
-                        .HasForeignKey("IssueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasBaseType("ProjectManagement.Issue.Model.Abstract.IssueLabel");
 
-                    b.HasOne("ProjectManagement.Label.Label")
-                        .WithMany("Issues")
-                        .HasForeignKey("LabelId")
-                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.ToTable("NfrLabel");
+
+                    b.HasDiscriminator().HasValue("NfrLabel");
                 });
 
-            modelBuilder.Entity("ProjectManagement.IssueSubtasks.IssueSubtask", b =>
+            modelBuilder.Entity("ProjectManagement.Issue.Model.SubtaskLabel", b =>
                 {
-                    b.HasOne("ProjectManagement.Issue.Model.Issue")
-                        .WithMany("Subtasks")
-                        .HasForeignKey("IssueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasBaseType("ProjectManagement.Issue.Model.Abstract.IssueLabel");
+
+
+                    b.ToTable("SubtaskLabel");
+
+                    b.HasDiscriminator().HasValue("SubtaskLabel");
                 });
 
-            modelBuilder.Entity("ProjectManagement.ProjectUser.ProjectUser", b =>
+            modelBuilder.Entity("ProjectManagement.Issue.Model.TaskLabel", b =>
                 {
-                    b.HasOne("ProjectManagement.Project.Model.Project")
-                        .WithMany("Members")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasBaseType("ProjectManagement.Issue.Model.Abstract.IssueLabel");
 
-                    b.HasOne("ProjectManagement.User.Model.User")
-                        .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.ToTable("TaskLabel");
+
+                    b.HasDiscriminator().HasValue("TaskLabel");
+                });
+
+            modelBuilder.Entity("ProjectManagement.Comment.Comment", b =>
+                {
+                    b.HasOne("ProjectManagement.Issue.Model.Bug")
+                        .WithMany("Comments")
+                        .HasForeignKey("BugId");
+
+                    b.HasOne("ProjectManagement.Issue.Model.Nfr")
+                        .WithMany("Comments")
+                        .HasForeignKey("NfrId");
+
+                    b.HasOne("ProjectManagement.Issue.Model.Subtask")
+                        .WithMany("Comments")
+                        .HasForeignKey("SubtaskId");
+
+                    b.HasOne("ProjectManagement.Issue.Model.Task")
+                        .WithMany("Comments")
+                        .HasForeignKey("TaskId");
                 });
 #pragma warning restore 612, 618
         }

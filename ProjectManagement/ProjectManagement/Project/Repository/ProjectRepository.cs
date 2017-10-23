@@ -16,7 +16,7 @@ namespace ProjectManagement.Project.Repository
 
         public override Task<Model.Project> GetAsync(Guid id)
         {
-            return Query.Include(x => x.Members).SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, nameof(Model.Project));
+            return Query.SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, nameof(Model.Project));
         }
     }
 }

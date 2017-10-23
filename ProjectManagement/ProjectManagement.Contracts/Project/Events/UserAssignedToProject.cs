@@ -7,13 +7,13 @@ namespace ProjectManagement.Contracts.Project.Events
 {
     public class UserAssignedToProject : IDomainEvent
     {
-        public UserAssignedToProject(Guid id, Guid userId)
+        public UserAssignedToProject(Guid projectId, Guid userId)
         {
-            Id = id;
+            ProjectId = projectId;
             UserId = userId;
         }
 
-        public Guid Id { get; private set; }
+        public Guid ProjectId { get; private set; }
         public Guid UserId { get; private set; }
         public long AggregateVersion { get; set; }
     }

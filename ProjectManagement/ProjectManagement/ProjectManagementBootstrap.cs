@@ -25,15 +25,17 @@ using ProjectManagement.Issue.Handlers;
 using ProjectManagement.Issue.Repository;
 using ProjectManagement.Issue.Factory;
 using ProjectManagement.Contracts.Issue.Queries;
-using ProjectManagement.Issue.Searchers;
 using ProjectManagement.Services;
 using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Sprint.Handlers;
 using ProjectManagement.Sprint.Repository;
 using ProjectManagement.Contracts.Sprint.Queries;
 using ProjectManagement.Sprint.Searchers;
-using ProjectManagement.User.Searchers;
 using ProjectManagement.Contracts.User.Queries;
+using ProjectManagement.Issue.Handlers.CommandHandlers;
+using ProjectManagement.Contracts.Task.Commands;
+using ProjectManagement.Contracts.Nfr.Commands;
+using ProjectManagement.task.Handlers.CommandHandlers;
 
 namespace ProjectManagement
 {
@@ -77,18 +79,8 @@ namespace ProjectManagement
                .InstancePerLifetimeScope();
 
             builder
-               .RegisterType<IssueSearcher>()
-               .As<IIssueSearcher>()
-               .InstancePerLifetimeScope();
-
-            builder
                .RegisterType<SprintSearcher>()
                .As<ISprintSearcher>()
-               .InstancePerLifetimeScope();
-
-            builder
-               .RegisterType<UserSearcher>()
-               .As<IUserSearcher>()
                .InstancePerLifetimeScope();
         }
 
@@ -107,7 +99,19 @@ namespace ProjectManagement
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<IssueRepository>()
+                .RegisterType<TaskRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<BugRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<NfrRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<SubtaskRepository>()
                 .InstancePerLifetimeScope();
 
             builder
@@ -134,15 +138,42 @@ namespace ProjectManagement
             //Label
             RegisterAsyncCommandHandler<CreateLabel, LabelCommandHandler>();
 
-            //Issue
-            RegisterAsyncCommandHandler<CreateIssue, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<AssignLabelsToIssue, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<CommentIssue, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<AddSubtask, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<MarkAsInProgress, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<MarkAsDone, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<AssignAssigneeToIssue, IssueCommandHandler>();
-            RegisterAsyncCommandHandler<AssignIssueToSprint, IssueCommandHandler>();
+            //Task
+            RegisterAsyncCommandHandler<CreateTask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignLabelsToTask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<CommentTask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<MarkTaskAsInProgress, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<MarkTaskAsDone, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToTask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignTaskToSprint, TaskCommandHandler>();
+
+            //Bug
+            RegisterAsyncCommandHandler<AssignLabelsToTasksBug, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<CommentTasksBug, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<MarkTasksBugAsInProgress, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<MarkTasksBugAsDone, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToTasksBug, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignTasksBugToSprint, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AddBugToNfr, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AddBugToTask, TaskCommandHandler>();
+
+            //Subtask
+            RegisterAsyncCommandHandler<AssignLabelsToSubtask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<CommentSubtask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<MarkSubtaskAsInProgress, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<MarkSubtaskAsDone, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToSubtask, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AssignSubtaskToSprint, TaskCommandHandler>();
+            RegisterAsyncCommandHandler<AddSubtaskToTask, TaskCommandHandler>();
+
+            //Nfr
+            RegisterAsyncCommandHandler<CreateNfr, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AssignLabelsToNfr, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<CommentNfr, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<MarkNfrAsInProgress, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<MarkNfrAsDone, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToNfr, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AssignNfrToSprint, NfrCommandHandler>();
 
             //Sprint
             RegisterAsyncCommandHandler<CreateSprint, SprintCommandHandler>();
@@ -166,16 +197,13 @@ namespace ProjectManagement
             RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
             RegisterAsyncQueryHandler<GetLabels, ICollection<LabelResponse>, LabelQueryHandler>();
 
-            //Issue
-            RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
-            RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
-            RegisterAsyncQueryHandler<GetUnfinishedIssues, ICollection<IssueListItem>, IssueQueryHandler>();
+            ////Issue
+            //RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
+            //RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
+            //RegisterAsyncQueryHandler<GetUnfinishedIssues, ICollection<IssueListItem>, IssueQueryHandler>();
 
             //Sprint
             RegisterAsyncQueryHandler<GetSprint, SprintResponse, SprintQueryHandler>();
-
-            //User
-            RegisterAsyncQueryHandler<GetUnfinishedIssuesAssignees, ICollection<UserListItem>, UserQueryHandler>();
         }
     }
 }

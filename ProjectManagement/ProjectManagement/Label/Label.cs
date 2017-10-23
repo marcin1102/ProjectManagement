@@ -15,13 +15,11 @@ namespace ProjectManagement.Label
             ProjectId = projectId;
             Name = name;
             Description = description;
-            Issues = new List<IssueLabel.IssueLabel>();
         }
 
         public Guid Id { get; private set; }
         public Guid ProjectId { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public ICollection<IssueLabel.IssueLabel> Issues { get; private set; }
     }
 }

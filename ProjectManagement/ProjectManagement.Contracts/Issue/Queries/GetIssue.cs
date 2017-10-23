@@ -13,7 +13,7 @@ namespace ProjectManagement.Contracts.Issue.Queries
     public class IssueResponse
     {
         public IssueResponse(Guid id, Guid projectId, Guid? sprintId, string title, string description, IssueType type, IssueStatus status,
-            Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt, ICollection<Comment.Comment> comments,
+            Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt,
             ICollection<Guid> subtasksIds, ICollection<Guid> labelsIds)
         {
             Id = id;
@@ -27,7 +27,7 @@ namespace ProjectManagement.Contracts.Issue.Queries
             AssigneeId = assigneeId;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
-            Comments = comments;
+            //Comments = comments;
             SubtasksIds = subtasksIds;
             LabelsIds = labelsIds;
         }
@@ -43,7 +43,7 @@ namespace ProjectManagement.Contracts.Issue.Queries
         public Guid? AssigneeId { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
-        public ICollection<Comment.Comment> Comments { get; private set; }
+        //public ICollection<Comment.Comment> Comments { get; private set; }
         public ICollection<Guid> SubtasksIds { get; private set; }
         public ICollection<Guid> LabelsIds { get; private set; }
     }

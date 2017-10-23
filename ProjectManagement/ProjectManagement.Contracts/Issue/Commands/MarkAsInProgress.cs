@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
 using Infrastructure.Message;
+using Newtonsoft.Json;
 
 namespace ProjectManagement.Contracts.Issue.Commands
 {
     public class MarkAsInProgress : ICommand
     {
-        public MarkAsInProgress(Guid issueId, Guid userId)
+        public MarkAsInProgress(Guid userId)
         {
-            IssueId = issueId;
             UserId = userId;
         }
 
-        public Guid IssueId { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
+        [JsonIgnore]
+        public Guid IssueId { get; set; }
         public Guid UserId { get; private set; }
     }
 

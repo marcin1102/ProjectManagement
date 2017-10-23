@@ -25,7 +25,7 @@ namespace ProjectManagement.Sprint.Handlers
             if (sprint == null)
                 throw new EntityDoesNotExist(query.Id, nameof(Model.Sprint));
 
-            return new SprintResponse(sprint.Id, sprint.ProjectId, sprint.Name, sprint.StartDate.Date, sprint.EndDate.Date, sprint.Status, sprint.UnfinishedIssues);
+            return new SprintResponse(sprint.Id, sprint.ProjectId, sprint.Name, sprint.StartDate.Date, sprint.EndDate.Date, sprint.Status);
         }
     }
 }

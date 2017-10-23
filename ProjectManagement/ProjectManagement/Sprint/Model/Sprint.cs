@@ -19,16 +19,6 @@ namespace ProjectManagement.Sprint.Model
         public DateTime EndDate { get; private set; }
         public SprintStatus Status { get; private set; }
 
-        public string unfinishedIssues { get; private set; }
-        public ICollection<UnfinishedIssue> UnfinishedIssues
-        {
-            get => JsonConvert.DeserializeObject<ICollection<UnfinishedIssue>>(unfinishedIssues ?? "");
-            private set
-            {
-                unfinishedIssues = JsonConvert.SerializeObject(value);
-            }
-        }
-
         private Sprint() { }
         public Sprint(Guid id, Guid projectId, string name, DateTime startDate, DateTime endDate) : base(id)
         {
@@ -41,7 +31,7 @@ namespace ProjectManagement.Sprint.Model
 
         public override void Created()
         {
-            Update(new SprintCreated(Id, Name, StartDate.Date, EndDate.Date));
+            Update(new SprintCreated(Id, ProjectId, Name, StartDate.Date, EndDate.Date, Status));
         }
 
         public void StartSprint()
@@ -54,31 +44,20 @@ namespace ProjectManagement.Sprint.Model
                 StartDate = currentDate;
 
             Status = SprintStatus.InProgress;
-            Update(new SprintStarted(Id, Status));
+            Update(new SprintStarted(Id, Status, StartDate));
         }
 
-        public void FinishSprint(Dictionary<Guid, Guid?> unfinishedIssuesUsers)
+        public void FinishSprint()
         {
             if (Status != SprintStatus.InProgress)
                 throw new CannotChangeSprintStatus(Id, Status, SprintStatus.Finished, DomainInformationProvider.Name);
 
-            EnsureUnfinishedIssuesSaved(unfinishedIssuesUsers);
             var currentDate = DateTime.Now.Date;
             if (EndDate.Date != currentDate)
                 EndDate = currentDate;
 
             Status = SprintStatus.Finished;
-            Update(new SprintFinished(Id, Status, UnfinishedIssues));
-        }
-
-        private void EnsureUnfinishedIssuesSaved(Dictionary<Guid, Guid?> unfinishedIssuesUsers)
-        {
-            var unfinishedIssues = new List<UnfinishedIssue>();
-            foreach (var issueUser in unfinishedIssuesUsers)
-            {
-                unfinishedIssues.Add(new UnfinishedIssue(issueUser.Key, issueUser.Value));
-            }
-            UnfinishedIssues = unfinishedIssues;
+            Update(new SprintFinished(Id, Status, EndDate));
         }
     }
 }

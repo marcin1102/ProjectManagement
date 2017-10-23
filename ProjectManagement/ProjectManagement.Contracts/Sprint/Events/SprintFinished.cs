@@ -8,16 +8,16 @@ namespace ProjectManagement.Contracts.Sprint.Events
 {
     public class SprintFinished : IDomainEvent
     {
-        public SprintFinished(Guid id, SprintStatus status, ICollection<UnfinishedIssue> unfinishedIssues)
+        public SprintFinished(Guid id, SprintStatus status, DateTime end)
         {
             Id = id;
             Status = status;
-            UnfinishedIssues = unfinishedIssues;
+            End = end;
         }
 
         public Guid Id { get; private set; }
         public SprintStatus Status { get; private set; }
-        public ICollection<UnfinishedIssue> UnfinishedIssues { get; private set; }
+        public DateTime End { get; set; }
         public long AggregateVersion { get; set; }
     }
 }

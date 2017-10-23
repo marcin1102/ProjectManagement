@@ -1,13 +1,9 @@
 ﻿using Infrastructure.Exceptions;
 using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Sprint.Commands;
-using ProjectManagement.Issue.Searchers;
-using ProjectManagement.Project.Repository;
 using ProjectManagement.Project.Searchers;
 using ProjectManagement.Sprint.Repository;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectManagement.Sprint.Handlers
@@ -19,18 +15,16 @@ namespace ProjectManagement.Sprint.Handlers
     {
         private readonly SprintRepository sprintRepository;
         private readonly IProjectSearcher projectSearcher;
-        private readonly IIssueSearcher issueSearcher;
 
         public SprintCommandHandler(SprintRepository sprintRepository)
         {
             this.sprintRepository = sprintRepository;
         }
 
-        public SprintCommandHandler(SprintRepository sprintRepository, IProjectSearcher projectSearcher, IIssueSearcher issueSearcher)
+        public SprintCommandHandler(SprintRepository sprintRepository, IProjectSearcher projectSearcher)
         {
             this.sprintRepository = sprintRepository;
             this.projectSearcher = projectSearcher;
-            this.issueSearcher = issueSearcher;
         }
 
         public async Task HandleAsync(CreateSprint command)
@@ -58,10 +52,9 @@ namespace ProjectManagement.Sprint.Handlers
         public async Task HandleAsync(FinishSprint command)
         {
             var sprint = await sprintRepository.GetAsync(command.Id);
-            var unfinishedIssues = await issueSearcher.GetUnfinishedIssuesAndAssigneeIds(command.Id);
             var originalVersion = sprint.Version;
 
-            sprint.FinishSprint(unfinishedIssues);
+            sprint.FinishSprint();
             await sprintRepository.Update(sprint, originalVersion);
         }
     }

@@ -37,8 +37,8 @@ namespace ProjectManagement.Project.Searchers
 
         public async Task<bool> IsUserProjectMember(Guid projectId, Guid userId)
         {
-            var project = await db.Projects.Where(x => x.Id == projectId).Include(x => x.Members).SingleOrDefaultAsync() ?? throw new EntityDoesNotExist(projectId, nameof(Model.Project));
-            return project.Members.Any(x => x.UserId == userId);
+            var project = await db.Projects.Where(x => x.Id == projectId).SingleOrDefaultAsync() ?? throw new EntityDoesNotExist(projectId, nameof(Model.Project));
+            return project.Members.Any(memberId => memberId == userId);
         }
     }
 }

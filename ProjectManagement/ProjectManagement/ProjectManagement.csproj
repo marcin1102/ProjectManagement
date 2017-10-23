@@ -12,5 +12,10 @@
    <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
   </ItemGroup>
+  
+   <ItemGroup>
+     <Folder Include="Issue\Searchers\" />
+     <Folder Include="User\Searchers\" />
+   </ItemGroup>
 
 </Project>

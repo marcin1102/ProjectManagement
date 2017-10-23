@@ -31,7 +31,7 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpGet]
-        public Task<ProjectResponse> GetProject([FromQuery] GetProject query)
+        public Task<ProjectResponse> GetProject([FromRoute] Guid id,  GetProject query)
         {
             return commandQueryBus.SendAsync(query);
         }

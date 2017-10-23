@@ -34,8 +34,6 @@ namespace ProjectManagement.User.Model
             }
         }
 
-        public ICollection<ProjectUser.ProjectUser> Projects { get; private set; }
-
         public long AggregateVersion { get; set; }
 
         public void GrantRole(Role role, long version)

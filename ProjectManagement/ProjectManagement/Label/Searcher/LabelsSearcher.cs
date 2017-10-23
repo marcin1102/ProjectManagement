@@ -8,8 +8,7 @@ namespace ProjectManagement.Label.Searcher
 {
     public interface ILabelsSearcher
     {
-        Task<List<Label>> GetLabels(Guid projectId);
-        Task<ICollection<Guid>> DoesLabelsExistInScope(Guid projectId, ICollection<Guid> labelsIds);
+        Task<List<Label>> GetLabels(Guid projectId, ICollection<Guid> labelsIds = null);
     }
 
     public class LabelSearcher : ILabelsSearcher
@@ -21,16 +20,12 @@ namespace ProjectManagement.Label.Searcher
             this.db = db;
         }
 
-        public Task<List<Label>> GetLabels(Guid projectId)
+        public Task<List<Label>> GetLabels(Guid projectId, ICollection<Guid> labelsIds = null)
         {
-            return db.Labels.Where(x => x.ProjectId == projectId).ToListAsync();
-        }
-
-        public async Task<ICollection<Guid>> DoesLabelsExistInScope(Guid projectId, ICollection<Guid> labelsIds)
-        {
-            var response = new List<Guid>();
-            var ids = await db.Labels.Where(x => x.ProjectId == projectId).Where(x => labelsIds.Contains(x.Id)).Select(x => x.Id).ToListAsync();
-            return labelsIds.Except(ids).ToList();
+            return db.Labels
+                .Where(x => x.ProjectId == projectId)
+                .Where(x => labelsIds == null ? true : labelsIds.Contains(x.Id))
+                .ToListAsync();
         }
     }
 }

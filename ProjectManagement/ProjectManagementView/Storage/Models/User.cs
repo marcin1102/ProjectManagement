@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Infrastructure.Storage.EF;
+using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagementView.Storage.Models
 {
@@ -15,6 +16,7 @@ namespace ProjectManagementView.Storage.Models
         public Guid Id { get; private set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public Role Role { get; set; }
         public long Version { get; set; }
     }
 }

@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
 using Infrastructure.Message;
+using Newtonsoft.Json;
 
 namespace ProjectManagement.Contracts.Issue.Commands
 {
+    // TODO: Change underlying contracts to interfaces
     public class MarkAsDone : ICommand
     {
-        public MarkAsDone(Guid issueId, Guid userId)
+        public MarkAsDone(Guid userId)
         {
-            IssueId = issueId;
             UserId = userId;
         }
 
-        public Guid IssueId { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
+        [JsonIgnore]
+        public Guid IssueId { get; set; }
         public Guid UserId { get; private set; }
     }
 

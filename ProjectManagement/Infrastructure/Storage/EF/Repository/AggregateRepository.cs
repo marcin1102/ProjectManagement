@@ -10,7 +10,7 @@ namespace Infrastructure.Storage.EF.Repository
         where TAggregate : class, IAggregateRoot
     {
         public readonly DbContext dbContext;
-        private readonly IEventManager eventManager;
+        protected readonly IEventManager eventManager;
 
         private readonly DbSet<TAggregate> dbSet;
         public DbSet<TAggregate> Query => dbSet;
@@ -28,7 +28,7 @@ namespace Infrastructure.Storage.EF.Repository
             await eventManager.PublishEventsAsync(aggregate.PendingEvents);
         }
 
-        public async Task Update(TAggregate aggregate, long originalVersion)
+        public virtual async Task Update(TAggregate aggregate, long originalVersion)
         {
             await AddOrUpdate(aggregate, originalVersion);
             await eventManager.PublishEventsAsync(aggregate.PendingEvents);

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using FluentValidation;
 using Infrastructure.Message;
-using ProjectManagement.Contracts.Issue.Comment;
+using Newtonsoft.Json;
 
 namespace ProjectManagement.Contracts.Issue.Commands
 {
@@ -12,34 +10,24 @@ namespace ProjectManagement.Contracts.Issue.Commands
     /// </summary>
     public class CommentIssue : ICommand
     {
-        public CommentIssue(Guid issueId, Comment.Comment comment)
+        public CommentIssue(Guid memberId, string content)
         {
-            IssueId = issueId;
-            Comment = comment;
+            MemberId = memberId;
+            Content = content;
         }
 
-        public Guid IssueId { get; private set; }
-        public Comment.Comment Comment { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
+        [JsonIgnore]
+        public Guid IssueId { get; set; }
+        public Guid MemberId { get; private set; }
+        public string Content { get; private set; }
     }
 
     public class CommentIssueValidator : AbstractValidator<CommentIssue>
     {
         public CommentIssueValidator()
         {
-            RuleFor(x => x.IssueId).NotNull();
-            RuleFor(x => x.Comment).NotNull()
-                .Must(MemberIdNotNull).Must(ContentNotEmpty);
-
-        }
-
-        private bool MemberIdNotNull(Comment.Comment comment)
-        {
-            return comment.MemberId != null;
-        }
-
-        private bool ContentNotEmpty(Comment.Comment comment)
-        {
-            return !string.IsNullOrEmpty(comment.Content);
         }
     }
 }

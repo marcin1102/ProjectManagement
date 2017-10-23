@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Autofac;
 using Infrastructure.Bootstrap;
+using Infrastructure.Providers;
 using Infrastructure.Settings;
 using Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ProjectManagementView.Storage.Handlers;
+using UserManagement.Contracts.User.Events;
 
 namespace ProjectManagementView
 {
@@ -58,12 +62,21 @@ namespace ProjectManagementView
 
         public override void RegisterEventHandlers()
         {
-            //throw new NotImplementedException();
+            //User
+            RegisterAsyncEventHandler<UserCreated, UserEventHandler>();
+            RegisterAsyncEventHandler<RoleGranted, UserEventHandler>();
+
+
         }
 
         public override void RegisterQueryHandlers()
         {
             //throw new NotImplementedException();
+        }
+
+        public override void AddAssemblyToProvider()
+        {
+            AssembliesProvider.assemblies.Add(typeof(ProjectManagementViewsBootstrap).GetTypeInfo().Assembly);
         }
     }
 }

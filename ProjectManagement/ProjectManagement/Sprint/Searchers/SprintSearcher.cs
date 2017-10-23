@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 
 namespace ProjectManagement.Sprint.Searchers
 {
     public interface ISprintSearcher
     {
-        Task<bool> DoesSprintExistInScope(Guid sprintId, Guid projectId);
+        Task CheckIfSprintExistsInProjectScope(Guid sprintId, Guid projectId);
     }
 
     public class SprintSearcher : ISprintSearcher
@@ -18,9 +19,11 @@ namespace ProjectManagement.Sprint.Searchers
             this.db = db;
         }
 
-        public Task<bool> DoesSprintExistInScope(Guid sprintId, Guid projectId)
+        public async Task CheckIfSprintExistsInProjectScope(Guid sprintId, Guid projectId)
         {
-            return db.Sprints.AnyAsync(x => x.Id == sprintId && x.ProjectId == projectId);
+            var doesExist = await db.Sprints.AnyAsync(x => x.Id == sprintId && x.ProjectId == projectId);
+            if (!doesExist)
+                throw new EntityDoesNotExistsInScope(sprintId, nameof(Sprint.Model.Sprint), nameof(Project.Model.Project), projectId);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace ProjectManagement.Contracts.Sprint.Queries
 
     public class SprintResponse
     {
-        public SprintResponse(Guid id, Guid projectId, string name, DateTime startDate, DateTime endDate, SprintStatus status, ICollection<UnfinishedIssue> unfinishedIssues)
+        public SprintResponse(Guid id, Guid projectId, string name, DateTime startDate, DateTime endDate, SprintStatus status)
         {
             Id = id;
             ProjectId = projectId;
@@ -22,7 +22,6 @@ namespace ProjectManagement.Contracts.Sprint.Queries
             StartDate = startDate;
             EndDate = endDate;
             Status = status;
-            UnfinishedIssues = unfinishedIssues;
         }
 
         public Guid Id { get; private set; }
@@ -31,6 +30,5 @@ namespace ProjectManagement.Contracts.Sprint.Queries
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public SprintStatus Status { get; private set; }
-        public ICollection<UnfinishedIssue> UnfinishedIssues { get; private set; }
     }
 }

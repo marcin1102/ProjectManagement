@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Infrastructure.Storage.EF;
+using Newtonsoft.Json;
 using ProjectManagement.Contracts.Issue.Enums;
 
 namespace ProjectManagementView.Storage.Models.Abstract
@@ -15,10 +17,28 @@ namespace ProjectManagementView.Storage.Models.Abstract
         public string Title { get; set; }
         public string Description { get; set; }
         public IssueStatus Status { get; set; }
-        //public User.Model.User Reporter { get; private set; }
-        //public User.Model.User Assignee { get; private set; }
+        public User Reporter { get; set; }
+        public User Assignee { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public string labels { get; private set; }
+        public ICollection<Label> Labels
+        {
+            get => JsonConvert.DeserializeObject<ICollection<Label>>(labels);
+            set
+            {
+                labels = JsonConvert.SerializeObject(value);
+            }
+        }
+        public string comments { get; private set; }
+        public ICollection<Comment> Comments
+        {
+            get => JsonConvert.DeserializeObject<ICollection<Comment>>(comments);
+            set
+            {
+                comments = JsonConvert.SerializeObject(value);
+            }
+        }
         public long Version { get; set; }
     }
 }

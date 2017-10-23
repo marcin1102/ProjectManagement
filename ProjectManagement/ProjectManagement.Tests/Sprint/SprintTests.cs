@@ -64,7 +64,7 @@ namespace ProjectManagement.Tests.Sprint
             var endDate = DateTime.Now.Date.AddDays(14);
             var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
-                        
+
             await commandQueryBus.SendAsync(createSprint);
             var id = createSprint.CreatedId;
 
@@ -118,10 +118,8 @@ namespace ProjectManagement.Tests.Sprint
 
             //Assert
             var response = await commandQueryBus.SendAsync(new GetSprint { Id = sprintId});
-            var responseIssuesIds = response.UnfinishedIssues.Select(x => x.IssueId).ToList();
 
             Assert.Equal(SprintStatus.Finished, response.Status);
-            Assert.True(!unfinishedIssuesIds.Except(responseIssuesIds).Any() && unfinishedIssuesIds.Count == responseIssuesIds.Count);
         }
 
         private async Task<List<Guid>> ChangeIssuesStatuses(List<Guid> issuesIds, Guid id, ICommandQueryBus commandQueryBus)
@@ -140,7 +138,7 @@ namespace ProjectManagement.Tests.Sprint
 
         private async Task<List<Guid>> GenerateAndAssignThreeIssues(Guid sprintId, ICommandQueryBus commandQueryBus)
         {
-            var commands = new List<CreateIssue>();
+            var commands = new List<ICreateIssue>();
             for (int i = 0; i < 3; i++)
             {
                 commands.Add(IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task));

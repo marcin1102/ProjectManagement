@@ -56,7 +56,6 @@ namespace ProjectManagement.Tests.Issue
             //Assert
             Assert.Equal(createIssue.CreatedId, response.Id);
             Assert.Equal(createIssue.LabelsIds.Count, response.LabelsIds.Count);
-            Assert.Equal(createIssue.SubtasksIds.Count, response.SubtasksIds.Count);
             Assert.Equal(createIssue.AssigneeId, response.AssigneeId);
         }
 
