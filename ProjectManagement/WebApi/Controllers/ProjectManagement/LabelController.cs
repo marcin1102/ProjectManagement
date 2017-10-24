@@ -18,7 +18,7 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromRoute] Guid projectId, [FromBody] CreateLabel command)
+        public async Task<IActionResult> Create([FromRoute] Guid projectId, [FromBody] AddLabel command)
         {
             command.ProjectId = projectId;
             await commandQueryBus.SendAsync(command);

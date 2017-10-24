@@ -140,13 +140,13 @@ namespace WebApi.Controllers.ProjectManagement.Issue
             return Ok();
         }
 
-        [HttpPatch("{taskId}/add-bug")]
+        [HttpPost("{taskId}/add-bug")]
         public async Task<IActionResult> AddToTask([FromRoute] Guid projectId, [FromRoute] Guid taskId, [FromBody] AddBugToTask command)
         {
             command.ProjectId = projectId;
             command.TaskId = taskId;
             await commandQueryBus.SendAsync(command);
-            return Ok();
+            return Created("", command.CreatedId);
         }
         #endregion
 
@@ -211,13 +211,13 @@ namespace WebApi.Controllers.ProjectManagement.Issue
             return Ok();
         }
 
-        [HttpPatch("{taskId}/add-Subtask")]
+        [HttpPost("{taskId}/add-Subtask")]
         public async Task<IActionResult> AddToTask([FromRoute] Guid projectId, [FromRoute] Guid taskId, [FromBody] AddSubtaskToTask command)
         {
             command.ProjectId = projectId;
             command.TaskId = taskId;
             await commandQueryBus.SendAsync(command);
-            return Ok();
+            return Created("", command.CreatedId);
         }
         #endregion
     }

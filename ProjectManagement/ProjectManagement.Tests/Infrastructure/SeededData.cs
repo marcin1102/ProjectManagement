@@ -23,7 +23,8 @@ namespace ProjectManagement.Tests.Infrastructure
         public Guid ProjectId { get; private set; }
         public Guid TaskId { get; private set; }
         public Guid NfrId { get; private set; }
-        public Guid BugId { get; private set; }
+        public Guid TasksBugId { get; private set; }
+        public Guid NfrsBugId { get; private set; }
         public Guid SprintId { get; private set; }
         public ICollection<Guid> LabelsIds { get; private set; }
         public const string ProjectName = "TEST_PROJECT";
@@ -54,30 +55,34 @@ namespace ProjectManagement.Tests.Infrastructure
             Task.Run(() => commandQueryBus.SendAsync(createProject)).Wait();
             ProjectId = createProject.CreatedId;
 
-            Task.Run(() => commandQueryBus.SendAsync(new AssignUserToProject(AdminId, ProjectId, UserAssignedToProjectId, 1))).Wait();
+            Task.Run(() => commandQueryBus.SendAsync(new AssignUserToProject(AdminId, UserAssignedToProjectId, 1) { ProjectId = ProjectId})).Wait();
 
-            CreateLabel createLabel;
+            AddLabel createLabel;
             for (int i = 0; i < 5; i++)
             {
-                createLabel = new CreateLabel(ProjectId, RandomString("NAME_"), RandomString("DESCR_"));
+                createLabel = new AddLabel(RandomString("NAME_"), RandomString("DESCR_")) { ProjectId = ProjectId};
                 Task.Run(() => commandQueryBus.SendAsync(createLabel)).Wait();
                 LabelsIds.Add(createLabel.CreatedId);
             }
 
 
-            var createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Task);
-            Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
-            TaskId = createIssue.CreatedId;
+            var createTask = IssueExtensions.GenerateBasicCreateTaskCommand(this);
+            Task.Run(() => commandQueryBus.SendAsync(createTask)).Wait();
+            TaskId = createTask.CreatedId;
 
-            createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Nfr);
-            Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
-            NfrId = createIssue.CreatedId;
+            var createNfr = IssueExtensions.GenerateBasicCreateNfrCommand(this);
+            Task.Run(() => commandQueryBus.SendAsync(createNfr)).Wait();
+            NfrId = createNfr.CreatedId;
 
-            createIssue = IssueExtensions.GenerateBasicCreateIssueCommand(this, IssueType.Bug);
-            Task.Run(() => commandQueryBus.SendAsync(createIssue)).Wait();
-            BugId = createIssue.CreatedId;
+            var createTasksBug = IssueExtensions.GenerateBasicAddBugToCommand(this, IssueType.Task);
+            Task.Run(() => commandQueryBus.SendAsync(createTasksBug)).Wait();
+            TasksBugId = createTasksBug.CreatedId;
 
-            var createSprint = new CreateSprint(ProjectId, RandomString("Sprint_"), DateTime.Now.Date, DateTime.Now.Date.AddDays(14));
+            var createNfrsBug = IssueExtensions.GenerateBasicAddBugToCommand(this, IssueType.Nfr);
+            Task.Run(() => commandQueryBus.SendAsync(createNfrsBug)).Wait();
+            NfrsBugId = createNfrsBug.CreatedId;
+
+            var createSprint = new CreateSprint(RandomString("Sprint_"), DateTime.Now.Date, DateTime.Now.Date.AddDays(14)){ ProjectId = ProjectId};
             Task.Run(() => commandQueryBus.SendAsync(createSprint)).Wait();
             SprintId = createSprint.CreatedId;
         }

@@ -18,8 +18,9 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNfr([FromBody] CreateNfr command)
+        public async Task<IActionResult> CreateNfr([FromRoute] Guid projectId, [FromBody] CreateNfr command)
         {
+            command.ProjectId = projectId;
             await commandQueryBus.SendAsync(command);
             return Created("api/project-management/nfrs/", command.CreatedId);
         }
@@ -139,13 +140,13 @@ namespace WebApi.Controllers.ProjectManagement.Issue
             return Ok();
         }
 
-        [HttpPatch("{nfrId}/add-bug")]
+        [HttpPost("{nfrId}/add-bug")]
         public async Task<IActionResult> AddToNfr([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] AddBugToNfr command)
         {
             command.ProjectId = projectId;
             command.NfrId = nfrId;
             await commandQueryBus.SendAsync(command);
-            return Ok();
+            return Created("", command.CreatedId);
         }
         #endregion
     }

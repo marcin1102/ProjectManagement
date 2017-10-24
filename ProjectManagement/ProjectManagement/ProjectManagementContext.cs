@@ -34,6 +34,7 @@ namespace ProjectManagement
                 x.Property(y => y.Name).IsRequired();
                 x.Property(y => y.members);
                 x.Property(y => y.Version);
+                x.HasMany(y => y.Labels);
                 x.Ignore(y => y.Members);
                 x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(Project.Model.Project));
@@ -141,6 +142,7 @@ namespace ProjectManagement
                 x.Property(y => y.Id).ValueGeneratedNever();
                 x.Property(y => y.ProjectId).ValueGeneratedNever();
                 x.Property(y => y.Name).IsRequired();
+                x.HasAlternateKey(y => y.Name);
                 x.ToTable(nameof(Label.Label));
             });
 

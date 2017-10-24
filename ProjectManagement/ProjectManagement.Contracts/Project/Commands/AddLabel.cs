@@ -3,27 +3,29 @@ using FluentValidation;
 using Infrastructure.Message;
 using Newtonsoft.Json;
 
-namespace ProjectManagement.Contracts.Label.Commands
+namespace ProjectManagement.Contracts.Project.Commands
 {
-    public class CreateLabel : ICommand
+    public class AddLabel : ICommand
     {
-        public CreateLabel(string name, string description)
+        public AddLabel(string name, string description, string projectVersion)
         {
             Name = name;
             Description = description;
+            ProjectVersion = projectVersion;
         }
 
         [JsonIgnore]
         public Guid ProjectId { get; set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
+        public long ProjectVersion { get; private set; }
 
 
         [JsonIgnore]
         public Guid CreatedId { get; set; }
     }
 
-    public class CreateLabelValidator : AbstractValidator<CreateLabel>
+    public class CreateLabelValidator : AbstractValidator<AddLabel>
     {
         public CreateLabelValidator()
         {

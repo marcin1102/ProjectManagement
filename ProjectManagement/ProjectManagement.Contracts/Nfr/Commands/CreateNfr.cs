@@ -9,9 +9,8 @@ namespace ProjectManagement.Contracts.Nfr.Commands
 {
     public class CreateNfr : ICreateIssue
     {
-        public CreateNfr(Guid projectId, string title, string description, Guid reporterId, Guid? assigneeId, ICollection<Guid> labelsIds)
+        public CreateNfr(string title, string description, Guid reporterId, Guid? assigneeId, ICollection<Guid> labelsIds)
         {
-            ProjectId = projectId;
             Title = title;
             Description = description;
             ReporterId = reporterId;
@@ -19,7 +18,8 @@ namespace ProjectManagement.Contracts.Nfr.Commands
             LabelsIds = labelsIds;
         }
 
-        public Guid ProjectId { get; private set; }
+        [JsonIgnore]
+        public Guid ProjectId { get; set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public Guid ReporterId { get; private set; }
@@ -44,7 +44,6 @@ namespace ProjectManagement.Contracts.Nfr.Commands
     {
         public CreateNfrValidator()
         {
-            RuleFor(x => x.ProjectId).NotNull();
             RuleFor(x => x.ReporterId).NotNull();
             RuleFor(x => x.Description).NotEmpty();
             RuleFor(x => x.Title).NotEmpty();

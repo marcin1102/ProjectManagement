@@ -35,7 +35,7 @@ namespace ProjectManagement.Tests.Label
             //Arrange
             var labelName = "TEST_NAME" + random.Next(100000, 999999).ToString();
             var labelDesc = "TEST_DESC" + random.Next(100000, 999999).ToString();
-            var createLabel = new CreateLabel(seededData.ProjectId, labelName, labelDesc);
+            var createLabel = new AddLabel(seededData.ProjectId, labelName, labelDesc);
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
             //Act
@@ -75,14 +75,14 @@ namespace ProjectManagement.Tests.Label
             Assert.Equal(labelsCount, elementsCount);
         }
 
-        private ICollection<CreateLabel> GenerateCreateLabelCommands(int labelsCount)
+        private ICollection<AddLabel> GenerateCreateLabelCommands(int labelsCount)
         {
-            var commands = new List<CreateLabel>();
+            var commands = new List<AddLabel>();
             for (int i = 0; i < labelsCount; i++)
             {
                 var labelName = "TEST_NAME" + random.Next(100000, 999999).ToString();
                 var labelDesc = "TEST_DESC" + random.Next(100000, 999999).ToString();
-                commands.Add(new CreateLabel(seededData.ProjectId, labelName, labelDesc));
+                commands.Add(new AddLabel(seededData.ProjectId, labelName, labelDesc));
             }
             return commands;
         }

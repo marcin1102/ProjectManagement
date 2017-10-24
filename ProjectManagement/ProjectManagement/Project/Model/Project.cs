@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 using Infrastructure.Storage;
 using Newtonsoft.Json;
+using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Contracts.Project.Events;
 using ProjectManagement.Contracts.Project.Exceptions;
+using ProjectManagement.Services;
 using ProjectManagement.User.Model;
+using ProjectManagement.User.Repository;
 
 namespace ProjectManagement.Project.Model
 {
@@ -18,6 +23,7 @@ namespace ProjectManagement.Project.Model
         {
             Name = name;
             Members = new List<Guid>();
+            Labels = new List<Label.Label>();
         }
 
         public string Name { get; private set; }
@@ -31,14 +37,32 @@ namespace ProjectManagement.Project.Model
                 members = JsonConvert.SerializeObject(value);
             }
         }
-        public void AssignUser(Guid userId)
+
+        public ICollection<Label.Label> Labels { get; private set; }
+
+        public override void Created()
         {
-            CheckIfUserIsAlreadyAssigned(userId);
+            Update(new ProjectCreated(Id, Name));
+        }
+
+        public void AssignUser(IAuthorizationService authorizationService, UserRepository userRepository, AssignUserToProject command)
+        {
+            CheckUserRole(authorizationService, command.AdminId);
+            CheckIfUserExistsInSystem(userRepository, command.UserToAssignId);
+            CheckIfUserIsAlreadyAssigned(command.UserToAssignId);
 
             var membersIds = Members.ToList();
-            membersIds.Add(userId);
+            membersIds.Add(command.UserToAssignId);
             Members = membersIds;
-            Update(new UserAssignedToProject(Id, userId));
+            Update(new UserAssignedToProject(Id, command.UserToAssignId));
+        }
+
+        public void AddLabel(AddLabel command)
+        {
+            var label = new Label.Label(Guid.NewGuid(), Id, command.Name, command.Description);
+            Labels.Add(label);
+            Update(new LabelAdded(label.Id, Id, label.Name, label.Description));
+            command.CreatedId = label.Id;
         }
 
         private void CheckIfUserIsAlreadyAssigned(Guid userId)
@@ -47,9 +71,14 @@ namespace ProjectManagement.Project.Model
                 throw new UserAlreadyAssignedToProject(userId, Id);
         }
 
-        public override void Created()
+        private void CheckIfUserExistsInSystem(UserRepository userRepository, Guid userId)
         {
-            Update(new ProjectCreated(Id, Name));
+            var user = Task.Run(() => userRepository.FindAsync(userId)).GetAwaiter().GetResult();
+            if (user == null)
+                throw new EntityDoesNotExist(userId, nameof(User.Model.User));
         }
+
+        private void CheckUserRole(IAuthorizationService authorizationService, Guid adminId) =>
+            Task.Run(() => authorizationService.CheckUserRole(adminId, nameof(CreateProject))).GetAwaiter().GetResult();
     }
 }

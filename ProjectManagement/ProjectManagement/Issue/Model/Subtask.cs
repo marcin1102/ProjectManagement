@@ -79,9 +79,9 @@ namespace ProjectManagement.Issue.Model
             UpdatedAt = DateTime.Now;
         }
 
-        public async void Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public void Comment(Guid memberId, string content, IAuthorizationService authorizationService)
         {
-            await authorizationService.CheckUserMembership(memberId, ProjectId);
+            System.Threading.Tasks.Task.Run(() => authorizationService.CheckUserMembership(memberId, ProjectId)).GetAwaiter().GetResult();
             var comment = new Comment.Comment(memberId, content);
             Comments.Add(comment);
         }
@@ -105,21 +105,16 @@ namespace ProjectManagement.Issue.Model
                 throw new AllRelatedIssuesMustBeDone(Id, DomainInformationProvider.Name);
         }
 
-        public async void AssignAssignee(User.Model.User Assignee, IAuthorizationService authorizationService)
+        public void AssignAssignee(User.Model.User Assignee, IAuthorizationService authorizationService)
         {
-            await authorizationService.CheckUserMembership(Assignee.Id, ProjectId);
+            System.Threading.Tasks.Task.Run(() => authorizationService.CheckUserMembership(Assignee.Id, ProjectId)).GetAwaiter().GetResult();
             AssigneeId = Assignee.Id;
         }
 
-        public async void AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher)
+        public void AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher)
         {
-            await sprintSearcher.CheckIfSprintExistsInProjectScope(sprintId, ProjectId);
+            System.Threading.Tasks.Task.Run(() => sprintSearcher.CheckIfSprintExistsInProjectScope(sprintId, ProjectId)).GetAwaiter().GetResult();
             SprintId = sprintId;
-        }
-
-        public void AddSubtaskToTask(Guid issueId)
-        {
-            TaskId = issueId;
         }
 
         private void ValidateLabelsExistence(ICollection<Guid> requestedLabelsIds, ICollection<Label.Label> fetchedLabels)

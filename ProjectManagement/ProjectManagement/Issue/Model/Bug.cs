@@ -81,9 +81,9 @@ namespace ProjectManagement.Issue.Model
             UpdatedAt = DateTime.Now;
         }
 
-        public async void Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public void Comment(Guid memberId, string content, IAuthorizationService authorizationService)
         {
-            await authorizationService.CheckUserMembership(memberId, ProjectId);
+            System.Threading.Tasks.Task.Run(() => authorizationService.CheckUserMembership(memberId, ProjectId)).GetAwaiter().GetResult();
             Comments.Add(new Comment.Comment(memberId, content));
         }
 
@@ -99,15 +99,15 @@ namespace ProjectManagement.Issue.Model
             UpdatedAt = DateTime.Now;
         }
 
-        public async void AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
+        public void AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
         {
-            await authorizationService.CheckUserMembership(assignee.Id, ProjectId);
+            System.Threading.Tasks.Task.Run(() => authorizationService.CheckUserMembership(assignee.Id, ProjectId)).GetAwaiter().GetResult();
             AssigneeId = assignee.Id;
         }
 
-        public async void AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher)
+        public void AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher)
         {
-            await sprintSearcher.CheckIfSprintExistsInProjectScope(sprintId, ProjectId);
+            System.Threading.Tasks.Task.Run(() => sprintSearcher.CheckIfSprintExistsInProjectScope(sprintId, ProjectId)).GetAwaiter().GetResult();
             SprintId = sprintId;
         }
 

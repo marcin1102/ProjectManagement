@@ -9,6 +9,7 @@ using ProjectManagement.Contracts.Issue.Commands;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Issue.Queries;
 using ProjectManagement.Contracts.Label.Commands;
+using ProjectManagement.Contracts.Task.Commands;
 using ProjectManagement.Tests.Infrastructure;
 using Xunit;
 
@@ -33,13 +34,12 @@ namespace ProjectManagement.Tests.Issue
         List<Guid> GetRandomElements(ICollection<Guid> collection) => collection.OrderBy(x => Guid.NewGuid()).Take(2).ToList();
 
         [Fact]
-        public async Task CreateIssue_CorrectData_IssueCreated()
+        public async Task CreateTask_CorrectData_TaskCreated()
         {
             //Arrange
             var createIssue = IssueExtensions
-                .GenerateBasicCreateIssueCommand(seededData, IssueType.Task)
+                .GenerateBasicCreateTaskCommand(seededData)
                 .WithLabels(GetRandomElements(seededData.LabelsIds))
-                .WithSubtasks(new List<Guid> { seededData.BugId} )
                 .WithAssignee(seededData.UserAssignedToProjectId);
 
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
@@ -60,13 +60,13 @@ namespace ProjectManagement.Tests.Issue
         }
 
         [Fact]
-        public async Task AssignLabelsToIssue_LabelsAssignedCorrectly()
+        public async Task AssignLabelsToTask_LabelsAssignedCorrectly()
         {
             //Arrange
-            var createLabelCommands = new List<CreateLabel>();
+            var createLabelCommands = new List<AddLabel>();
             for (int i = 0; i < 3; i++)
             {
-                createLabelCommands.Add(new CreateLabel(seededData.ProjectId, "LABEL" + random.Next(100000, 999999), "LABEL_DESC" + random.Next(100000, 999999)));
+                createLabelCommands.Add(new AddLabel("LABEL" + random.Next(100000, 999999), "LABEL_DESC" + random.Next(100000, 999999)) { ProjectId = seededData.ProjectId});
             }
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
             foreach (var command in createLabelCommands)
@@ -77,7 +77,11 @@ namespace ProjectManagement.Tests.Issue
             var issueId = seededData.TaskId;
 
             //Act
-            await commandQueryBus.SendAsync(new AssignLabelsToIssue(issueId, labelsIds));
+            await commandQueryBus.SendAsync(new AssignLabelsToTask(labelsIds)
+            {
+                IssueId = issueId,
+                ProjectId = seededData.ProjectId
+            });
 
             //Assert
             var issue = await commandQueryBus.SendAsync(new GetIssue
@@ -91,8 +95,8 @@ namespace ProjectManagement.Tests.Issue
         [Fact]
         public async Task AddSubtask_AddSubtaskToBug_CannotAddSubtaskToBugThrown()
         {
-            var addTaskAsSubtask = new AddSubtask(seededData.BugId, seededData.TaskId);
-            var addNfrkAsSubtask = new AddSubtask(seededData.BugId, seededData.NfrId);
+            var addTaskAsSubtask = new AddSubtask(seededData.TasksBugId, seededData.TaskId);
+            var addNfrkAsSubtask = new AddSubtask(seededData.TasksBugId, seededData.NfrId);
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
 
@@ -104,7 +108,7 @@ namespace ProjectManagement.Tests.Issue
         public async Task AddSubtask_AddSubtaskToNfr_NfrsCanHaveOnlyBugs()
         {
             var addTaskAsSubtask = new AddSubtask(seededData.NfrId, seededData.TaskId);
-            var addBugkAsSubtask = new AddSubtask(seededData.NfrId, seededData.BugId);
+            var addBugkAsSubtask = new AddSubtask(seededData.NfrId, seededData.TasksBugId);
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
 
@@ -114,14 +118,14 @@ namespace ProjectManagement.Tests.Issue
             var response = await commandQueryBus.SendAsync(new GetIssue { Id = seededData.NfrId });
             var subtasks = response.SubtasksIds;
             Assert.Equal(1, subtasks.Count);
-            Assert.Equal(seededData.BugId, response.SubtasksIds.SingleOrDefault());
+            Assert.Equal(seededData.TasksBugId, response.SubtasksIds.SingleOrDefault());
         }
 
         [Fact]
         public async Task AddSubtask_AddSubtaskToTask_CannotAddNfrAsSubTask()
         {
             var addNfrAsSubtask = new AddSubtask(seededData.TaskId, seededData.NfrId);
-            var addBugkAsSubtask = new AddSubtask(seededData.TaskId, seededData.BugId);
+            var addBugkAsSubtask = new AddSubtask(seededData.TaskId, seededData.TasksBugId);
             var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
 
@@ -131,7 +135,7 @@ namespace ProjectManagement.Tests.Issue
             var response = await commandQueryBus.SendAsync(new GetIssue { Id = seededData.TaskId });
             var subtasks = response.SubtasksIds;
             Assert.Equal(1, subtasks.Count);
-            Assert.Equal(seededData.BugId, response.SubtasksIds.SingleOrDefault());
+            Assert.Equal(seededData.TasksBugId, response.SubtasksIds.SingleOrDefault());
         }
 
         [Fact]

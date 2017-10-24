@@ -5,6 +5,7 @@ namespace ProjectManagement.Comment
 {
     public class Comment : IEntity
     {
+        private Comment() { }
         public Comment(Guid memberId, string content)
         {
             Id = Guid.NewGuid();

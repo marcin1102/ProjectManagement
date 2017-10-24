@@ -28,13 +28,17 @@ namespace ProjectManagement.Issue.Repository
 
         public override Task AddAsync(TIssueAggregate aggregate)
         {
-            UpsertLabels(aggregate);
+            if (aggregate.Labels != null)
+                UpsertLabels(aggregate);
+
             return base.AddAsync(aggregate);
         }
 
         public override Task Update(TIssueAggregate aggregate, long originalVersion)
         {
-            UpsertLabels(aggregate);
+            if(aggregate.Labels != null)
+                UpsertLabels(aggregate);
+
             return base.Update(aggregate, originalVersion);
         }
 
@@ -88,7 +92,9 @@ namespace ProjectManagement.Issue.Repository
             where TChildEntity : class, IEntity, IIssue
         {
             var childEntityQuery = dbContext.Set<TChildEntity>();
-            UpsertLabels(childEntity);
+
+            if(childEntity.Labels != null)
+                UpsertLabels(childEntity);
 
             var entry = dbContext.Entry(childEntity);
             if (entry.State == EntityState.Detached)

@@ -150,9 +150,9 @@ namespace ProjectManagement.Issue.Model
         }
 
         #region Bug
-        public async void AddBug(IIssueFactory issueFactory, AddBugToNfr command)
+        public void AddBug(IIssueFactory issueFactory, AddBugToNfr command)
         {
-            var bug = await issueFactory.GenerateBug(command);
+            var bug = System.Threading.Tasks.Task.Run(() => issueFactory.GenerateBug(command)).GetAwaiter().GetResult();
             Bugs.Add(bug);
             Update(new BugAddedToNfr(bug.Id, Id, ProjectId, bug.Title, bug.Description, bug.ReporterId, bug.AssigneeId, bug.Labels.Select(x => x.Id).ToList(), bug.CreatedAt));
         }

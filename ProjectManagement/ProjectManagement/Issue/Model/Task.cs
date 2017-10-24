@@ -165,10 +165,9 @@ namespace ProjectManagement.Issue.Model
         }
 
         #region Bug
-        public async void AddBug(IIssueFactory issueFactory, AddBugToTask command)
+        public void AddBug(IIssueFactory issueFactory, AddBugToTask command)
         {
-            //TODO: Poprawić na metodą nieasynchroniczną
-            var bug = await issueFactory.GenerateBug(command);
+            var bug = System.Threading.Tasks.Task.Run(() => issueFactory.GenerateBug(command)).GetAwaiter().GetResult();
             Bugs.Add(bug);
             Update(new BugAddedToTask(bug.Id, Id, ProjectId, bug.Title, bug.Description, bug.ReporterId, bug.AssigneeId, bug.Labels.Select(x => x.Id).ToList(), bug.CreatedAt));
         }
@@ -220,9 +219,9 @@ namespace ProjectManagement.Issue.Model
 #endregion
 
         #region Subtask
-        public async void AddSubtask(IIssueFactory issueFactory, AddSubtaskToTask command)
+        public void AddSubtask(IIssueFactory issueFactory, AddSubtaskToTask command)
         {
-            var subtask = await issueFactory.GenerateSubtask(command);
+            var subtask = System.Threading.Tasks.Task.Run(() => issueFactory.GenerateSubtask(command)).GetAwaiter().GetResult();
             Subtasks.Add(subtask);
             Update(new SubtaskAddedToTask(subtask.Id, Id, ProjectId, subtask.Title, subtask.Description,
                 subtask.ReporterId, subtask.AssigneeId, subtask.Labels.Select(x => x.Id).ToList(), subtask.CreatedAt));

@@ -36,6 +36,7 @@ using ProjectManagement.Issue.Handlers.CommandHandlers;
 using ProjectManagement.Contracts.Task.Commands;
 using ProjectManagement.Contracts.Nfr.Commands;
 using ProjectManagement.task.Handlers.CommandHandlers;
+using ProjectManagement.Project.Factory;
 
 namespace ProjectManagement
 {
@@ -63,6 +64,11 @@ namespace ProjectManagement
             builder
                .RegisterType<IssueFactory>()
                .As<IIssueFactory>()
+               .InstancePerLifetimeScope();
+
+            builder
+               .RegisterType<ProjectFactory>()
+               .As<IProjectFactory>()
                .InstancePerLifetimeScope();
         }
 
@@ -136,7 +142,7 @@ namespace ProjectManagement
             RegisterAsyncCommandHandler<AssignUserToProject, ProjectCommandHandler>();
 
             //Label
-            RegisterAsyncCommandHandler<CreateLabel, LabelCommandHandler>();
+            RegisterAsyncCommandHandler<AddLabel, ProjectCommandHandler>();
 
             //Task
             RegisterAsyncCommandHandler<CreateTask, TaskCommandHandler>();
