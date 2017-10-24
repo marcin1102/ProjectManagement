@@ -7,7 +7,7 @@ namespace ProjectManagement.Contracts.Project.Commands
 {
     public class AddLabel : ICommand
     {
-        public AddLabel(string name, string description, string projectVersion)
+        public AddLabel(string name, string description, long projectVersion)
         {
             Name = name;
             Description = description;

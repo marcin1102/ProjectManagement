@@ -2,6 +2,7 @@
 using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Project.Searchers;
+using ProjectManagement.Sprint.Factory;
 using ProjectManagement.Sprint.Repository;
 using System;
 using System.Threading.Tasks;
@@ -14,29 +15,17 @@ namespace ProjectManagement.Sprint.Handlers
         IAsyncCommandHandler<FinishSprint>
     {
         private readonly SprintRepository sprintRepository;
-        private readonly IProjectSearcher projectSearcher;
+        private readonly ISprintFactory sprintFactory;
 
-        public SprintCommandHandler(SprintRepository sprintRepository)
+        public SprintCommandHandler(SprintRepository sprintRepository, ISprintFactory sprintFactory)
         {
             this.sprintRepository = sprintRepository;
-        }
-
-        public SprintCommandHandler(SprintRepository sprintRepository, IProjectSearcher projectSearcher)
-        {
-            this.sprintRepository = sprintRepository;
-            this.projectSearcher = projectSearcher;
+            this.sprintFactory = sprintFactory;
         }
 
         public async Task HandleAsync(CreateSprint command)
         {
-            var doesProjectExist = await projectSearcher.DoesProjectExist(command.ProjectId);
-            if (!doesProjectExist)
-                throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
-
-            command.CreatedId = Guid.NewGuid();
-            var sprint = new Model.Sprint(command.CreatedId, command.ProjectId, command.Name, command.Start.Date, command.End.Date);
-
-            sprint.Created();
+            var sprint = await sprintFactory.GenerateSprint(command);
             await sprintRepository.AddAsync(sprint);
         }
 

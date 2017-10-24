@@ -14,29 +14,24 @@ using ProjectManagement.User.Handlers;
 using ProjectManagement.User.Repository;
 using System.Collections.Generic;
 using ProjectManagement.Contracts.Project.Queries;
-using ProjectManagement.Contracts.Label.Commands;
-using ProjectManagement.Label.Handlers;
 using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Label.Repository;
 using ProjectManagement.Label.Searcher;
 using ProjectManagement.Project.Searchers;
-using ProjectManagement.Contracts.Issue.Commands;
-using ProjectManagement.Issue.Handlers;
 using ProjectManagement.Issue.Repository;
 using ProjectManagement.Issue.Factory;
-using ProjectManagement.Contracts.Issue.Queries;
 using ProjectManagement.Services;
 using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Sprint.Handlers;
 using ProjectManagement.Sprint.Repository;
 using ProjectManagement.Contracts.Sprint.Queries;
 using ProjectManagement.Sprint.Searchers;
-using ProjectManagement.Contracts.User.Queries;
 using ProjectManagement.Issue.Handlers.CommandHandlers;
 using ProjectManagement.Contracts.Task.Commands;
 using ProjectManagement.Contracts.Nfr.Commands;
 using ProjectManagement.task.Handlers.CommandHandlers;
 using ProjectManagement.Project.Factory;
+using ProjectManagement.Sprint.Factory;
 
 namespace ProjectManagement
 {
@@ -69,6 +64,11 @@ namespace ProjectManagement
             builder
                .RegisterType<ProjectFactory>()
                .As<IProjectFactory>()
+               .InstancePerLifetimeScope();
+
+            builder
+               .RegisterType<SprintFactory>()
+               .As<ISprintFactory>()
                .InstancePerLifetimeScope();
         }
 
@@ -195,21 +195,6 @@ namespace ProjectManagement
 
         public override void RegisterQueryHandlers()
         {
-            //Project
-            RegisterAsyncQueryHandler<GetProject, ProjectResponse, ProjectQueryHandler>();
-            RegisterAsyncQueryHandler<GetProjects, ICollection<ProjectResponse>, ProjectQueryHandler>();
-
-            //Label
-            RegisterAsyncQueryHandler<GetLabel, LabelResponse, LabelQueryHandler>();
-            RegisterAsyncQueryHandler<GetLabels, ICollection<LabelResponse>, LabelQueryHandler>();
-
-            ////Issue
-            //RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
-            //RegisterAsyncQueryHandler<GetIssues, ICollection<IssueListItem>, IssueQueryHandler>();
-            //RegisterAsyncQueryHandler<GetUnfinishedIssues, ICollection<IssueListItem>, IssueQueryHandler>();
-
-            //Sprint
-            RegisterAsyncQueryHandler<GetSprint, SprintResponse, SprintQueryHandler>();
         }
     }
 }
