@@ -49,12 +49,8 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         }
 
         public async Task HandleAsync(CreateNfr command)
-        {
-            if (await projectRepository.FindAsync(command.ProjectId) == null)
-                throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
-
+        {            
             var issue = await issueFactory.GenerateNfr(command);
-
             await nfrRepository.AddAsync(issue);
         }
 

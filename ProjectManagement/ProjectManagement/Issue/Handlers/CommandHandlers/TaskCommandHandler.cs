@@ -57,10 +57,6 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(CreateTask command)
         {
-            if (await projectRepository.FindAsync(command.ProjectId) == null)
-                throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
-
-            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
             var task = await taskFactory.GenerateTask(command);
             await taskRepository.AddAsync(task);
         }

@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Text;
 using Infrastructure.Message;
 using UserManagement.Contracts.User.Enums;
+using Newtonsoft.Json;
 
 namespace UserManagement.Contracts.User.Commands
 {
     public class GrantRole : ICommand
     {
-        public GrantRole(Guid userId, Role role, long aggregateVersion)
+        public GrantRole(Role role, long aggregateVersion)
         {
-            UserId = userId;
             Role = role;
             AggregateVersion = aggregateVersion;
         }
 
-        public Guid UserId { get; private set; }
+        [JsonIgnore]
+        public Guid UserId { get; set; }
         public Role Role { get; private set; }
         public long AggregateVersion { get; private set; }
     }

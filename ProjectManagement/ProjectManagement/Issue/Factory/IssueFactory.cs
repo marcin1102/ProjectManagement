@@ -8,6 +8,8 @@ using ProjectManagement.Label.Searcher;
 using ProjectManagement.Services;
 using ProjectManagement.Sprint.Repository;
 using ProjectManagement.User.Repository;
+using ProjectManagement.Project.Repository;
+using Infrastructure.Exceptions;
 
 namespace ProjectManagement.Issue.Factory
 {
@@ -25,20 +27,21 @@ namespace ProjectManagement.Issue.Factory
         private readonly ILabelsSearcher labelsSearcher;
         private readonly SprintRepository sprintRepository;
         private readonly IAuthorizationService authorizationService;
+        private readonly ProjectRepository projectRepository;
 
-        public IssueFactory(UserRepository userRepository, ILabelsSearcher labelsSearcher, SprintRepository sprintRepository, IAuthorizationService authorizationService)
+        public IssueFactory(UserRepository userRepository, ILabelsSearcher labelsSearcher, SprintRepository sprintRepository, IAuthorizationService authorizationService, ProjectRepository projectRepository)
         {
             this.userRepository = userRepository;
             this.labelsSearcher = labelsSearcher;
             this.sprintRepository = sprintRepository;
             this.authorizationService = authorizationService;
+            this.projectRepository = projectRepository;
         }
 
         public async Task<Model.Task> GenerateTask(CreateTask command)
         {
-            var reporter = await userRepository.GetAsync(command.ReporterId);
-            var assignee = command.AssigneeId.HasValue ? await userRepository.GetAsync(command.AssigneeId.Value) : null;
-            var labels = await labelsSearcher.GetLabels(command.ProjectId);
+            await CheckIfProjectExist(command.ProjectId);
+            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
 
             var issue = new Model.Task(
                                 id: Guid.NewGuid(),
@@ -54,10 +57,16 @@ namespace ProjectManagement.Issue.Factory
             issue.Created();
 
             if (command.LabelsIds != null)
+            {
+                var labels = await labelsSearcher.GetLabels(command.ProjectId);
                 issue.AssignLabels(command.LabelsIds, labels);
+            }
 
-            if (assignee != null)
+            if (command.AssigneeId != null)
+            {
+                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
                 issue.AssignAssignee(assignee, authorizationService);
+            }
 
             command.CreatedId = issue.Id;
             return issue;
@@ -65,9 +74,8 @@ namespace ProjectManagement.Issue.Factory
 
         public async Task<Model.Nfr> GenerateNfr(CreateNfr command)
         {
-            var reporter = await userRepository.GetAsync(command.ReporterId);
-            var assignee = command.AssigneeId.HasValue ? await userRepository.GetAsync(command.AssigneeId.Value) : null;
-            var labels = await labelsSearcher.GetLabels(command.ProjectId);
+            await CheckIfProjectExist(command.ProjectId);
+            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
 
             var issue = new Model.Nfr(
                                 id: Guid.NewGuid(),
@@ -84,10 +92,16 @@ namespace ProjectManagement.Issue.Factory
             issue.Created();
 
             if (command.LabelsIds != null)
+            {
+                var labels = await labelsSearcher.GetLabels(command.ProjectId);
                 issue.AssignLabels(command.LabelsIds, labels);
+            }
 
-            if (assignee != null)
+            if (command.AssigneeId != null)
+            {
+                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
                 issue.AssignAssignee(assignee, authorizationService);
+            }
 
             command.CreatedId = issue.Id;
             return issue;
@@ -96,9 +110,7 @@ namespace ProjectManagement.Issue.Factory
         public async Task<Model.Bug> GenerateBug<TAddBugTo>(TAddBugTo command)
             where TAddBugTo : class, IAddBugTo
         {
-            var reporter = await userRepository.GetAsync(command.ReporterId);
-            var assignee = command.AssigneeId.HasValue ? await userRepository.GetAsync(command.AssigneeId.Value) : null;
-            var labels = await labelsSearcher.GetLabels(command.ProjectId);
+            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
 
             var issue = new Model.Bug(
                                 id: Guid.NewGuid(),
@@ -113,10 +125,16 @@ namespace ProjectManagement.Issue.Factory
                              );
 
             if (command.LabelsIds != null)
+            {
+                var labels = await labelsSearcher.GetLabels(command.ProjectId);
                 issue.AssignLabels(command.LabelsIds, labels);
+            }
 
-            if (assignee != null)
+            if (command.AssigneeId != null)
+            {
+                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
                 issue.AssignAssignee(assignee, authorizationService);
+            }
 
             command.CreatedId = issue.Id;
             return issue;
@@ -124,9 +142,7 @@ namespace ProjectManagement.Issue.Factory
 
         public async Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command)
         {
-            var reporter = await userRepository.GetAsync(command.ReporterId);
-            var assignee = command.AssigneeId.HasValue ? await userRepository.GetAsync(command.AssigneeId.Value) : null;
-            var labels = await labelsSearcher.GetLabels(command.ProjectId);
+            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
 
             var issue = new Model.Subtask(
                                 id: Guid.NewGuid(),
@@ -141,13 +157,25 @@ namespace ProjectManagement.Issue.Factory
                              );
 
             if (command.LabelsIds != null)
+            {
+                var labels = await labelsSearcher.GetLabels(command.ProjectId);
                 issue.AssignLabels(command.LabelsIds, labels);
+            }
 
-            if (assignee != null)
+            if (command.AssigneeId != null)
+            {
+                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
                 issue.AssignAssignee(assignee, authorizationService);
+            }
 
             command.CreatedId = issue.Id;
             return issue;
+        }
+
+        private async Task CheckIfProjectExist(Guid projectId)
+        {
+            if (await projectRepository.FindAsync(projectId) == null)
+                throw new EntityDoesNotExist(projectId, nameof(Project.Model.Project));
         }
     }
 }

@@ -93,9 +93,9 @@ namespace ProjectManagement.Issue.Model
             Update(new TaskMarkedAsInProgress(Id, Status));
         }
 
-        public async void Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public void Comment(Guid memberId, string content, IAuthorizationService authorizationService)
         {
-            await authorizationService.CheckUserMembership(memberId, ProjectId);
+            System.Threading.Tasks.Task.Run(() => authorizationService.CheckUserMembership(memberId, ProjectId)).GetAwaiter().GetResult();
             var comment = new Comment.Comment(memberId, content);
             if (Comments == null)
                 Comments = new List<Comment.Comment>();
@@ -126,16 +126,16 @@ namespace ProjectManagement.Issue.Model
                 throw new AllRelatedIssuesMustBeDone(Id, DomainInformationProvider.Name);
         }
 
-        public async void AssignAssignee(User.Model.User Assignee, IAuthorizationService authorizationService)
+        public void AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
         {
-            await authorizationService.CheckUserMembership(Assignee.Id, ProjectId);
-            AssigneeId = Assignee.Id;
+            System.Threading.Tasks.Task.Run(() => authorizationService.CheckUserMembership(assignee.Id, ProjectId)).GetAwaiter().GetResult();
+            AssigneeId = assignee.Id;
             Update(new AssigneeAssignedToTask(Id, AssigneeId.Value));
         }
 
-        public async void AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher)
+        public void AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher)
         {
-            await sprintSearcher.CheckIfSprintExistsInProjectScope(sprintId, ProjectId);
+            System.Threading.Tasks.Task.Run(() => sprintSearcher.CheckIfSprintExistsInProjectScope(sprintId, ProjectId)).GetAwaiter().GetResult();
             SprintId = sprintId;
             Update(new TaskAssignedToSprint(Id, SprintId.Value));
         }

@@ -11,7 +11,7 @@ using UserManagement.Contracts.User.Queries;
 
 namespace WebApi.Controllers.UserManagement
 {
-    [Route("api/user-management/")]
+    [Route("api/user-management/users")]
     public class UserController : BaseController
     {
         public UserController(ICommandQueryBus commandQueryBus) : base(commandQueryBus)
@@ -24,11 +24,7 @@ namespace WebApi.Controllers.UserManagement
             await commandQueryBus.SendAsync(command);
             return Created("api/user-management/", command.CreatedId);
         }
-        /// <summary>
-        /// TODO: MAKE CONTROLLERS MORE CONSISTENT
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponse), 200)]
         public async Task<UserResponse> Get([FromRoute] Guid id)
@@ -37,9 +33,10 @@ namespace WebApi.Controllers.UserManagement
             return response;
         }
 
-        [HttpPatch("grant-role")]
-        public async Task<IActionResult> GrantRole([FromBody] GrantRole command)
+        [HttpPatch("{userId}/grant-role")]
+        public async Task<IActionResult> GrantRole([FromRoute] Guid userId [FromBody] GrantRole command)
         {
+            command.UserId = userId;
             await commandQueryBus.SendAsync(command);
             return NoContent();
         }
