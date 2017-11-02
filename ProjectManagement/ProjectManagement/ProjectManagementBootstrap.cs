@@ -32,6 +32,7 @@ using ProjectManagement.Contracts.Nfr.Commands;
 using ProjectManagement.task.Handlers.CommandHandlers;
 using ProjectManagement.Project.Factory;
 using ProjectManagement.Sprint.Factory;
+using ProjectManagement.Contracts.Bug.Commands;
 
 namespace ProjectManagement
 {
@@ -109,6 +110,10 @@ namespace ProjectManagement
                 .InstancePerLifetimeScope();
 
             builder
+                .RegisterType<ChildBugRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
                 .RegisterType<BugRepository>()
                 .InstancePerLifetimeScope();
 
@@ -152,15 +157,12 @@ namespace ProjectManagement
             RegisterAsyncCommandHandler<MarkTaskAsDone, TaskCommandHandler>();
             RegisterAsyncCommandHandler<AssignAssigneeToTask, TaskCommandHandler>();
             RegisterAsyncCommandHandler<AssignTaskToSprint, TaskCommandHandler>();
-
-            //Bug
             RegisterAsyncCommandHandler<AssignLabelsToTasksBug, TaskCommandHandler>();
             RegisterAsyncCommandHandler<CommentTasksBug, TaskCommandHandler>();
             RegisterAsyncCommandHandler<MarkTasksBugAsInProgress, TaskCommandHandler>();
             RegisterAsyncCommandHandler<MarkTasksBugAsDone, TaskCommandHandler>();
             RegisterAsyncCommandHandler<AssignAssigneeToTasksBug, TaskCommandHandler>();
             RegisterAsyncCommandHandler<AssignTasksBugToSprint, TaskCommandHandler>();
-            RegisterAsyncCommandHandler<AddBugToNfr, NfrCommandHandler>();
             RegisterAsyncCommandHandler<AddBugToTask, TaskCommandHandler>();
 
             //Subtask
@@ -180,11 +182,27 @@ namespace ProjectManagement
             RegisterAsyncCommandHandler<MarkNfrAsDone, NfrCommandHandler>();
             RegisterAsyncCommandHandler<AssignAssigneeToNfr, NfrCommandHandler>();
             RegisterAsyncCommandHandler<AssignNfrToSprint, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AssignLabelsToNfrsBug, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<CommentNfrsBug, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<MarkNfrsBugAsInProgress, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<MarkNfrsBugAsDone, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToNfrsBug, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AssignNfrsBugToSprint, NfrCommandHandler>();
+            RegisterAsyncCommandHandler<AddBugToNfr, NfrCommandHandler>();
 
             //Sprint
             RegisterAsyncCommandHandler<CreateSprint, SprintCommandHandler>();
             RegisterAsyncCommandHandler<StartSprint, SprintCommandHandler>();
             RegisterAsyncCommandHandler<FinishSprint, SprintCommandHandler>();
+
+            //Bug
+            RegisterAsyncCommandHandler<CreateBug, BugCommandHandler>();
+            RegisterAsyncCommandHandler<AssignLabelsToBug, BugCommandHandler>();
+            RegisterAsyncCommandHandler<CommentBug, BugCommandHandler>();
+            RegisterAsyncCommandHandler<MarkBugAsInProgress, BugCommandHandler>();
+            RegisterAsyncCommandHandler<MarkBugAsDone, BugCommandHandler>();
+            RegisterAsyncCommandHandler<AssignAssigneeToBug, BugCommandHandler>();
+            RegisterAsyncCommandHandler<AssignBugToSprint, BugCommandHandler>();
         }
 
         public override void RegisterEventHandlers()

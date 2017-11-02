@@ -65,7 +65,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         public async Task HandleAsync(CommentNfr command)
         {
             var issue = await nfrRepository.GetAsync(command.IssueId);
-            issue.Comment(command.MemberId, command.Content, authorizationService);
+            await issue.Comment(command.MemberId, command.Content, authorizationService);
             await nfrRepository.Update(issue, issue.Version);
         }
 
@@ -91,7 +91,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
             var issue = await nfrRepository.GetAsync(command.IssueId);
             var originalVersion = issue.Version;
             var assignee = await userRepository.GetAsync(command.UserId);
-            issue.AssignAssignee(assignee, authorizationService);
+            await issue.AssignAssignee(assignee, authorizationService);
             await nfrRepository.Update(issue, originalVersion);
         }
 
@@ -99,74 +99,74 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var issue = await nfrRepository.GetAsync(command.IssueId);
             var originalVersion = issue.Version;
-            issue.AssignToSprint(command.SprintId, sprintSearcher);
+            await issue.AssignToSprint(command.SprintId, sprintSearcher);
             await nfrRepository.Update(issue, originalVersion);
         }
 
         #region BUG
         public async Task HandleAsync(AddBugToNfr command)
         {
-            var nfr = await nfrRepository.GetWithBugsAsync(command.NfrId);
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
             var originalVersion = nfr.Version;
-            nfr.AddBug(issueFactory, command);
+            await nfr.AddBug(issueFactory, command);
             var bug = nfr.Bugs.OrderBy(x => x.CreatedAt).Last();
             await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
 
         public async Task HandleAsync(AssignLabelsToNfrsBug command)
         {
-            var task = await nfrRepository.GetWithBugsAndLabelsAsync(command.NfrId);
-            var originalVersion = task.Version;
-            var labels = await labelsSearcher.GetLabels(task.ProjectId);
-            task.AssignLabelsToBug(command.IssueId, command.LabelsIds, labels);
-            var bug = task.Bugs.Single(x => x.Id == command.IssueId);
-            await nfrRepository.UpdateChildEntity(task, originalVersion, bug);
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
+            var originalVersion = nfr.Version;
+            var labels = await labelsSearcher.GetLabels(nfr.ProjectId);
+            nfr.AssignLabelsToBug(command.IssueId, command.LabelsIds, labels);
+            var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
+            await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
 
         public async Task HandleAsync(CommentNfrsBug command)
         {
-            var task = await nfrRepository.GetWithBugsAndCommentsAsync(command.NfrId);
-            var originalVersion = task.Version;
-            task.CommentBug(command.IssueId, command.MemberId, command.Content, authorizationService);
-            var bug = task.Bugs.Single(x => x.Id == command.IssueId);
-            await nfrRepository.UpdateChildEntity(task, originalVersion, bug);
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
+            var originalVersion = nfr.Version;
+            await nfr.CommentBug(command.IssueId, command.MemberId, command.Content, authorizationService);
+            var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
+            await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
 
         public async Task HandleAsync(MarkNfrsBugAsInProgress command)
         {
-            var task = await nfrRepository.GetWithBugsAsync(command.NfrId);
-            var originalVersion = task.Version;
-            task.MarkBugAsInProgress(command.IssueId);
-            var bug = task.Bugs.Single(x => x.Id == command.IssueId);
-            await nfrRepository.UpdateChildEntity(task, originalVersion, bug);
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
+            var originalVersion = nfr.Version;
+            nfr.MarkBugAsInProgress(command.IssueId);
+            var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
+            await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
 
         public async Task HandleAsync(MarkNfrsBugAsDone command)
         {
-            var task = await nfrRepository.GetWithBugsAsync(command.NfrId);
-            var originalVersion = task.Version;
-            task.MarkBugAsDone(command.IssueId);
-            var bug = task.Bugs.Single(x => x.Id == command.IssueId);
-            await nfrRepository.UpdateChildEntity(task, originalVersion, bug);
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
+            var originalVersion = nfr.Version;
+            nfr.MarkBugAsDone(command.IssueId);
+            var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
+            await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
 
         public async Task HandleAsync(AssignAssigneeToNfrsBug command)
         {
-            var task = await nfrRepository.GetWithBugsAsync(command.NfrId);
-            var originalVersion = task.Version;
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
+            var originalVersion = nfr.Version;
             var assignee = await userRepository.GetAsync(command.UserId);
-            task.AssignAssigneeToBug(command.IssueId, assignee, authorizationService);
-            var bug = task.Bugs.Single(x => x.Id == command.IssueId);
-            await nfrRepository.UpdateChildEntity(task, originalVersion, bug);
+            await nfr.AssignAssigneeToBug(command.IssueId, assignee, authorizationService);
+            var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
+            await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
 
         public async Task HandleAsync(AssignNfrsBugToSprint command)
         {
-            var task = await nfrRepository.GetWithBugsAsync(command.NfrId);
-            var originalVersion = task.Version;
-            task.AssignBugToSprint(command.IssueId, command.SprintId, sprintSearcher);
-            var bug = task.Bugs.Single(x => x.Id == command.IssueId);
-            await nfrRepository.UpdateChildEntity(task, originalVersion, bug);
+            var nfr = await nfrRepository.GetAsync(command.NfrId);
+            var originalVersion = nfr.Version;
+            await nfr.AssignBugToSprint(command.IssueId, command.SprintId, sprintSearcher);
+            var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
+            await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
         #endregion
     }

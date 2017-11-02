@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Exceptions;
 using Infrastructure.Message.EventDispatcher;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Issue.Model;
@@ -16,38 +17,43 @@ namespace ProjectManagement.Issue.Repository
         {
         }
 
-        protected override ICollection<IssueLabel> CreateInstancesOfIssueLabel(Guid issueId, IEnumerable<Guid> labelsIds)
-        {
-            return labelsIds.Select(labelId => new IssueLabel(issueId, labelId)).ToList();
-        }
 
-        public async Task<Nfr> GetWithBugsAsync(Guid id)
+        public override async Task<Nfr> GetAsync(Guid id)
         {
-            var nfr = await Query.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Id == id);
+            var nfr = await Query
+                .Include(x => x.Comments)
+                .Include(x => x.Bugs)
+                .SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, nameof(Nfr));
+
+            await FetchDependencies(nfr);
             return nfr;
         }
 
-        public async Task<Nfr> GetWithBugsAndCommentsAsync(Guid id)
+        public override async Task<Nfr> FindAsync(Guid id)
         {
-            var nfr = await Query.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Id == id);
-            foreach (var bug in nfr.Bugs)
+            var nfr = await Query
+                .Include(x => x.Comments)
+                .Include(x => x.Bugs)
+                .SingleOrDefaultAsync(x => x.Id == id);
+
+            if(nfr == null)
+                return null;
+
+            await FetchDependencies(nfr);
+            return nfr;
+        }
+
+        private async System.Threading.Tasks.Task FetchDependencies(Nfr task)
+        {
+            foreach (var bug in task.Bugs)
             {
                 dbContext.Entry(bug)
                     .Collection(x => x.Comments)
                     .Load();
-            }
-            return nfr;
-        }
 
-        public async Task<Nfr> GetWithBugsAndLabelsAsync(Guid id)
-        {
-            var nfr = await Query.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Id == id);
-            foreach (var bug in nfr.Bugs)
-            {
                 var labelsIds = await issueLabelsQuery.Where(x => x.IssueId == bug.Id).Select(x => x.LabelId).ToListAsync();
                 bug.Labels = await labelsQuery.Where(x => labelsIds.Contains(x.Id)).ToListAsync();
             }
-            return nfr;
         }
     }
 }

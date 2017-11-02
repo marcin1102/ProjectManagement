@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Message;
 using Infrastructure.Message.CommandQueryBus;
 using Infrastructure.Message.EventDispatcher;
 using ProjectManagement.Contracts.Issue.Enums;
-using ProjectManagement.Contracts.Label.Commands;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Tests.Issue;
 using UserManagement.Contracts.User.Enums;

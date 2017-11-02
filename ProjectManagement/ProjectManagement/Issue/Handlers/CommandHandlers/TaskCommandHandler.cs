@@ -72,7 +72,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         public async Task HandleAsync(CommentTask command)
         {
             var task = await taskRepository.GetAsync(command.IssueId);
-            task.Comment(command.MemberId, command.Content, authorizationService);
+            await task.Comment(command.MemberId, command.Content, authorizationService);
             await taskRepository.Update(task, task.Version);
         }
 
@@ -86,7 +86,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(MarkTaskAsDone command)
         {
-            var task = await taskRepository.GetWithBugsAndSubtasksAsync(command.IssueId);
+            var task = await taskRepository.GetAsync(command.IssueId);
             var originalVersion = task.Version;
             task.MarkAsDone();
             await taskRepository.Update(task, originalVersion);
@@ -97,7 +97,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             var task = await taskRepository.GetAsync(command.IssueId);
             var originalVersion = task.Version;
             var assignee = await userRepository.GetAsync(command.UserId);
-            task.AssignAssignee(assignee, authorizationService);
+            await task.AssignAssignee(assignee, authorizationService);
             await taskRepository.Update(task, originalVersion);
         }
 
@@ -105,13 +105,13 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.IssueId);
             var originalVersion = task.Version;
-            task.AssignToSprint(command.SprintId, sprintSearcher);
+            await task.AssignToSprint(command.SprintId, sprintSearcher);
             await taskRepository.Update(task, originalVersion);
         }
 #region BUG
         public async Task HandleAsync(AddBugToTask command)
         {
-            var task = await taskRepository.GetWithBugsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             task.AddBug(taskFactory, command);
             var bug = task.Bugs.OrderBy(x => x.CreatedAt).Last();
@@ -120,7 +120,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(AssignLabelsToTasksBug command)
         {
-            var task = await taskRepository.GetWithBugsAndLabelsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             var labels = await labelsSearcher.GetLabels(task.ProjectId);
             task.AssignLabelsToBug(command.IssueId, command.LabelsIds, labels);
@@ -130,16 +130,16 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(CommentTasksBug command)
         {
-            var task = await taskRepository.GetWithBugsAndCommentsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.CommentBug(command.IssueId, command.MemberId, command.Content, authorizationService);
+            await task.CommentBug(command.IssueId, command.MemberId, command.Content, authorizationService);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
 
         public async Task HandleAsync(MarkTasksBugAsInProgress command)
         {
-            var task = await taskRepository.GetWithBugsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             task.MarkBugAsInProgress(command.IssueId);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
@@ -148,7 +148,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(MarkTasksBugAsDone command)
         {
-            var task = await taskRepository.GetWithBugsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             task.MarkBugAsDone(command.IssueId);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
@@ -157,19 +157,19 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(AssignAssigneeToTasksBug command)
         {
-            var task = await taskRepository.GetWithBugsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             var assignee = await userRepository.GetAsync(command.UserId);
-            task.AssignAssigneeToBug(command.IssueId, assignee, authorizationService);
+            await task.AssignAssigneeToBug(command.IssueId, assignee, authorizationService);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
 
         public async Task HandleAsync(AssignTasksBugToSprint command)
         {
-            var task = await taskRepository.GetWithBugsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.AssignBugToSprint(command.IssueId, command.SprintId, sprintSearcher);
+            await task.AssignBugToSprint(command.IssueId, command.SprintId, sprintSearcher);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
@@ -178,7 +178,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 #region SUBTASK
         public async Task HandleAsync(AddSubtaskToTask command)
         {
-            var task = await taskRepository.GetWithSubtasksAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             task.AddSubtask(taskFactory, command);
             var Subtask = task.Subtasks.OrderBy(x => x.CreatedAt).Last();
@@ -187,7 +187,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(AssignLabelsToSubtask command)
         {
-            var task = await taskRepository.GetWithSubtasksAndLabelsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             var labels = await labelsSearcher.GetLabels(task.ProjectId);
             task.AssignLabelsToSubtask(command.IssueId, command.LabelsIds, labels);
@@ -197,16 +197,16 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(CommentSubtask command)
         {
-            var task = await taskRepository.GetWithSubtasksAndCommentsAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.CommentSubtask(command.IssueId, command.MemberId, command.Content, authorizationService);
+            await task.CommentSubtask(command.IssueId, command.MemberId, command.Content, authorizationService);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }
 
         public async Task HandleAsync(MarkSubtaskAsInProgress command)
         {
-            var task = await taskRepository.GetWithSubtasksAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             task.MarkSubtaskAsInProgress(command.IssueId);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
@@ -215,7 +215,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(MarkSubtaskAsDone command)
         {
-            var task = await taskRepository.GetWithSubtasksAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             task.MarkSubtaskAsDone(command.IssueId);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
@@ -224,23 +224,22 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(AssignAssigneeToSubtask command)
         {
-            var task = await taskRepository.GetWithSubtasksAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
             var assignee = await userRepository.GetAsync(command.UserId);
-            task.AssignAssigneeToSubtask(command.IssueId, assignee, authorizationService);
+            await task.AssignAssigneeToSubtask(command.IssueId, assignee, authorizationService);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }
 
         public async Task HandleAsync(AssignSubtaskToSprint command)
         {
-            var task = await taskRepository.GetWithSubtasksAsync(command.TaskId);
+            var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.AssignSubtaskToSprint(command.IssueId, command.SprintId, sprintSearcher);
+            await task.AssignSubtaskToSprint(command.IssueId, command.SprintId, sprintSearcher);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }
 #endregion
-
     }
 }

@@ -17,73 +17,54 @@ namespace ProjectManagement.Issue.Repository
         {
         }
 
-        protected override ICollection<IssueLabel> CreateInstancesOfIssueLabel(Guid issueId, IEnumerable<Guid> labelsIds)
+        public override async Task<Model.Task> GetAsync(Guid id)
         {
-            return labelsIds.Select(labelId => new IssueLabel(issueId, labelId)).ToList();
-        }
+            var task = await Query
+                .Include(x => x.Comments)
+                .Include(x => x.Bugs)
+                .Include(x => x.Subtasks)
+                .SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, nameof(Model.Task));
 
-        public async Task<Model.Task> GetWithBugsAndSubtasksAsync(Guid id)
-        {
-            var task = await Query.Include(x => x.Bugs).Include(x => x.Subtasks).SingleOrDefaultAsync(x => x.Id == id);
+            await FetchDependencies(task);
             return task;
         }
 
-        public async Task<Model.Task> GetWithBugsAsync(Guid id)
+        public override async Task<Model.Task> FindAsync(Guid id)
         {
-            var task = await Query.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Id == id);
+            var task = await Query
+                .Include(x => x.Comments)
+                .Include(x => x.Bugs)
+                .Include(x => x.Subtasks)
+                .SingleOrDefaultAsync(x => x.Id == id);
+
+            if(task == null)
+                return null;
+
+            await FetchDependencies(task);
             return task;
         }
 
-        public async Task<Model.Task> GetWithBugsAndCommentsAsync(Guid id)
+        private async System.Threading.Tasks.Task FetchDependencies(Model.Task task)
         {
-            var task = await Query.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Id == id);
             foreach (var bug in task.Bugs)
             {
                 dbContext.Entry(bug)
                     .Collection(x => x.Comments)
                     .Load();
-            }
-            return task;
-        }
 
-        public async Task<Model.Task> GetWithBugsAndLabelsAsync(Guid id)
-        {
-            var task = await Query.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Id == id);
-            foreach (var bug in task.Bugs)
-            {
                 var labelsIds = await issueLabelsQuery.Where(x => x.IssueId == bug.Id).Select(x => x.LabelId).ToListAsync();
                 bug.Labels = await labelsQuery.Where(x => labelsIds.Contains(x.Id)).ToListAsync();
             }
-            return task;
-        }
 
-        public async Task<Model.Task> GetWithSubtasksAsync(Guid id)
-        {
-            var task = await Query.Include(x => x.Subtasks).SingleOrDefaultAsync(x => x.Id == id);
-            return task;
-        }
-
-        public async Task<Model.Task> GetWithSubtasksAndCommentsAsync(Guid id)
-        {
-            var task = await Query.Include(x => x.Subtasks).SingleOrDefaultAsync(x => x.Id == id);
             foreach (var subtask in task.Subtasks)
             {
                 dbContext.Entry(subtask)
                     .Collection(x => x.Comments)
                     .Load();
-            }
-            return task;
-        }
 
-        public async Task<Model.Task> GetWithSubtasksAndLabelsAsync(Guid id)
-        {
-            var task = await Query.Include(x => x.Subtasks).SingleOrDefaultAsync(x => x.Id == id);
-            foreach (var subtask in task.Subtasks)
-            {
                 var labelsIds = await issueLabelsQuery.Where(x => x.IssueId == subtask.Id).Select(x => x.LabelId).ToListAsync();
                 subtask.Labels = await labelsQuery.Where(x => labelsIds.Contains(x.Id)).ToListAsync();
             }
-            return task;
         }
     }
 }

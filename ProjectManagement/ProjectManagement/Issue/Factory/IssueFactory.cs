@@ -17,7 +17,7 @@ namespace ProjectManagement.Issue.Factory
     {
         Task<Model.Task> GenerateTask(CreateTask command);
         Task<Model.Nfr> GenerateNfr(CreateNfr command);
-        Task<Model.Bug> GenerateBug<TAddBugTo>(TAddBugTo command)
+        Task<Model.ChildBug> GenerateBug<TAddBugTo>(TAddBugTo command)
             where TAddBugTo : class, IAddBugTo;
         Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command);
     }
@@ -65,7 +65,7 @@ namespace ProjectManagement.Issue.Factory
             if (command.AssigneeId != null)
             {
                 var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                issue.AssignAssignee(assignee, authorizationService);
+                await issue.AssignAssignee(assignee, authorizationService);
             }
 
             command.CreatedId = issue.Id;
@@ -100,19 +100,19 @@ namespace ProjectManagement.Issue.Factory
             if (command.AssigneeId != null)
             {
                 var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                issue.AssignAssignee(assignee, authorizationService);
+                await issue.AssignAssignee(assignee, authorizationService);
             }
 
             command.CreatedId = issue.Id;
             return issue;
         }
 
-        public async Task<Model.Bug> GenerateBug<TAddBugTo>(TAddBugTo command)
+        public async Task<Model.ChildBug> GenerateBug<TAddBugTo>(TAddBugTo command)
             where TAddBugTo : class, IAddBugTo
         {
             await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
 
-            var issue = new Model.Bug(
+            var issue = new Model.ChildBug(
                                 id: Guid.NewGuid(),
                                 projectId: command.ProjectId,
                                 title: command.Title,
@@ -133,7 +133,7 @@ namespace ProjectManagement.Issue.Factory
             if (command.AssigneeId != null)
             {
                 var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                issue.AssignAssignee(assignee, authorizationService);
+                await issue.AssignAssignee(assignee, authorizationService);
             }
 
             command.CreatedId = issue.Id;
@@ -165,7 +165,7 @@ namespace ProjectManagement.Issue.Factory
             if (command.AssigneeId != null)
             {
                 var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                issue.AssignAssignee(assignee, authorizationService);
+                await issue.AssignAssignee(assignee, authorizationService);
             }
 
             command.CreatedId = issue.Id;

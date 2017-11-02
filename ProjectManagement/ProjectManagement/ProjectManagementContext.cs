@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Issue.Model;
 using ProjectManagement.Issue.Model.Abstract;
+using ProjectManagement.Issue.Repository;
 
 namespace ProjectManagement
 {
@@ -17,8 +18,12 @@ namespace ProjectManagement
         public DbSet<User.Model.User> Users { get; set; }
         public DbSet<Sprint.Model.Sprint> Sprints { get; set; }
         public DbSet<Label.Label> Labels { get; set; }
+        public DbSet<AggregateIssue> AggregateIssue { get; set; }
+        public DbSet<Issue.Model.Abstract.Issue> Issues { get; set; }        
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<ChildBug> ChildBugs { get; set; }
         public DbSet<Bug> Bugs { get; set; }
+        
         public DbSet<Nfr> Nfrs { get; set; }
         public DbSet<Subtask> Subtasks { get; set; }
         public DbSet<Comment.Comment> Comments { get; set; }
@@ -88,7 +93,7 @@ namespace ProjectManagement
                 x.ToTable(nameof(Subtask));
             });
 
-            modelBuilder.Entity<Bug>(x =>
+            modelBuilder.Entity<ChildBug>(x =>
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Id).ValueGeneratedNever();
@@ -101,7 +106,25 @@ namespace ProjectManagement
                 x.Property(y => y.SprintId).IsRequired(false);
                 x.HasMany(y => y.Comments);
                 x.Ignore(y => y.Labels);
-                x.ToTable(nameof(Bug));
+                x.ToTable(nameof(ChildBug));
+            });
+
+            modelBuilder.Entity<Bug>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
+                x.Property(y => y.Version);
+                x.Property(y => y.ProjectId).IsRequired();
+                x.Property(y => y.ReporterId).ValueGeneratedNever();
+                x.Property(y => y.AssigneeId).ValueGeneratedNever();
+                x.Property(y => y.Status).IsRequired();
+                x.Property(y => y.Title).IsRequired();
+                x.Property(y => y.Description).IsRequired();
+                x.Property(y => y.SprintId).IsRequired(false);
+                x.HasMany(y => y.Comments);
+                x.Ignore(y => y.PendingEvents);
+                x.Ignore(y => y.Labels);
+                x.ToTable(nameof(ChildBug));
             });
 
             modelBuilder.Entity<Nfr>(x =>

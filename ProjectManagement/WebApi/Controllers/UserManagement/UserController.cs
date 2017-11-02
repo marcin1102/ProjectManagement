@@ -34,7 +34,7 @@ namespace WebApi.Controllers.UserManagement
         }
 
         [HttpPatch("{userId}/grant-role")]
-        public async Task<IActionResult> GrantRole([FromRoute] Guid userId [FromBody] GrantRole command)
+        public async Task<IActionResult> GrantRole([FromRoute] Guid userId, [FromBody] GrantRole command)
         {
             command.UserId = userId;
             await commandQueryBus.SendAsync(command);

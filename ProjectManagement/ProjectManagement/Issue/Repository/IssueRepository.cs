@@ -15,7 +15,7 @@ using ProjectManagement.Issue.Model.Abstract;
 namespace ProjectManagement.Issue.Repository
 {
     public abstract class IssueRepository<TIssueAggregate> : AggregateRepository<TIssueAggregate>
-        where TIssueAggregate : AggregateRoot, IIssue
+        where TIssueAggregate : Model.Abstract.AggregateIssue
     {
         public IssueRepository(ProjectManagementContext dbContext, IEventManager eventManager) : base(dbContext, eventManager)
         {
@@ -116,5 +116,19 @@ namespace ProjectManagement.Issue.Repository
             await dbContext.SaveChangesAsync();
             await eventManager.PublishEventsAsync(issue.PendingEvents);
         }
+    }
+
+    
+    public class IssueLabel
+    {
+        private IssueLabel() { }
+        public IssueLabel(Guid issueId, Guid labelId)
+        {
+            IssueId = issueId;
+            LabelId = labelId;
+        }
+
+        public Guid IssueId { get; private set; }
+        public Guid LabelId { get; private set; }
     }
 }
