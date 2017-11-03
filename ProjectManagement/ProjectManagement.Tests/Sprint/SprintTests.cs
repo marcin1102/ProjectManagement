@@ -32,125 +32,125 @@ namespace ProjectManagement.Tests.Sprint
             random = new Random();
         }
 
-        [Fact]
-        public async Task CreateSprint_SprintCreatedSuccesfully()
-        {
-            //Arrange
-            var name = SeededData.RandomString("SprintName_");
-            var startDate = DateTime.Now.Date;
-            var endDate = DateTime.Now.Date.AddDays(14);
-            var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        // [Fact]
+        // public async Task CreateSprint_SprintCreatedSuccesfully()
+        // {
+        //     //Arrange
+        //     var name = SeededData.RandomString("SprintName_");
+        //     var startDate = DateTime.Now.Date;
+        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
-            //Act
-            await commandQueryBus.SendAsync(createSprint);
-            var id = createSprint.CreatedId;
-            var response = await commandQueryBus.SendAsync(new GetSprint { Id = id });
+        //     //Act
+        //     await commandQueryBus.SendAsync(createSprint);
+        //     var id = createSprint.CreatedId;
+        //     var response = await commandQueryBus.SendAsync(new GetSprint { Id = id });
 
-            //Assert
-            Assert.Equal(id, response.Id);
-            Assert.Equal(seededData.ProjectId, response.ProjectId);
-            Assert.Equal(name, response.Name);
-            Assert.Equal(startDate, response.StartDate);
-            Assert.Equal(endDate, response.EndDate);
-        }
+        //     //Assert
+        //     Assert.Equal(id, response.Id);
+        //     Assert.Equal(seededData.ProjectId, response.ProjectId);
+        //     Assert.Equal(name, response.Name);
+        //     Assert.Equal(startDate, response.StartDate);
+        //     Assert.Equal(endDate, response.EndDate);
+        // }
 
-        [Fact]
-        public async Task StartSprint_SprintStarted()
-        {
-            //Arrange
-            var name = SeededData.RandomString("SprintName_");
-            var startDate = DateTime.Now.Date;
-            var endDate = DateTime.Now.Date.AddDays(14);
-            var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        // [Fact]
+        // public async Task StartSprint_SprintStarted()
+        // {
+        //     //Arrange
+        //     var name = SeededData.RandomString("SprintName_");
+        //     var startDate = DateTime.Now.Date;
+        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
-            await commandQueryBus.SendAsync(createSprint);
-            var id = createSprint.CreatedId;
+        //     await commandQueryBus.SendAsync(createSprint);
+        //     var id = createSprint.CreatedId;
 
-            //Act
-            await commandQueryBus.SendAsync(new StartSprint(id));
+        //     //Act
+        //     await commandQueryBus.SendAsync(new StartSprint(id));
 
-            //Assert
-            var response = await commandQueryBus.SendAsync(new GetSprint { Id = id });
+        //     //Assert
+        //     var response = await commandQueryBus.SendAsync(new GetSprint { Id = id });
 
-            Assert.Equal(SprintStatus.InProgress, response.Status);
-        }
+        //     Assert.Equal(SprintStatus.InProgress, response.Status);
+        // }
 
-        [Fact]
-        public async Task FinishSprint_IncorrectStatus_CannotChangeSprintStatusThrown()
-        {
-            //Arrange
-            var name = SeededData.RandomString("SprintName_");
-            var startDate = DateTime.Now.Date;
-            var endDate = DateTime.Now.Date.AddDays(14);
-            var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        // [Fact]
+        // public async Task FinishSprint_IncorrectStatus_CannotChangeSprintStatusThrown()
+        // {
+        //     //Arrange
+        //     var name = SeededData.RandomString("SprintName_");
+        //     var startDate = DateTime.Now.Date;
+        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
-            await commandQueryBus.SendAsync(createSprint);
-            var id = createSprint.CreatedId;
+        //     await commandQueryBus.SendAsync(createSprint);
+        //     var id = createSprint.CreatedId;
 
-            //Assert
-            await Assert.ThrowsAsync<CannotChangeSprintStatus>(() => commandQueryBus.SendAsync(new FinishSprint(id)));
-        }
+        //     //Assert
+        //     await Assert.ThrowsAsync<CannotChangeSprintStatus>(() => commandQueryBus.SendAsync(new FinishSprint(id)));
+        // }
 
-        [Fact]
-        public async Task FinishSprint_TwoOutOfThreeTasksAreDone_SprintFinishedSuccesfuly()
-        {
-            //Arrange
-            var name = SeededData.RandomString("SprintName_");
-            var startDate = DateTime.Now.Date;
-            var endDate = DateTime.Now.Date.AddDays(14);
-            var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        // [Fact]
+        // public async Task FinishSprint_TwoOutOfThreeTasksAreDone_SprintFinishedSuccesfuly()
+        // {
+        //     //Arrange
+        //     var name = SeededData.RandomString("SprintName_");
+        //     var startDate = DateTime.Now.Date;
+        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
-            await commandQueryBus.SendAsync(createSprint);
-            var sprintId = createSprint.CreatedId;
+        //     await commandQueryBus.SendAsync(createSprint);
+        //     var sprintId = createSprint.CreatedId;
 
-            var issuesIds = await GenerateAndAssignThreeIssues(sprintId, commandQueryBus);
+        //     var issuesIds = await GenerateAndAssignThreeIssues(sprintId, commandQueryBus);
 
-            await commandQueryBus.SendAsync(new StartSprint(sprintId));
+        //     await commandQueryBus.SendAsync(new StartSprint(sprintId));
 
-            var unfinishedIssuesIds = await ChangeIssuesStatuses(issuesIds, sprintId, commandQueryBus);
+        //     var unfinishedIssuesIds = await ChangeIssuesStatuses(issuesIds, sprintId, commandQueryBus);
 
-            //Act
-            await commandQueryBus.SendAsync(new FinishSprint(sprintId));
+        //     //Act
+        //     await commandQueryBus.SendAsync(new FinishSprint(sprintId));
 
-            //Assert
-            var response = await commandQueryBus.SendAsync(new GetSprint { Id = sprintId});
+        //     //Assert
+        //     var response = await commandQueryBus.SendAsync(new GetSprint { Id = sprintId});
 
-            Assert.Equal(SprintStatus.Finished, response.Status);
-        }
+        //     Assert.Equal(SprintStatus.Finished, response.Status);
+        // }
 
-        private async Task<List<Guid>> ChangeIssuesStatuses(List<Guid> issuesIds, Guid id, ICommandQueryBus commandQueryBus)
-        {
-            for (int i = 0; i < (issuesIds.Count-1); i++)
-            {
-                await commandQueryBus.SendAsync(new MarkAsInProgress(issuesIds.ElementAt(i), seededData.UserAssignedToProjectId));
-            }
+        // private async Task<List<Guid>> ChangeIssuesStatuses(List<Guid> issuesIds, Guid id, ICommandQueryBus commandQueryBus)
+        // {
+        //     for (int i = 0; i < (issuesIds.Count-1); i++)
+        //     {
+        //         await commandQueryBus.SendAsync(new MarkAsInProgress(issuesIds.ElementAt(i), seededData.UserAssignedToProjectId));
+        //     }
 
-            var doneIssueId = issuesIds.First();
-            await commandQueryBus.SendAsync(new MarkAsDone(doneIssueId, seededData.UserAssignedToProjectId));
+        //     var doneIssueId = issuesIds.First();
+        //     await commandQueryBus.SendAsync(new MarkAsDone(doneIssueId, seededData.UserAssignedToProjectId));
 
-            issuesIds.Remove(doneIssueId);
-            return issuesIds;
-        }
+        //     issuesIds.Remove(doneIssueId);
+        //     return issuesIds;
+        // }
 
-        private async Task<List<Guid>> GenerateAndAssignThreeIssues(Guid sprintId, ICommandQueryBus commandQueryBus)
-        {
-            var commands = new List<ICreateIssue>();
-            for (int i = 0; i < 3; i++)
-            {
-                commands.Add(IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task));
-            }
+        // private async Task<List<Guid>> GenerateAndAssignThreeIssues(Guid sprintId, ICommandQueryBus commandQueryBus)
+        // {
+        //     var commands = new List<ICreateIssue>();
+        //     for (int i = 0; i < 3; i++)
+        //     {
+        //         commands.Add(IssueExtensions.GenerateBasicCreateIssueCommand(seededData, IssueType.Task));
+        //     }
 
-            foreach (var command in commands)
-            {
-                await commandQueryBus.SendAsync(command);
-                await commandQueryBus.SendAsync(new AssignIssueToSprint(command.CreatedId, sprintId));
-            }
+        //     foreach (var command in commands)
+        //     {
+        //         await commandQueryBus.SendAsync(command);
+        //         await commandQueryBus.SendAsync(new AssignIssueToSprint(command.CreatedId, sprintId));
+        //     }
 
-            return commands.Select(x => x.CreatedId).ToList();
-        }
+        //     return commands.Select(x => x.CreatedId).ToList();
+        // }
     }
 }

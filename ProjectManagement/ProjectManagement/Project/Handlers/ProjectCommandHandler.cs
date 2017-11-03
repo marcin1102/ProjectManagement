@@ -44,8 +44,9 @@ namespace ProjectManagement.Project.Handlers
         public async Task HandleAsync(AddLabel command)
         {
             var project = await projectRepository.GetAsync(command.ProjectId);
+            var projectVersion = project.Version;
             project.AddLabel(command);
-            await projectRepository.Update(project, command.ProjectVersion);
+            await projectRepository.Update(project, projectVersion);
         }
     }
 }

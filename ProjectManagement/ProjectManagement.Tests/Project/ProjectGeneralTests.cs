@@ -27,59 +27,59 @@ namespace ProjectManagement.Tests.Project
             random = new Random();
         }
 
-        [Fact]
-        public async Task CreateNewProject_CreateProjectAsAdmin_SuccesfullyCreated()
-        {
-            //Arrange
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
-            var projectName = "TEST_PROJECT_" + random.Next(100000, 999999).ToString();
-            var createProject = new CreateProject(seededData.AdminId, projectName);
+        // [Fact]
+        // public async Task CreateNewProject_CreateProjectAsAdmin_SuccesfullyCreated()
+        // {
+        //     //Arrange
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        //     var projectName = "TEST_PROJECT_" + random.Next(100000, 999999).ToString();
+        //     var createProject = new CreateProject(seededData.AdminId, projectName);
 
-            //Act
-            await commandQueryBus.SendAsync(createProject);
+        //     //Act
+        //     await commandQueryBus.SendAsync(createProject);
 
-            var getProject = new GetProject
-            {
-                Id = createProject.CreatedId
-            };
-            var createdProject = await commandQueryBus.SendAsync(getProject);
+        //     var getProject = new GetProject
+        //     {
+        //         Id = createProject.CreatedId
+        //     };
+        //     var createdProject = await commandQueryBus.SendAsync(getProject);
 
-            //Assert
-            Assert.NotNull(createProject);
-            Assert.Equal(projectName, createProject.Name);
-        }
+        //     //Assert
+        //     Assert.NotNull(createProject);
+        //     Assert.Equal(projectName, createProject.Name);
+        // }
 
-        [Fact]
-        public async Task CreateNewProject_CreateProjectAsUser_ProjectCreationFailed()
-        {
-            //Arrange
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
-            var projectName = "TEST_PROJECT_" + random.Next(100000, 999999).ToString();
+        // [Fact]
+        // public async Task CreateNewProject_CreateProjectAsUser_ProjectCreationFailed()
+        // {
+        //     //Arrange
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        //     var projectName = "TEST_PROJECT_" + random.Next(100000, 999999).ToString();
 
-            //Act
-            var createProject = new CreateProject(seededData.UserNotAssignedToProjectId, projectName);
+        //     //Act
+        //     var createProject = new CreateProject(seededData.UserNotAssignedToProjectId, projectName);
 
-            //Assert
-            var exception = await Assert.ThrowsAsync<NotAuthorized>(async () => await commandQueryBus.SendAsync(createProject));
-            Assert.Equal(seededData.UserNotAssignedToProjectId, exception.UserId);
-            Assert.Equal(nameof(CreateProject), exception.CommandName);
-        }
+        //     //Assert
+        //     var exception = await Assert.ThrowsAsync<NotAuthorized>(async () => await commandQueryBus.SendAsync(createProject));
+        //     Assert.Equal(seededData.UserNotAssignedToProjectId, exception.UserId);
+        //     Assert.Equal(nameof(CreateProject), exception.CommandName);
+        // }
 
-        [Fact]
-        public async Task GetProject_ProjectDoesNotExist_ExceptionThrown()
-        {
-            //Arrange
-            var id = Guid.NewGuid();
-            var getProject = new GetProject
-            {
-                Id = id
-            };
-            var commandQueryBus = context.Resolve<ICommandQueryBus>();
+        // [Fact]
+        // public async Task GetProject_ProjectDoesNotExist_ExceptionThrown()
+        // {
+        //     //Arrange
+        //     var id = Guid.NewGuid();
+        //     var getProject = new GetProject
+        //     {
+        //         Id = id
+        //     };
+        //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
-            //Assert
-            var exception = await Assert.ThrowsAsync<EntityDoesNotExist>(async () => await commandQueryBus.SendAsync(getProject));
-            Assert.Equal(id, exception.EntityId);
-            Assert.Equal("Project", exception.EntityName);
-        }
+        //     //Assert
+        //     var exception = await Assert.ThrowsAsync<EntityDoesNotExist>(async () => await commandQueryBus.SendAsync(getProject));
+        //     Assert.Equal(id, exception.EntityId);
+        //     Assert.Equal("Project", exception.EntityName);
+        // }
     }
 }

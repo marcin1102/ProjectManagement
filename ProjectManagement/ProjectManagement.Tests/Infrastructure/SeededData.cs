@@ -19,6 +19,7 @@ namespace ProjectManagement.Tests.Infrastructure
         public Guid UserAssignedToProjectId { get; private set; }
         public Guid UserNotAssignedToProjectId { get; private set; }
         public Guid ProjectId { get; private set; }
+        public long ProjectVersion { get; set; }
         public Guid TaskId { get; private set; }
         public Guid NfrId { get; private set; }
         public Guid TasksBugId { get; private set; }
