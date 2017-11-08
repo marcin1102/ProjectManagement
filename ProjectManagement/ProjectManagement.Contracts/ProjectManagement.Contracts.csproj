@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Bug\Commands\" />
     <Folder Include="Label\Commands\" />
     <Folder Include="Sprint\Exceptions\" />
     <Folder Include="Subtask\Commands\" />

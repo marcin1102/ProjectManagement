@@ -10,6 +10,7 @@ using ProjectManagement.Sprint.Repository;
 using ProjectManagement.User.Repository;
 using ProjectManagement.Project.Repository;
 using Infrastructure.Exceptions;
+using ProjectManagement.Contracts.Bug.Commands;
 
 namespace ProjectManagement.Issue.Factory
 {
@@ -17,7 +18,7 @@ namespace ProjectManagement.Issue.Factory
     {
         Task<Model.Task> GenerateTask(CreateTask command);
         Task<Model.Nfr> GenerateNfr(CreateNfr command);
-        Task<Model.ChildBug> GenerateBug<TAddBugTo>(TAddBugTo command)
+        Task<Model.ChildBug> GenerateChildBug<TAddBugTo>(TAddBugTo command)
             where TAddBugTo : class, IAddBugTo;
         Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command);
     }
@@ -107,7 +108,41 @@ namespace ProjectManagement.Issue.Factory
             return issue;
         }
 
-        public async Task<Model.ChildBug> GenerateBug<TAddBugTo>(TAddBugTo command)
+        public async Task<Model.Bug> GenerateBug(CreateBug command)
+        {
+            await CheckIfProjectExist(command.ProjectId);
+            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
+
+            var issue = new Model.Bug(
+                                id: Guid.NewGuid(),
+                                projectId: command.ProjectId,
+                                title: command.Title,
+                                description: command.Description,
+                                status: IssueStatus.Todo,
+                                reporterId: command.ReporterId,
+                                assigneeId: null,
+                                createdAt: DateTime.Now,
+                                updatedAt: DateTime.Now
+                             );
+            issue.Created();
+
+            if (command.LabelsIds != null)
+            {
+                var labels = await labelsSearcher.GetLabels(command.ProjectId);
+                issue.AssignLabels(command.LabelsIds, labels);
+            }
+
+            if (command.AssigneeId != null)
+            {
+                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
+                await issue.AssignAssignee(assignee, authorizationService);
+            }
+
+            command.CreatedId = issue.Id;
+            return issue;
+        }
+
+        public async Task<Model.ChildBug> GenerateChildBug<TAddBugTo>(TAddBugTo command)
             where TAddBugTo : class, IAddBugTo
         {
             await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);

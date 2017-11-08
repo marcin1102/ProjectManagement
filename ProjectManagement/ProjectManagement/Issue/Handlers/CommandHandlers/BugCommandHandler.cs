@@ -1,6 +1,12 @@
 using System.Threading.Tasks;
 using Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Bug.Commands;
+using ProjectManagement.Issue.Repository;
+using ProjectManagement.Issue.Factory;
+using ProjectManagement.Label.Searcher;
+using ProjectManagement.Services;
+using ProjectManagement.User.Repository;
+using ProjectManagement.Sprint.Searchers;
 
 namespace ProjectManagement.Issue.Handlers.CommandHandlers
 {
@@ -13,39 +19,75 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         IAsyncCommandHandler<AssignAssigneeToBug>,
         IAsyncCommandHandler<AssignBugToSprint>
     {
-        public Task HandleAsync(CreateBug command)
+        private readonly BugRepository bugRepository;
+        private readonly IssueFactory issueFactory;
+        private readonly ILabelsSearcher labelsSearcher;
+        private readonly IAuthorizationService authorizationService;
+        private readonly UserRepository userRepository;
+        private readonly ISprintSearcher sprintSearcher;
+
+        public BugCommandHandler(BugRepository bugRepository, IssueFactory issueFactory, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher)
         {
-            throw new System.NotImplementedException();
+            this.bugRepository = bugRepository;
+            this.issueFactory = issueFactory;
+            this.labelsSearcher = labelsSearcher;
+            this.authorizationService = authorizationService;
+            this.userRepository = userRepository;
+            this.sprintSearcher = sprintSearcher;
         }
 
-        public Task HandleAsync(AssignLabelsToBug command)
+        public async Task HandleAsync(CreateBug command)
         {
-            throw new System.NotImplementedException();
+            var Bug = await issueFactory.GenerateBug(command);
+            await bugRepository.AddAsync(Bug);
         }
 
-        public Task HandleAsync(CommentBug command)
+        public async Task HandleAsync(AssignLabelsToBug command)
         {
-            throw new System.NotImplementedException();
+            var Bug = await bugRepository.GetAsync(command.IssueId);
+            var labels = await labelsSearcher.GetLabels(Bug.ProjectId, command.LabelsIds);
+            Bug.AssignLabels(command.LabelsIds, labels);
+            await bugRepository.Update(Bug, Bug.Version);
         }
 
-        public Task HandleAsync(MarkBugAsInProgress command)
+        public async Task HandleAsync(CommentBug command)
         {
-            throw new System.NotImplementedException();
+            var Bug = await bugRepository.GetAsync(command.IssueId);
+            await Bug.Comment(command.MemberId, command.Content, authorizationService);
+            await bugRepository.Update(Bug, Bug.Version);
         }
 
-        public Task HandleAsync(MarkBugAsDone command)
+        public async Task HandleAsync(MarkBugAsInProgress command)
         {
-            throw new System.NotImplementedException();
+            var Bug = await bugRepository.GetAsync(command.IssueId);
+            var originalVersion = Bug.Version;
+            Bug.MarkAsInProgress();
+            await bugRepository.Update(Bug, originalVersion);
         }
 
-        public Task HandleAsync(AssignAssigneeToBug command)
+        public async Task HandleAsync(MarkBugAsDone command)
         {
-            throw new System.NotImplementedException();
+            var Bug = await bugRepository.GetAsync(command.IssueId);
+            var originalVersion = Bug.Version;
+            Bug.MarkAsDone();
+            await bugRepository.Update(Bug, originalVersion);
         }
 
-        public Task HandleAsync(AssignBugToSprint command)
+        public async Task HandleAsync(AssignAssigneeToBug command)
         {
-            throw new System.NotImplementedException();
+            var Bug = await bugRepository.GetAsync(command.IssueId);
+            var originalVersion = Bug.Version;
+            var assignee = await userRepository.GetAsync(command.UserId);
+            await Bug.AssignAssignee(assignee, authorizationService);
+            await bugRepository.Update(Bug, originalVersion);
+        }
+
+        public async Task HandleAsync(AssignBugToSprint command)
+        {
+            var Bug = await bugRepository.GetAsync(command.IssueId);
+            var originalVersion = Bug.Version;
+            await Bug.AssignToSprint(command.SprintId, sprintSearcher);
+            await bugRepository.Update(Bug, originalVersion);
         }
     }
 }

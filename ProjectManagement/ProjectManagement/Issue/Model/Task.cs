@@ -101,7 +101,7 @@ namespace ProjectManagement.Issue.Model
         #region Bug
         public void AddBug(IIssueFactory issueFactory, AddBugToTask command)
         {
-            var bug = System.Threading.Tasks.Task.Run(() => issueFactory.GenerateBug(command)).GetAwaiter().GetResult();
+            var bug = System.Threading.Tasks.Task.Run(() => issueFactory.GenerateChildBug(command)).GetAwaiter().GetResult();
             Bugs.Add(bug);
             Update(new BugAddedToTask(bug.Id, Id, ProjectId, bug.Title, bug.Description, bug.ReporterId, bug.AssigneeId, bug.Labels.Select(x => x.Id).ToList(), bug.CreatedAt));
         }

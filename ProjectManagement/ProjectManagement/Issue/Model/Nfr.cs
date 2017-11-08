@@ -90,7 +90,7 @@ namespace ProjectManagement.Issue.Model
         #region Bug
         public async System.Threading.Tasks.Task AddBug(IIssueFactory issueFactory, AddBugToNfr command)
         {
-            var bug = await issueFactory.GenerateBug(command);
+            var bug = await issueFactory.GenerateChildBug(command);
             Bugs.Add(bug);
             Update(new BugAddedToNfr(bug.Id, Id, ProjectId, bug.Title, bug.Description, bug.ReporterId, bug.AssigneeId, bug.Labels.Select(x => x.Id).ToList(), bug.CreatedAt));
         }

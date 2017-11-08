@@ -33,6 +33,7 @@ using ProjectManagement.task.Handlers.CommandHandlers;
 using ProjectManagement.Project.Factory;
 using ProjectManagement.Sprint.Factory;
 using ProjectManagement.Contracts.Bug.Commands;
+using ProjectManagement.Issue.Mappers;
 
 namespace ProjectManagement
 {
@@ -52,6 +53,11 @@ namespace ProjectManagement
             builder
                 .RegisterType<AuthorizationService>()
                 .As<IAuthorizationService>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<BugMapper>()
+                .As<IBugMapper>()
                 .InstancePerLifetimeScope();
         }
 

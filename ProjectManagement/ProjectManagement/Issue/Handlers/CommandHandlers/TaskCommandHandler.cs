@@ -10,6 +10,7 @@ using ProjectManagement.Project.Repository;
 using ProjectManagement.Services;
 using ProjectManagement.Sprint.Searchers;
 using ProjectManagement.User.Repository;
+using ProjectManagement.Issue.Mappers;
 
 namespace ProjectManagement.task.Handlers.CommandHandlers
 {
@@ -34,7 +35,8 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         IAsyncCommandHandler<MarkSubtaskAsDone>,
         IAsyncCommandHandler<AssignAssigneeToSubtask>,
         IAsyncCommandHandler<AssignSubtaskToSprint>,
-        IAsyncCommandHandler<AddSubtaskToTask>
+        IAsyncCommandHandler<AddSubtaskToTask>,
+        IAsyncCommandHandler<ChangeTasksBugToBug>
     {
         private readonly TaskRepository taskRepository;
         private readonly IIssueFactory taskFactory;
@@ -43,8 +45,9 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         private readonly IAuthorizationService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
+        private readonly IBugMapper bugMapper;
 
-        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher)
+        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper)
         {
             this.taskRepository = taskRepository;
             this.taskFactory = taskFactory;
@@ -53,6 +56,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             this.authorizationService = authorizationService;
             this.userRepository = userRepository;
             this.sprintSearcher = sprintSearcher;
+            this.bugMapper = bugMapper;
         }
 
         public async Task HandleAsync(CreateTask command)
@@ -173,9 +177,19 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
+
+        public async Task HandleAsync(ChangeTasksBugToBug command)
+        {
+            var task = await taskRepository.GetAsync(command.TaskId);
+            var originalVersion = task.Version;
+            var childBug = task.Bugs.SingleOrDefault(x => x.Id == command.ChildBugId);
+            if (childBug == null)
+                throw new EntityDoesNotExist(command.ChildBugId, nameof(Issue.Model.ChildBug));
+            var standAloneBug = bugMapper.ChildBugToBug(childBug);
+        }
         #endregion
 
-#region SUBTASK
+        #region SUBTASK
         public async Task HandleAsync(AddSubtaskToTask command)
         {
             var task = await taskRepository.GetAsync(command.TaskId);
@@ -240,6 +254,6 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }
-#endregion
+        #endregion
     }
 }

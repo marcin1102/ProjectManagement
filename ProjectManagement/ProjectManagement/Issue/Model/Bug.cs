@@ -22,6 +22,14 @@ namespace ProjectManagement.Issue.Model
             base(id, projectId, title, description, status, reporterId, assigneeId, createdAt, updatedAt)
         {
         }
+
+        public ChildBug(Guid id, Guid projectId, string title, string description, IssueStatus status, Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt,
+            ICollection<Label.Label> labels, ICollection<Comment.Comment> comments) :
+            base(id, projectId, title, description, status, reporterId, assigneeId, createdAt, updatedAt)
+        {
+            Labels = labels;
+            Comments = comments;
+        }
     }
 
     public class Bug : Abstract.AggregateIssue
@@ -31,6 +39,14 @@ namespace ProjectManagement.Issue.Model
         public Bug(Guid id, Guid projectId, string title, string description, IssueStatus status, Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt) :
             base(id, projectId, title, description, status, reporterId, assigneeId, createdAt, updatedAt)
         { }
+
+        public Bug(Guid id, Guid projectId, string title, string description, IssueStatus status, Guid reporterId, Guid? assigneeId, DateTime createdAt, DateTime updatedAt,
+            ICollection<Label.Label> labels, ICollection<Comment.Comment> comments) :
+            base(id, projectId, title, description, status, reporterId, assigneeId, createdAt, updatedAt)
+        {
+            Labels = labels;
+            Comments = comments;
+        }
 
         public override void Created()
         {
@@ -71,6 +87,12 @@ namespace ProjectManagement.Issue.Model
         {
             await base.AssignToSprint(sprintId, sprintSearcher);
             Update(new BugAssignedToSprint(Id, SprintId.Value));
+        }
+
+        public void TasksBugChangedToBug()
+        {
+            //TODO: Publish events about change from child bug to bug
+            //Update(new TasksBugChangedToBug())
         }
     }    
 }
