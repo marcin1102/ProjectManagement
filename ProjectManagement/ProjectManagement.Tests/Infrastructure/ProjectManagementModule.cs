@@ -9,16 +9,16 @@ namespace ProjectManagement.Tests.Infrastructure
 {
     public class ProjectManagementModule
     {
-        public ProjectManagementModule(IComponentContext context)
+        public ProjectManagementModule(IServiceProvider serviceProvider)
         {
             //CommandQueryBus = commandQueryBus;
             //EventManager = eventManager;
-            Context = context;
+            ServiceProvider = serviceProvider;
             SeededData = new SeededData();
-            SeededData.SeedData(context.Resolve<ICommandQueryBus>(), context.Resolve<IEventManager>());
+            SeededData.SeedData((ICommandQueryBus)serviceProvider.GetService(typeof(ICommandQueryBus)), (IEventManager)serviceProvider.GetService(typeof(IEventManager)));
         }
 
-        public IComponentContext Context { get; private set; }
+        public IServiceProvider ServiceProvider { get; private set; }
         //public ICommandQueryBus CommandQueryBus { get; private set; }
         //public IEventManager EventManager { get; private set; }
         public SeededData SeededData { get; private set; }

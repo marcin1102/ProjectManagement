@@ -89,10 +89,9 @@ namespace ProjectManagement.Issue.Model
             Update(new BugAssignedToSprint(Id, SprintId.Value));
         }
 
-        public void TasksBugChangedToBug()
+        public void ChildBugChangedToBug()
         {
-            //TODO: Publish events about change from child bug to bug
-            //Update(new TasksBugChangedToBug())
+            Update(new ChildBugChangedToBug(Id));
         }
     }    
 }

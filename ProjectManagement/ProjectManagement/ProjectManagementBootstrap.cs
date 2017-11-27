@@ -39,7 +39,7 @@ namespace ProjectManagement
 {
     public class ProjectManagementBootstrap : ModuleBootstrap
     {
-        public ProjectManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
+        public ProjectManagementBootstrap(IServiceCollection services, IConfigurationRoot configuration, ILoggerFactory logger) : base(services, configuration, logger)
         {
             RegisterModuleComponents();
             RegisterRepositories();
@@ -50,97 +50,42 @@ namespace ProjectManagement
 
         private void RegisterServices()
         {
-            builder
-                .RegisterType<AuthorizationService>()
-                .As<IAuthorizationService>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<BugMapper>()
-                .As<IBugMapper>()
-                .InstancePerLifetimeScope();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<IBugMapper, BugMapper>();
         }
 
         private void RegisterFactories()
         {
-            builder
-               .RegisterType<IssueFactory>()
-               .As<IIssueFactory>()
-               .InstancePerLifetimeScope();
-
-            builder
-               .RegisterType<ProjectFactory>()
-               .As<IProjectFactory>()
-               .InstancePerLifetimeScope();
-
-            builder
-               .RegisterType<SprintFactory>()
-               .As<ISprintFactory>()
-               .InstancePerLifetimeScope();
+            services.AddScoped<IIssueFactory, IssueFactory>();
+            services.AddScoped<IProjectFactory, ProjectFactory>();
+            services.AddScoped<ISprintFactory, SprintFactory>();
         }
 
         private void RegisterSearchers()
         {
-            builder
-               .RegisterType<ProjectSearcher>()
-               .As<IProjectSearcher>()
-               .InstancePerLifetimeScope();
-
-            builder
-               .RegisterType<LabelSearcher>()
-               .As<ILabelsSearcher>()
-               .InstancePerLifetimeScope();
-
-            builder
-               .RegisterType<SprintSearcher>()
-               .As<ISprintSearcher>()
-               .InstancePerLifetimeScope();
+            services.AddScoped<IProjectSearcher, ProjectSearcher>();
+            services.AddScoped<ILabelsSearcher, LabelSearcher>();
+            services.AddScoped<ISprintSearcher, SprintSearcher>();
         }
 
         private void RegisterRepositories()
         {
-            builder
-                .RegisterType<ProjectRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<UserRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<LabelRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<TaskRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<ChildBugRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<BugRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<NfrRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<SubtaskRepository>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<SprintRepository>()
-                .InstancePerLifetimeScope();
+            services.AddScoped<ProjectRepository>();
+            services.AddScoped<UserRepository>();
+            services.AddScoped<LabelRepository>();
+            services.AddScoped<TaskRepository>();
+            services.AddScoped<ChildBugRepository>();
+            services.AddScoped<BugRepository>();
+            services.AddScoped<NfrRepository>();
+            services.AddScoped<SubtaskRepository>();
+            services.AddScoped<SprintRepository>();
         }
 
         private void RegisterModuleComponents()
         {
             var globalSettings = configuration.GetSection(nameof(GlobalSettings)).Get<GlobalSettings>();
 
-            builder.AddDbContext<ProjectManagementContext>(options =>
+            services.AddDbContext<ProjectManagementContext>(options =>
             {
                 options.UseNpgsql(globalSettings.ConnectionString, x => x.MigrationsAssembly("ProjectManagement")).UseLoggerFactory(logger);
             });

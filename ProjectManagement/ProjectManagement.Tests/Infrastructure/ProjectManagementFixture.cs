@@ -2,16 +2,17 @@
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ProjectManagement.Tests.Infrastructure
 {
     public class ProjectManagementFixture : IDisposable
     {
         public ProjectManagementModule Module { get; private set; }
-        public ProjectManagementFixture()
+        public ProjectManagementFixture(IServiceCollection services)
         {
             Module = new Bootstrap(
-                builder: new ContainerBuilder(),
+                services: services,
                 configuration: new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
                     .AddEnvironmentVariables()

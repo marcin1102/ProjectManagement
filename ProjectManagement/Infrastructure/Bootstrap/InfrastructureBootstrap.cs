@@ -4,17 +4,17 @@ using Infrastructure.Settings;
 using Infrastructure.Storage.EF;
 using Infrastructure.WebApi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Bootstrap
 {
     public static class InfrastructureBootstrap
     {
-        public static void RegisterInfrastructureComponents(this ContainerBuilder builder, IConfigurationRoot configuration)
+        public static void RegisterInfrastructureComponents(this IServiceCollection services, IConfigurationRoot configuration)
         {
-            builder.RegisterSettings(configuration);
-            builder.RegisterEfComponents(configuration);
-            builder.RegisterMessagingComponents();
-            builder.AddMvcFilters();
+            services.RegisterSettings(configuration);
+            services.RegisterMessagingComponents();
+            services.AddMvcFilters();
         }
     }
 }

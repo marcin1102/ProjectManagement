@@ -57,7 +57,7 @@ namespace ProjectManagement
                 x.ToTable(nameof(User.Model.User));
             });
 
-            modelBuilder.Entity<Task>(x =>
+            modelBuilder.Entity<AggregateIssue>(x =>
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Id).ValueGeneratedNever();
@@ -70,79 +70,50 @@ namespace ProjectManagement
                 x.Property(y => y.Description).IsRequired();
                 x.Property(y => y.SprintId).IsRequired(false);
                 x.HasMany(y => y.Comments);
-                x.HasMany(y => y.Bugs);
-                x.HasMany(y => y.Subtasks);
                 x.Ignore(y => y.PendingEvents);
                 x.Ignore(y => y.Labels);
+            });
+
+            modelBuilder.Entity<Issue.Model.Abstract.Issue>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.Id).ValueGeneratedNever();
+                x.Property(y => y.ProjectId).IsRequired();
+                x.Property(y => y.ReporterId).ValueGeneratedNever();
+                x.Property(y => y.AssigneeId).ValueGeneratedNever();
+                x.Property(y => y.Status).IsRequired();
+                x.Property(y => y.Title).IsRequired();
+                x.Property(y => y.Description).IsRequired();
+                x.Property(y => y.SprintId).IsRequired(false);
+                x.HasMany(y => y.Comments);
+                x.Ignore(y => y.Labels);
+            });
+
+            modelBuilder.Entity<Task>(x =>
+            {
+                x.HasMany(y => y.Bugs);
+                x.HasMany(y => y.Subtasks);
                 x.ToTable(nameof(Task));
             });
 
             modelBuilder.Entity<Subtask>(x =>
             {
-                x.HasKey(y => y.Id);
-                x.Property(y => y.Id).ValueGeneratedNever();
-                x.Property(y => y.ProjectId).IsRequired();
-                x.Property(y => y.ReporterId).ValueGeneratedNever();
-                x.Property(y => y.AssigneeId).ValueGeneratedNever();
-                x.Property(y => y.Status).IsRequired();
-                x.Property(y => y.Title).IsRequired();
-                x.Property(y => y.Description).IsRequired();
-                x.Property(y => y.SprintId).IsRequired(false);
-                x.HasMany(y => y.Comments);
-                x.Ignore(y => y.Labels);
                 x.ToTable(nameof(Subtask));
             });
 
             modelBuilder.Entity<ChildBug>(x =>
-            {
-                x.HasKey(y => y.Id);
-                x.Property(y => y.Id).ValueGeneratedNever();
-                x.Property(y => y.ProjectId).IsRequired();
-                x.Property(y => y.ReporterId).ValueGeneratedNever();
-                x.Property(y => y.AssigneeId).ValueGeneratedNever();
-                x.Property(y => y.Status).IsRequired();
-                x.Property(y => y.Title).IsRequired();
-                x.Property(y => y.Description).IsRequired();
-                x.Property(y => y.SprintId).IsRequired(false);
-                x.HasMany(y => y.Comments);
-                x.Ignore(y => y.Labels);
+            {                
                 x.ToTable(nameof(ChildBug));
             });
 
             modelBuilder.Entity<Bug>(x =>
             {
-                x.HasKey(y => y.Id);
-                x.Property(y => y.Id).ValueGeneratedNever();
-                x.Property(y => y.Version);
-                x.Property(y => y.ProjectId).IsRequired();
-                x.Property(y => y.ReporterId).ValueGeneratedNever();
-                x.Property(y => y.AssigneeId).ValueGeneratedNever();
-                x.Property(y => y.Status).IsRequired();
-                x.Property(y => y.Title).IsRequired();
-                x.Property(y => y.Description).IsRequired();
-                x.Property(y => y.SprintId).IsRequired(false);
-                x.HasMany(y => y.Comments);
-                x.Ignore(y => y.PendingEvents);
-                x.Ignore(y => y.Labels);
                 x.ToTable(nameof(ChildBug));
             });
 
             modelBuilder.Entity<Nfr>(x =>
             {
-                x.HasKey(y => y.Id);
-                x.Property(y => y.Id).ValueGeneratedNever();
-                x.Property(y => y.Version);
-                x.Property(y => y.ProjectId).IsRequired();
-                x.Property(y => y.ReporterId).ValueGeneratedNever();
-                x.Property(y => y.AssigneeId).ValueGeneratedNever();
-                x.Property(y => y.Status).IsRequired();
-                x.Property(y => y.Title).IsRequired();
-                x.Property(y => y.Description).IsRequired();
-                x.Property(y => y.SprintId).IsRequired(false);
-                x.HasMany(y => y.Comments);
                 x.HasMany(y => y.Bugs);
-                x.Ignore(y => y.PendingEvents);
-                x.Ignore(y => y.Labels);
                 x.ToTable(nameof(Nfr));
             });
 

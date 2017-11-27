@@ -12,12 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectManagementView.Storage.Handlers;
 using UserManagement.Contracts.User.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ProjectManagementView
 {
     public class ProjectManagementViewsBootstrap : ModuleBootstrap
     {
-        public ProjectManagementViewsBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
+        public ProjectManagementViewsBootstrap(IServiceCollection services, IConfigurationRoot configuration, ILoggerFactory logger) : base(services, configuration, logger)
         {
             RegisterModuleComponents();
             RegisterRepositories();
@@ -50,7 +51,7 @@ namespace ProjectManagementView
         {
             var globalSettings = configuration.GetSection(nameof(GlobalSettings)).Get<GlobalSettings>();
 
-            builder.AddDbContext<ProjectManagementViewContext>(options =>
+            services.AddDbContext<ProjectManagementViewContext>(options =>
             {
                 options.UseNpgsql(globalSettings.ConnectionString, x => x.MigrationsAssembly("ProjectManagementView")).UseLoggerFactory(logger);
             });

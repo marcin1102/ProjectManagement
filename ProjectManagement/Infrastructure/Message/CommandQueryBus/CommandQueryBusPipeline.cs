@@ -8,9 +8,9 @@ namespace Infrastructure.Message.CommandQueryBus
 {
     public class CommandQueryBusPipeline : ICommandQueryBus
     {
-        private readonly IComponentContext container;
+        private readonly IServiceProvider container;
 
-        public CommandQueryBusPipeline(IComponentContext container)
+        public CommandQueryBusPipeline(IServiceProvider container)
         {
             this.container = container;
         }
@@ -21,8 +21,8 @@ namespace Infrastructure.Message.CommandQueryBus
             var handlerType = typeof(IAsyncCommandHandler<>).MakeGenericType(commandType);
             var wrapperType = typeof(AsyncCommandHandlerWrapper<>).MakeGenericType(commandType);
 
-            var handler = container.Resolve(handlerType);
-            var pipelineBuilder = container.Resolve<PipelineBuilder>();
+            var handler = container.GetService(handlerType);
+            var pipelineBuilder = container.GetService(typeof(PipelineBuilder));
             var wrapper = (AsyncCommandHandlerWrapper)Activator.CreateInstance(wrapperType, pipelineBuilder, handler);
             return wrapper.HandleAsync(command);
         }
@@ -34,8 +34,8 @@ namespace Infrastructure.Message.CommandQueryBus
             var handlerType = typeof(IAsyncQueryHandler<,>).MakeGenericType(queryType, responseType);
             var wrapperType = typeof(AsyncQueryHandlerWrapper<,>).MakeGenericType(queryType, responseType);
 
-            var handler = container.Resolve(handlerType);
-            var pipelineBuilder = container.Resolve<PipelineBuilder>();
+            var handler = container.GetService(handlerType);
+            var pipelineBuilder = container.GetService(typeof(PipelineBuilder));
             var handlerWrapper = (AsyncQueryHandlerWrapper<TResponse>)Activator.CreateInstance(wrapperType, pipelineBuilder, handler);
 
             return handlerWrapper.HandleAsync(query);

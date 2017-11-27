@@ -11,12 +11,13 @@ using UserManagement.Contracts.User.Commands;
 using UserManagement.Contracts.User.Queries;
 using UserManagement.User.Handlers;
 using UserManagement.User.Repository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace UserManagement
 {
     public class UserManagementBootstrap : ModuleBootstrap
     {
-        public UserManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
+        public UserManagementBootstrap(IServiceCollection services, IConfigurationRoot configuration, ILoggerFactory logger) : base(services, configuration, logger)
         {
             RegisterModuleComponents();
             RegisterRepositories();
@@ -24,20 +25,23 @@ namespace UserManagement
 
         private void RegisterRepositories()
         {
-            builder
-                .RegisterType<UserRepository>()
-                .AsSelf()
-                .InstancePerLifetimeScope();
+            services.AddScoped<UserRepository>();
         }
 
         private void RegisterModuleComponents()
         {
             var globalSettings = configuration.GetSection(nameof(GlobalSettings)).Get<GlobalSettings>();
 
-            builder.AddDbContext<UserManagementContext>(options =>
+            services.AddDbContext<UserManagementContext>(options =>
             {
                 options.UseNpgsql(globalSettings.ConnectionString).UseLoggerFactory(logger);
             });
+
+            services.AddScoped<BaseDbContext>((x) =>
+            {
+                return x.GetRequiredService<UserManagementContext>();
+            });
+
         }
 
         public override void RegisterCommandHandlers()

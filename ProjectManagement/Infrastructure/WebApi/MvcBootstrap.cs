@@ -3,20 +3,16 @@ using Infrastructure.WebApi.Exceptions;
 using Infrastructure.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.WebApi
 {
     public static class MvcBootstrap
     {
-        public static void AddMvcFilters(this ContainerBuilder builder)
+        public static void AddMvcFilters(this IServiceCollection services)
         {
-            builder
-                .RegisterType<RequestValidationFilter>()
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<ExceptionFilter>()
-                .InstancePerLifetimeScope();
+            services.AddScoped<RequestValidationFilter>();
+            services.AddScoped<ExceptionFilter>();
         }
 
         public static void AddFilters(this MvcOptions options)

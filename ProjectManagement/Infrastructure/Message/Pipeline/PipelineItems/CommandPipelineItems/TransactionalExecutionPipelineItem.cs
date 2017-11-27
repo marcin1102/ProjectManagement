@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Storage.EF;
 
 namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
 {
@@ -9,7 +10,7 @@ namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
     {
         private readonly DbContext context;
 
-        public TransactionalExecutionPipelineItem(DbContext context)
+        public TransactionalExecutionPipelineItem(BaseDbContext context)
         {
             this.context = context;
         }

@@ -7,35 +7,26 @@ using Microsoft.Extensions.Logging;
 using ProjectManagement;
 using ProjectManagementView;
 using UserManagement;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApi.Bootstrap
 {
     public static class BootstrapExtensions
     {
-        public static void RegisterAppModules(this ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory loggerFactory)
+        public static void RegisterAppModules(this IServiceCollection services, IConfigurationRoot configuration, ILoggerFactory loggerFactory)
         {
-            var projectManagementBootstrap = new ProjectManagementBootstrap(builder, configuration, loggerFactory);
-            var userManagementBootstrap = new UserManagementBootstrap(builder, configuration, loggerFactory);
+            var projectManagementBootstrap = new ProjectManagementBootstrap(services, configuration, loggerFactory);
+            var userManagementBootstrap = new UserManagementBootstrap(services, configuration, loggerFactory);
             //var projectManagementViewBootstrap = new ProjectManagementViewsBootstrap(builder, configuration, loggerFactory);
 
-            builder
-                .RegisterInstance<ProjectManagementBootstrap>(projectManagementBootstrap)
-                .As<ModuleBootstrap>()
-                .AsSelf();
-            builder
-                .RegisterInstance<UserManagementBootstrap>(userManagementBootstrap)
-                .As<ModuleBootstrap>()
-                .AsSelf();
-
-            //builder
-            //    .RegisterInstance<ProjectManagementViewsBootstrap>(projectManagementViewBootstrap)
-            //    .As<ModuleBootstrap>()
-            //    .AsSelf();
+            services.AddSingleton<ModuleBootstrap>(projectManagementBootstrap);
+            services.AddSingleton<ModuleBootstrap>(userManagementBootstrap);
         }
 
-        public static void UseAppModules(this IContainer container)
+        public static void UseAppModules(this IServiceProvider container)
         {
-            var modules = container.Resolve<IEnumerable<ModuleBootstrap>>();
+            var modules = container.GetServices<ModuleBootstrap>();
+            //var modules = container.Resolve<IEnumerable<ModuleBootstrap>>();
             foreach (var module in modules)
             {
                 module.Run(container);

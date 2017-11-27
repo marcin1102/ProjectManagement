@@ -46,8 +46,9 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
         private readonly IBugMapper bugMapper;
+        private readonly BugRepository bugRepository;
 
-        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper)
+        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper, BugRepository bugRepository)
         {
             this.taskRepository = taskRepository;
             this.taskFactory = taskFactory;
@@ -57,6 +58,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             this.userRepository = userRepository;
             this.sprintSearcher = sprintSearcher;
             this.bugMapper = bugMapper;
+            this.bugRepository = bugRepository;
         }
 
         public async Task HandleAsync(CreateTask command)
@@ -186,6 +188,9 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             if (childBug == null)
                 throw new EntityDoesNotExist(command.ChildBugId, nameof(Issue.Model.ChildBug));
             var standAloneBug = bugMapper.ChildBugToBug(childBug);
+
+            await taskRepository.Update(task, originalVersion);
+            await bugRepository.AddAsync(standAloneBug);
         }
         #endregion
 

@@ -13,13 +13,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectManagement.Contracts.Project.Commands;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ProjectManagement.Tests.Infrastructure
 {
     public class Bootstrap : ProjectManagementBootstrap
     {
         private DbContextOptions<ProjectManagementContext> options;
-        public Bootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
+        public Bootstrap(IServiceCollection services, IConfigurationRoot configuration, ILoggerFactory logger) : base(services, configuration, logger)
         {
         }
 
@@ -27,66 +28,47 @@ namespace ProjectManagement.Tests.Infrastructure
         {
             var globalSettings = configuration.GetSection("GlobalSettings").Get<GlobalSettings>();
 
-            RegisterDbContext(builder, globalSettings.ConnectionString);
+            RegisterDbContext(services, globalSettings.ConnectionString);
 
-            builder
-                .RegisterType<LoggerFactory>()
-                .As<ILoggerFactory>();
+            services.AddTransient<ILoggerFactory, LoggerFactory>();
 
-            builder.RegisterMessagingComponents();
+            services.RegisterMessagingComponents();
 
-            RegisterSubstitutes(builder);
+            RegisterSubstitutes(services);
 
-            context = builder.Build();
+            serviceProvider = services.BuildServiceProvider();
 
             RegisterCommandPipelines();
             EnsureDatabaseIsClear();
 
             return new ProjectManagementModule(
-                context: context
+                serviceProvider: serviceProvider
             );
         }
 
-        private void RegisterSubstitutes(ContainerBuilder builder)
+        private void RegisterSubstitutes(IServiceCollection services)
         {
             var genericFakeCommandPipelineItem = typeof(FakeCommandPIpelineItem<>);
 
-            builder
-                .RegisterGeneric(genericFakeCommandPipelineItem)
-                .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<FakePipelineItemsConfiguration>()
-                .As<IPipelineItemsConfiguration>()
-                .SingleInstance();
+            services.AddScoped(genericFakeCommandPipelineItem);
+            services.AddSingleton<IPipelineItemsConfiguration, FakePipelineItemsConfiguration>();
         }
 
         private void EnsureDatabaseIsClear()
         {
-            using(var db = new ProjectManagementContext(options))
+            using(var db = serviceProvider.GetRequiredService<ProjectManagementContext>())
             {
                 db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
             }
         }
 
-        public void RegisterDbContext(ContainerBuilder builder, string connectionString)
+        public void RegisterDbContext(IServiceCollection services, string connectionString)
         {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<ProjectManagementContext>();
-            dbContextOptionsBuilder.UseNpgsql(connectionString: connectionString);
-            options = dbContextOptionsBuilder.Options;
-
-            builder.RegisterInstance<DbContextOptions<ProjectManagementContext>>(options);
-
-            builder.Register<ProjectManagementContext>(x =>
+            services.AddDbContext<ProjectManagementContext>(options =>
             {
-                var options = x.Resolve<DbContextOptions<ProjectManagementContext>>();
-                return new ProjectManagementContext(options);
-            })
-            .As<DbContext>()
-            .As<BaseDbContext>()
-            .AsSelf()
-            .InstancePerDependency();
+                options.UseNpgsql(connectionString: connectionString);
+            }, ServiceLifetime.Transient);
         }
 
         public override void AddAssemblyToProvider()

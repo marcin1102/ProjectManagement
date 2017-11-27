@@ -26,7 +26,6 @@ namespace ProjectManagement.WebApi
 {
     public class Startup
     {
-        public IContainer ApplicationContainer { get; private set; }
         public IConfigurationRoot Configuration { get; private set; }
         public ILoggerFactory LoggerFactory { get; private set; }
 
@@ -40,7 +39,7 @@ namespace ProjectManagement.WebApi
             Configuration = builder.Build();
         }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddMvc(options => options.AddFilters())
@@ -55,17 +54,8 @@ namespace ProjectManagement.WebApi
                 x.SwaggerDoc("api", new Info { Title = "DDD-app" });
             });
 
-            var builder = new ContainerBuilder();
-
-            builder.RegisterInfrastructureComponents(Configuration);
-            builder.RegisterAppModules(Configuration, LoggerFactory);
-
-
-            builder.Populate(services);
-            ApplicationContainer = builder.Build();
-
-            ApplicationContainer.UseAppModules();
-            return new AutofacServiceProvider(ApplicationContainer);
+            services.RegisterInfrastructureComponents(Configuration);
+            services.RegisterAppModules(Configuration, LoggerFactory);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
@@ -83,8 +73,6 @@ namespace ProjectManagement.WebApi
                     });
                 app.UsePathBase("/swagger/ui");
             }
-
-            appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
     }
 }

@@ -14,8 +14,10 @@ namespace ProjectManagement.Issue.Mappers
     {
         public Model.Bug ChildBugToBug(Model.ChildBug childBug)
         {
-            return new Model.Bug(childBug.Id, childBug.ProjectId, childBug.Title, childBug.Description, childBug.Status, childBug.ReporterId, childBug.AssigneeId,
+            var bug = new Model.Bug(childBug.Id, childBug.ProjectId, childBug.Title, childBug.Description, childBug.Status, childBug.ReporterId, childBug.AssigneeId,
                 childBug.CreatedAt, childBug.UpdatedAt, childBug.Labels, childBug.Comments);
+            bug.ChildBugChangedToBug();
+            return bug;
         }
 
         public Model.ChildBug BugToChildBug(Model.Bug bug)

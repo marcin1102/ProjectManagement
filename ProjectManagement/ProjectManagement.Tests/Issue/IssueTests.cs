@@ -19,14 +19,14 @@ namespace ProjectManagement.Tests.Issue
     public class IssueTests
     {
         private readonly ProjectManagementFixture fixture;
-        private readonly IComponentContext context;
+        private readonly IServiceProvider serviceProvider;
         private readonly SeededData seededData;
         private readonly Random random;
 
         public IssueTests(ProjectManagementFixture fixture)
         {
             this.fixture = fixture;
-            context = fixture.Module.Context;
+            serviceProvider = fixture.Module.ServiceProvider;
             seededData = fixture.Module.SeededData;
             random = new Random();
         }

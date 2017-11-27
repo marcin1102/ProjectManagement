@@ -15,14 +15,14 @@ namespace ProjectManagement.Tests.Project
     public class ProjectGeneralTests
     {
         private readonly ProjectManagementFixture fixture;
-        private readonly IComponentContext context;
+        private readonly IServiceProvider serviceProvider;
         private readonly SeededData seededData;
         private readonly Random random;
 
         public ProjectGeneralTests(ProjectManagementFixture fixture)
         {
             this.fixture = fixture;
-            context = fixture.Module.Context;
+            serviceProvider = fixture.Module.ServiceProvider;
             seededData = fixture.Module.SeededData;
             random = new Random();
         }

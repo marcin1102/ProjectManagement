@@ -4,16 +4,17 @@ using Infrastructure.Message.Pipeline.PipelineItems;
 using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using System.Linq;
 using Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
+using System;
 
 namespace Infrastructure.Message.Pipeline
 {
 
     public class PipelineBuilder
     {
-        private readonly IComponentContext container;
+        private readonly IServiceProvider container;
         private readonly IPipelineItemsConfiguration pipelineConfiguration;
 
-        public PipelineBuilder(IComponentContext container, IPipelineItemsConfiguration pipelineConfiguration)
+        public PipelineBuilder(IServiceProvider container, IPipelineItemsConfiguration pipelineConfiguration)
         {
             this.container = container;
             this.pipelineConfiguration = pipelineConfiguration;
@@ -27,7 +28,7 @@ namespace Infrastructure.Message.Pipeline
 
             var pipelineItems = pipelineItemsTypes
                 .Select(x => x.MakeGenericType(commandType))
-                .Select(x => container.Resolve(x))
+                .Select(x => container.GetService(x))
                 .Select(x => (CommandPipelineItem<TCommand>)x)
                 .ToList();
 
@@ -47,7 +48,7 @@ namespace Infrastructure.Message.Pipeline
 
             var pipelineItems = pipelineItemsTypes
                 .Select(x => x.MakeGenericType(queryType, responseType))
-                .Select(x => container.Resolve(x))
+                .Select(x => container.GetService(x))
                 .Select(x => (QueryPipelineItem<TQuery, TResponse>)x)
                 .ToList();
 

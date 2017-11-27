@@ -14,14 +14,14 @@ namespace Infrastructure.Bootstrap
 {
     public abstract class ModuleBootstrap
     {
-        protected ContainerBuilder builder { get; private set; }
+        protected IServiceCollection services { get; private set; }
         protected IConfigurationRoot configuration;
         protected ILoggerFactory logger;
-        protected IComponentContext context;
+        protected IServiceProvider serviceProvider;
 
-        protected ModuleBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger)
+        protected ModuleBootstrap(IServiceCollection services, IConfigurationRoot configuration, ILoggerFactory logger)
         {
-            this.builder = builder;
+            this.services = services;
             this.configuration = configuration;
             this.logger = logger;
 
@@ -33,9 +33,9 @@ namespace Infrastructure.Bootstrap
             AddAssemblyToProvider();
         }
 
-        public void Run(IComponentContext context)
+        public void Run(IServiceProvider serviceProvider)
         {
-            this.context = context;
+            this.serviceProvider = serviceProvider;
             RegisterCommandPipelines();
         }
 
@@ -54,31 +54,21 @@ namespace Infrastructure.Bootstrap
             where TCommand : class, ICommand
             where THandler : class, IAsyncCommandHandler<TCommand>
         {
-            builder
-                .RegisterType<THandler>()
-                .As<IAsyncCommandHandler<TCommand>>()
-                .InstancePerLifetimeScope();
+            services.AddTransient<IAsyncCommandHandler<TCommand>, THandler>();
         }
 
         protected void RegisterAsyncQueryHandler<TQuery, TResponse , THandler>()
             where TQuery : class, IQuery<TResponse>
             where THandler : class, IAsyncQueryHandler<TQuery, TResponse>
         {
-            builder
-                .RegisterType<THandler>()
-                .As<IAsyncQueryHandler<TQuery, TResponse>>()
-                .InstancePerLifetimeScope();
+            services.AddTransient<IAsyncQueryHandler<TQuery, TResponse>, THandler>();
         }
 
         protected void RegisterAsyncEventHandler<TEvent, THandler>()
             where TEvent : class, IDomainEvent
             where THandler : class, IAsyncEventHandler<TEvent>
         {
-            builder
-                .RegisterType<THandler>()
-                .As<IAsyncEventHandler<TEvent>>()
-                .AsSelf()
-                .InstancePerLifetimeScope();
+            services.AddTransient<IAsyncEventHandler<TEvent>, THandler>();
         }
     }
 }

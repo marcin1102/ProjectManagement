@@ -19,9 +19,9 @@ namespace Infrastructure.Message.EventDispatcher
     {
         private readonly Type eventHandlerType = typeof(IAsyncEventHandler<>);
         private readonly Type eventHandlerWrapperType = typeof(EventHandlerWrapper<>);
-        private readonly IComponentContext context;
+        private readonly IServiceProvider context;
 
-        public EventBroker(IComponentContext context)
+        public EventBroker(IServiceProvider context)
         {
             this.context = context;
         }
@@ -35,7 +35,7 @@ namespace Infrastructure.Message.EventDispatcher
             var wrapperGenericType = eventHandlerWrapperType.MakeGenericType(domainEventType);
 
             var subscribers = subscribersTypes
-                .Select(x => context.Resolve(x))
+                .Select(x => context.GetService(x))
                 .ToList();
 
             var wrappers = subscribers.Select(x => (EventHandlerWrapper)Activator.CreateInstance(wrapperGenericType, x));
