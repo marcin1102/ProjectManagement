@@ -11,17 +11,19 @@ namespace UserManagement.Contracts.User.Commands
 {
     public class CreateUser : ICommand
     {
-        public CreateUser(string firstName, string lastName, string email, Role role)
+        public CreateUser(string firstName, string lastName, string email, string password, Role role)
         {
             FirstName = firstName;
             LastName = lastName;
             Email = email;
+            Password = password;
             Role = role;
         }
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string Email { get; private set; }
+        public string Password { get; private set; }
         public Role Role { get; private set; }
 
         [JsonIgnore]
@@ -47,6 +49,13 @@ namespace UserManagement.Contracts.User.Commands
                 .WithMessage("Email cannot be null or empty")
                 .EmailAddress()
                 .WithMessage("Email adress is not valid")
+                .WithErrorCode("400");
+
+            RuleFor(x => x.Password)
+                .NotEmpty()
+                .WithMessage("Password cannot be null or empty")
+                .MinimumLength(4)
+                .WithMessage("Password too short")
                 .WithErrorCode("400");
         }
     }

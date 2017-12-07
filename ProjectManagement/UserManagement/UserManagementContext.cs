@@ -26,6 +26,7 @@ namespace UserManagement
                 x.Property(y => y.FirstName).IsRequired();
                 x.Property(y => y.LastName).IsRequired();
                 x.Property(y => y.Role).IsRequired();
+                x.Property(y => y.Password).IsRequired();
                 x.Property(y => y.Version);
                 x.Ignore(y => y.PendingEvents);
                 x.ToTable(nameof(User.Model.User));

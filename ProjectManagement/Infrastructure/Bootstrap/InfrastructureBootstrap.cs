@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Infrastructure.CallContexts;
 using Infrastructure.Message;
 using Infrastructure.Settings;
 using Infrastructure.Storage.EF;
@@ -15,6 +16,7 @@ namespace Infrastructure.Bootstrap
             builder.RegisterEfComponents(configuration);
             builder.RegisterMessagingComponents();
             builder.AddMvcFilters();
+            builder.RegisterCallContext();
         }
     }
 }

@@ -21,6 +21,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using UserManagement;
 using UserManagement.Contracts.User.Commands;
 using WebApi.Bootstrap;
+using WebApi.Middlewares;
 
 namespace ProjectManagement.WebApi
 {
@@ -60,6 +61,9 @@ namespace ProjectManagement.WebApi
             builder.RegisterInfrastructureComponents(Configuration);
             builder.RegisterAppModules(Configuration, LoggerFactory);
 
+            builder
+                .RegisterType<AuthMiddleware>()
+                .InstancePerLifetimeScope();
 
             builder.Populate(services);
             ApplicationContainer = builder.Build();
@@ -72,9 +76,11 @@ namespace ProjectManagement.WebApi
         {
             LoggerFactory = loggerFactory.AddConsole();
 
+            app.UseMiddleware<AuthMiddleware>();
+
             if (env.IsDevelopment())
             {
-                app.UseMvc();
+                app.UseMvc();                
                 app.UseSwagger();
                 app.UseSwaggerUI(x =>
                     {
@@ -82,7 +88,7 @@ namespace ProjectManagement.WebApi
                         x.SwaggerEndpoint("/swagger/api/swagger.json", "Docs");
                     });
                 app.UsePathBase("/swagger/ui");
-            }
+            }            
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }

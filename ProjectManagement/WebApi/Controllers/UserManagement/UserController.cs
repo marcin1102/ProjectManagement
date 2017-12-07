@@ -40,5 +40,12 @@ namespace WebApi.Controllers.UserManagement
             await commandQueryBus.SendAsync(command);
             return NoContent();
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] Login command)
+        {
+            await commandQueryBus.SendAsync(command);
+            return Ok($"token: {command.GeneratedToken}");
+        }
     }
 }

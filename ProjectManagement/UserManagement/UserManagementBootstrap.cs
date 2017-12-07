@@ -11,6 +11,9 @@ using UserManagement.Contracts.User.Commands;
 using UserManagement.Contracts.User.Queries;
 using UserManagement.User.Handlers;
 using UserManagement.User.Repository;
+using UserManagement.Hashing;
+using System;
+using UserManagement.User.Searchers;
 
 namespace UserManagement
 {
@@ -20,6 +23,15 @@ namespace UserManagement
         {
             RegisterModuleComponents();
             RegisterRepositories();
+            RegisterSearchers();
+        }
+
+        private void RegisterSearchers()
+        {
+            builder
+                .RegisterType<UserSearcher>()
+                .As<IUserSearcher>()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterRepositories()
@@ -38,12 +50,18 @@ namespace UserManagement
             {
                 options.UseNpgsql(globalSettings.ConnectionString).UseLoggerFactory(logger);
             });
+
+            builder
+                .RegisterType<HashingService>()
+                .As<IHashingService>()
+                .InstancePerDependency();
         }
 
         public override void RegisterCommandHandlers()
         {
             RegisterAsyncCommandHandler<CreateUser, UserCommandHandler>();
             RegisterAsyncCommandHandler<GrantRole, UserCommandHandler>();
+            RegisterAsyncCommandHandler<Login, UserCommandHandler>();
         }
 
         public override void RegisterEventHandlers()
