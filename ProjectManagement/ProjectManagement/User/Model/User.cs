@@ -18,7 +18,7 @@ namespace ProjectManagement.User.Model
             FirstName = firstName;
             LastName = lastName;
             Email = email;
-            this.role = role;
+            Role = role;
             AggregateVersion = aggregateVersion;
         }
 
@@ -26,19 +26,13 @@ namespace ProjectManagement.User.Model
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string Email { get; private set; }
-        private Role role;
-        public string Role {
-            get => role.ToString();
-            set {
-                role = (Role)Enum.Parse(typeof(Role), value);
-            }
-        }
+        public Role Role { get; private set; }
 
         public long AggregateVersion { get; set; }
 
         public void GrantRole(Role role, long version)
         {
-            this.role = role;
+            Role = role;
             AggregateVersion = version;
         }
     }

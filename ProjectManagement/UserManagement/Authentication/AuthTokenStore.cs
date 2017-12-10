@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Primitives;
 
-namespace UserManagement.Authorization
+namespace UserManagement.Authentication
 {
 
     public static class AuthTokenStore

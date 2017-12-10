@@ -34,6 +34,10 @@ using ProjectManagement.Project.Factory;
 using ProjectManagement.Sprint.Factory;
 using ProjectManagement.Contracts.Bug.Commands;
 using ProjectManagement.Issue.Mappers;
+using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
+using System;
+using System.Linq;
+using Infrastructure.Message.Pipeline.PipelineItems;
 
 namespace ProjectManagement
 {
@@ -219,6 +223,27 @@ namespace ProjectManagement
 
         public override void RegisterQueryHandlers()
         {
+        }
+
+        public override void RegisterCommandPipelines()
+        {
+            var assignUserToProjectPipeline = (IEnumerable<Type>)new List<Type>
+            {
+                typeof(AuthorizationPipelineItem<AssignUserToProject>)
+            };
+            var standardPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline();
+
+            assignUserToProjectPipeline = assignUserToProjectPipeline.Concat(standardPipeline);
+            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
+            pipelineConfiguration.SetCommandPipeline<AssignUserToProject>(assignUserToProjectPipeline);
+
+            var createProjectPipeline = (IEnumerable<Type>)new List<Type>
+            {
+                typeof(AuthorizationPipelineItem<CreateProject>)
+            };
+            createProjectPipeline = createProjectPipeline.Concat(standardPipeline);
+            pipelineConfiguration.SetCommandPipeline<CreateProject>(createProjectPipeline);
+            base.RegisterCommandPipelines();
         }
     }
 }

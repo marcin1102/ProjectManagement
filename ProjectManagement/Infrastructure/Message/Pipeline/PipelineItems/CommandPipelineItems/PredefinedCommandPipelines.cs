@@ -5,7 +5,7 @@ namespace Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems
 {
     public static class PredefinedCommandPipelines
     {
-        public static ICollection<Type> TransactionalCommandExecutionPipeline() => new List<Type>
+        public static IReadOnlyCollection<Type> TransactionalCommandExecutionPipeline() => new List<Type>
         {
             typeof(TransactionalExecutionPipelineItem<>)
         };

@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
 using Infrastructure.Message;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace UserManagement.Contracts.User.Commands
 {

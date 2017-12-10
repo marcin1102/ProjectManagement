@@ -1,12 +1,8 @@
-﻿using Autofac;
-using Infrastructure.CallContexts;
+﻿using Infrastructure.CallContexts;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Owin;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserManagement.Authorization;
+using UserManagement.Authentication;
 
 namespace WebApi.Middlewares
 {

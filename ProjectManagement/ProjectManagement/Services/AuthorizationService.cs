@@ -37,7 +37,7 @@ namespace ProjectManagement.Services
         {
             var user = await userRepository.GetAsync(userId);
 
-            if (user.Role != Role.Admin.ToString())
+            if (user.Role != Role.Admin)
                 throw new NotAuthorized(userId, commandName);
         }
     }

@@ -3,11 +3,9 @@ using Infrastructure.Storage;
 using UserManagement.Contracts.User.Enums;
 using UserManagement.Contracts.User.Events;
 using UserManagement.Hashing;
-using UserManagement.Authorization;
-using System.Linq;
-using Infrastructure.Exceptions;
 using UserManagement.Contracts.User.Exceptions;
 using UserManagement.Contracts.User.Commands;
+using UserManagement.Authentication;
 
 namespace UserManagement.User.Model
 {
@@ -51,7 +49,7 @@ namespace UserManagement.User.Model
             if (!hashingService.DoPasswordsMatch(loginCommand.Password, Password))
                 throw new LoginFailed("UserManagement", "Email or password do not match. Login failed");
 
-            var tokenValue = Guid.NewGuid().ToString();
+            var tokenValue = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             AuthTokenStore.AddToken(tokenValue, Id);
             loginCommand.GeneratedToken = tokenValue;
         }

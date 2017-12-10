@@ -24,8 +24,6 @@ namespace ProjectManagement.Project.Factory
 
         public async Task<Model.Project> GenerateProject(CreateProject command)
         {
-            await authorizationService.CheckUserRole(command.AdminId, nameof(CreateProject));
-
             var project = new Model.Project(Guid.NewGuid(), command.Name);
             project.Created();
             command.CreatedId = project.Id;
