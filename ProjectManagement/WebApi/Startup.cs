@@ -78,17 +78,21 @@ namespace ProjectManagement.WebApi
 
             app.UseMiddleware<AuthMiddleware>();
 
-            if (env.IsDevelopment())
-            {
-                app.UseMvc();                
-                app.UseSwagger();
-                app.UseSwaggerUI(x =>
-                    {
-                        x.RoutePrefix = "swagger/ui";
-                        x.SwaggerEndpoint("/swagger/api/swagger.json", "Docs");
-                    });
-                app.UsePathBase("/swagger/ui");
-            }            
+            app.UseCors(conf => 
+                    conf.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .Build())
+                .UseMvc();
+                
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
+                {
+                    x.RoutePrefix = "swagger/ui";
+                    x.SwaggerEndpoint("/swagger/api/swagger.json", "Docs");
+                });
+            app.UsePathBase("/swagger/ui");
+                      
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
