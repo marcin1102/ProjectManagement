@@ -22,8 +22,6 @@ namespace UserManagement.Contracts.User.Commands
         public LoginValidator()
         {
             RuleFor(x => x.Email)
-                .NotEmpty()
-                .WithMessage("Email cannot be null or empty")
                 .EmailAddress()
                 .WithErrorCode("400");
 

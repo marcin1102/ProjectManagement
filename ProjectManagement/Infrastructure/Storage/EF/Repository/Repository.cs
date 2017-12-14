@@ -7,7 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Storage.EF.Repository
 {
-    public class Repository<TEntity>
+    public interface IRepository<TEntity>
+         where TEntity : class, IEntity
+    {
+        Task AddAsync(TEntity entity);
+        Task Update(TEntity entity);
+        Task<TEntity> GetAsync(Guid id);
+        Task<TEntity> FindAsync(Guid id);
+    }
+
+    public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity
     {
         protected readonly DbContext dbContext;
@@ -33,9 +42,12 @@ namespace Infrastructure.Storage.EF.Repository
             return dbContext.SaveChangesAsync();
         }
 
-        public virtual Task<TEntity> GetAsync(Guid id)
+        public virtual async Task<TEntity> GetAsync(Guid id)
         {
-            return Query.AsTracking().SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, typeof(TEntity).Name);
+            var entity = await Query.SingleOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+                throw new EntityDoesNotExist(id, typeof(TEntity).Name);
+            return entity;
         }
 
         public virtual Task<TEntity> FindAsync(Guid id)

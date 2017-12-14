@@ -52,8 +52,8 @@ namespace ProjectManagement.Issue.Factory
                                 status: IssueStatus.Todo,
                                 reporterId: command.ReporterId,
                                 assigneeId: null,
-                                createdAt: DateTime.Now,
-                                updatedAt: DateTime.Now
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
                              );
             issue.Created();
 
@@ -86,8 +86,8 @@ namespace ProjectManagement.Issue.Factory
                                 status: IssueStatus.Todo,
                                 reporterId: command.ReporterId,
                                 assigneeId: null,
-                                createdAt: DateTime.Now,
-                                updatedAt: DateTime.Now
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
                              );
 
             issue.Created();
@@ -121,8 +121,8 @@ namespace ProjectManagement.Issue.Factory
                                 status: IssueStatus.Todo,
                                 reporterId: command.ReporterId,
                                 assigneeId: null,
-                                createdAt: DateTime.Now,
-                                updatedAt: DateTime.Now
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
                              );
             issue.Created();
 
@@ -155,8 +155,8 @@ namespace ProjectManagement.Issue.Factory
                                 status: IssueStatus.Todo,
                                 reporterId: command.ReporterId,
                                 assigneeId: null,
-                                createdAt: DateTime.Now,
-                                updatedAt: DateTime.Now
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
                              );
 
             if (command.LabelsIds != null)
@@ -187,8 +187,8 @@ namespace ProjectManagement.Issue.Factory
                                 status: IssueStatus.Todo,
                                 reporterId: command.ReporterId,
                                 assigneeId: null,
-                                createdAt: DateTime.Now,
-                                updatedAt: DateTime.Now
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
                              );
 
             if (command.LabelsIds != null)

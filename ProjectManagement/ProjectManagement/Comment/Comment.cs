@@ -11,7 +11,7 @@ namespace ProjectManagement.Comment
             Id = Guid.NewGuid();
             MemberId = memberId;
             Content = content;
-            CreatedAt = DateTimeOffset.Now;
+            CreatedAt = DateTimeOffset.UtcNow;
         }
 
         public Guid Id { get; private set; }

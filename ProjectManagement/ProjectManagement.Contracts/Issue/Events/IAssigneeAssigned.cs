@@ -8,6 +8,6 @@ namespace ProjectManagement.Contracts.Issue.Events
     public interface IAssigneeAssigned
     {
         Guid IssueId { get; }
-        Guid AssigneedId { get; }
+        Guid AssigneeId { get; }
     }
 }

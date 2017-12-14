@@ -32,6 +32,7 @@ namespace ProjectManagementView
                 x.HasKey(y => y.Id);
                 x.HasMany(y => y.Sprints).WithOne();
                 x.HasMany(y => y.Users);
+                x.HasMany(y => y.Labels).WithOne();
             });
 
             modelBuilder.Entity<Sprint>(x =>
@@ -47,6 +48,9 @@ namespace ProjectManagementView
             modelBuilder.Entity<Issue>(x =>
             {
                 x.HasKey(y => y.Id);
+                x.Property(y => y.ProjectId);
+                x.Property("labels");
+                x.Property("comments");
                 x.Ignore(y => y.Labels);
                 x.Ignore(y => y.Comments);
             });

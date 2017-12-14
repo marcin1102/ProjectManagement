@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 using UserManagement;
-using UserManagement.Contracts.User.Enums;
 
 namespace UserManagement.Migrations
 {
     [DbContext(typeof(UserManagementContext))]
-    partial class UserManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20171213234906_tokens")]
+    partial class tokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +71,8 @@ namespace UserManagement.Migrations
                     b.Property<string>("Password")
                         .IsRequired();
 
-                    b.Property<int>("Role");
+                    b.Property<string>("Role")
+                        .IsRequired();
 
                     b.Property<long>("Version");
 

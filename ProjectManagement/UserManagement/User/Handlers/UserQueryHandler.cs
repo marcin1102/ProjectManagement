@@ -20,8 +20,8 @@ namespace UserManagement.User.Handlers
 
         public async Task<UserResponse> HandleAsync(GetUser query)
         {
-            var user = await repository.FindAsync(query.Id);
-            return new UserResponse(user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.Version);
+            var user = await repository.GetAsync(query.Id);
+            return new UserResponse(user.Id, user.FirstName, user.LastName, user.Email, user.Role.ToString(), user.Version);
         }
     }
 }

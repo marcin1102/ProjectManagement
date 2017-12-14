@@ -33,7 +33,7 @@ namespace Infrastructure.Bootstrap
             AddAssemblyToProvider();
         }
 
-        public void Run(IComponentContext context)
+        public virtual void Run(IComponentContext context)
         {
             this.context = context;
             RegisterCommandPipelines();

@@ -15,6 +15,11 @@ namespace Infrastructure.Exceptions
             CommandName = commandName;
         }
 
+        public NotAuthorized()
+            : base($"You are not authorized!")
+        {
+        }
+
         public Guid UserId { get; private set; }
         public string CommandName { get; private set; }
     }

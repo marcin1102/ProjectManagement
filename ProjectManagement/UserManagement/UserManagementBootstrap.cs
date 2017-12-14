@@ -14,16 +14,45 @@ using UserManagement.User.Repository;
 using UserManagement.Hashing;
 using System;
 using UserManagement.User.Searchers;
+using UserManagement.Authentication;
+using System.Linq;
+using UserManagement.User.Services;
 
 namespace UserManagement
 {
     public class UserManagementBootstrap : ModuleBootstrap
     {
+        private readonly string adminEmail;
+        private readonly string adminPassword;
+
         public UserManagementBootstrap(ContainerBuilder builder, IConfigurationRoot configuration, ILoggerFactory logger) : base(builder, configuration, logger)
         {
             RegisterModuleComponents();
             RegisterRepositories();
             RegisterSearchers();
+            RegisterServices();
+
+            var uberAdmin = configuration.GetSection(nameof(UberAdmin)).Get<UberAdmin>();
+            adminEmail = uberAdmin.Email;
+            adminPassword = uberAdmin.Password;
+        }
+
+        private void RegisterServices()
+        {
+            builder
+                .RegisterType<TokenFactory>()
+                .As<ITokenFactory>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<AuthTokenStore>()
+                .AsSelf()
+                .SingleInstance();
+
+            builder
+                .RegisterType<UserFactory>()
+                .As<IUserFactory>()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterSearchers()
@@ -76,6 +105,32 @@ namespace UserManagement
         public override void AddAssemblyToProvider()
         {
             AssembliesProvider.assemblies.Add(typeof(UserManagementBootstrap).GetTypeInfo().Assembly);
+        }
+
+        public override void Run(IComponentContext context)
+        {
+            var tokenStore = context.Resolve<AuthTokenStore>();
+            var db = context.Resolve<UserManagementContext>();
+            var today = DateTimeOffset.UtcNow;
+            var tokens = db.Tokens.Where(x => x.LastlyUsed.Date == today.Date && x.LastlyUsed.TimeOfDay >= today.TimeOfDay.Subtract(new TimeSpan(0, 15, 0))).ToList();
+            tokenStore.InitializeWithValuesFromDatabase(tokens.Select(x => TokenFactory.ToAccessToken(x)));
+
+            InitializeSystemWithAdminIfNeeded(context, db);
+
+            db.Dispose();
+            base.Run(context);
+        }
+
+        private void InitializeSystemWithAdminIfNeeded(IComponentContext context, UserManagementContext db)
+        {            
+            var isAmin = db.Users.Any(x => x.Role == Contracts.User.Enums.Role.Admin);
+            if (!isAmin)
+            {
+                var repository = context.Resolve<UserRepository>();
+                var userFactory = context.Resolve<IUserFactory>();
+
+                repository.AddAsync(userFactory.Create("Admin", "Admin", adminEmail, adminPassword, Contracts.User.Enums.Role.Admin)).Wait() ;
+            }
         }
     }
 }

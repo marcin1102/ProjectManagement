@@ -14,6 +14,7 @@ namespace ProjectManagementView.Storage.Models.Abstract
         }
 
         public Guid Id { get; set; }
+        public Guid ProjectId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public IssueStatus Status { get; set; }
@@ -21,7 +22,7 @@ namespace ProjectManagementView.Storage.Models.Abstract
         public User Assignee { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public string labels { get; private set; }
+        private string labels { get; set; }
         public ICollection<Label> Labels
         {
             get => JsonConvert.DeserializeObject<ICollection<Label>>(labels);
@@ -30,7 +31,7 @@ namespace ProjectManagementView.Storage.Models.Abstract
                 labels = JsonConvert.SerializeObject(value);
             }
         }
-        public string comments { get; private set; }
+        private string comments { get; set; }
         public ICollection<Comment> Comments
         {
             get => JsonConvert.DeserializeObject<ICollection<Comment>>(comments);

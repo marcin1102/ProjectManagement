@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Autofac;
 using Infrastructure.Bootstrap;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +15,7 @@ namespace WebApi.Bootstrap
         {
             var projectManagementBootstrap = new ProjectManagementBootstrap(builder, configuration, loggerFactory);
             var userManagementBootstrap = new UserManagementBootstrap(builder, configuration, loggerFactory);
-            //var projectManagementViewBootstrap = new ProjectManagementViewsBootstrap(builder, configuration, loggerFactory);
+            var projectManagementViewBootstrap = new ProjectManagementViewsBootstrap(builder, configuration, loggerFactory);
 
             builder
                 .RegisterInstance<ProjectManagementBootstrap>(projectManagementBootstrap)
@@ -27,10 +26,10 @@ namespace WebApi.Bootstrap
                 .As<ModuleBootstrap>()
                 .AsSelf();
 
-            //builder
-            //    .RegisterInstance<ProjectManagementViewsBootstrap>(projectManagementViewBootstrap)
-            //    .As<ModuleBootstrap>()
-            //    .AsSelf();
+            builder
+                .RegisterInstance<ProjectManagementViewsBootstrap>(projectManagementViewBootstrap)
+                .As<ModuleBootstrap>()
+                .AsSelf();
         }
 
         public static void UseAppModules(this IContainer container)

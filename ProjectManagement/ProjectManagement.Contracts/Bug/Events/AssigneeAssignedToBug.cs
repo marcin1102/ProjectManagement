@@ -13,11 +13,11 @@ namespace ProjectManagement.Contracts.Bug.Events
         public AssigneeAssignedToBug(Guid bugId, Guid assigneedId)
         {
             IssueId = bugId;
-            AssigneedId = assigneedId;
+            AssigneeId = assigneedId;
         }
 
         public Guid IssueId { get; private set; }
-        public Guid AssigneedId { get; private set; }
+        public Guid AssigneeId { get; private set; }
         public long AggregateVersion { get; set; }
     }
 }

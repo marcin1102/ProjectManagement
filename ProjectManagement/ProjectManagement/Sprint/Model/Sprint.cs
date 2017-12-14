@@ -39,7 +39,7 @@ namespace ProjectManagement.Sprint.Model
             if (Status != SprintStatus.Planned)
                 throw new CannotChangeSprintStatus(Id, Status, SprintStatus.InProgress, DomainInformationProvider.Name);
 
-            var currentDate = DateTime.Now.Date;
+            var currentDate = DateTime.UtcNow.Date;
             if (StartDate.Date != currentDate)
                 StartDate = currentDate;
 
@@ -52,7 +52,7 @@ namespace ProjectManagement.Sprint.Model
             if (Status != SprintStatus.InProgress)
                 throw new CannotChangeSprintStatus(Id, Status, SprintStatus.Finished, DomainInformationProvider.Name);
 
-            var currentDate = DateTime.Now.Date;
+            var currentDate = DateTime.UtcNow.Date;
             if (EndDate.Date != currentDate)
                 EndDate = currentDate;
 

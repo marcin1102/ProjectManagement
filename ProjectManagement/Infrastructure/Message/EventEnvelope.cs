@@ -17,7 +17,7 @@ namespace Infrastructure.Message
         public EventEnvelope(IDomainEvent @event)
         {
             Id = Guid.NewGuid();
-            CreatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
             DomainEvent = JsonConvert.SerializeObject(@event);
             DomainEventType = @event.GetType().FullName;
             Delivered = false;

@@ -34,9 +34,12 @@ namespace Infrastructure.Storage.EF.Repository
             await eventManager.PublishEventsAsync(aggregate.PendingEvents);
         }
 
-        public virtual Task<TAggregate> GetAsync(Guid id)
+        public virtual async Task<TAggregate> GetAsync(Guid id)
         {
-            return Query.SingleOrDefaultAsync(x => x.Id == id) ?? throw new EntityDoesNotExist(id, typeof(TAggregate).Name);
+            var aggregate = await Query.SingleOrDefaultAsync(x => x.Id == id);
+            if (aggregate == null)
+                throw new EntityDoesNotExist(id, typeof(TAggregate).Name);
+            return aggregate;
         }
 
         public virtual Task<TAggregate> FindAsync(Guid id)

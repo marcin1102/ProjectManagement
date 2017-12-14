@@ -79,10 +79,10 @@ namespace ProjectManagement.WebApi
             app.UseMiddleware<AuthMiddleware>();
 
             app.UseCors(conf => 
-                    conf.AllowAnyOrigin()
+                    conf
+                    .AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .Build())
+                    .AllowAnyHeader())
                 .UseMvc();
                 
             app.UseSwagger();

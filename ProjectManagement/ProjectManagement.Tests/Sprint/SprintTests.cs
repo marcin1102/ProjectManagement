@@ -37,8 +37,8 @@ namespace ProjectManagement.Tests.Sprint
         // {
         //     //Arrange
         //     var name = SeededData.RandomString("SprintName_");
-        //     var startDate = DateTime.Now.Date;
-        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var startDate = DateTime.UtcNow.Date;
+        //     var endDate = DateTime.UtcNow.Date.AddDays(14);
         //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
         //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
@@ -60,8 +60,8 @@ namespace ProjectManagement.Tests.Sprint
         // {
         //     //Arrange
         //     var name = SeededData.RandomString("SprintName_");
-        //     var startDate = DateTime.Now.Date;
-        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var startDate = DateTime.UtcNow.Date;
+        //     var endDate = DateTime.UtcNow.Date.AddDays(14);
         //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
         //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
@@ -82,8 +82,8 @@ namespace ProjectManagement.Tests.Sprint
         // {
         //     //Arrange
         //     var name = SeededData.RandomString("SprintName_");
-        //     var startDate = DateTime.Now.Date;
-        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var startDate = DateTime.UtcNow.Date;
+        //     var endDate = DateTime.UtcNow.Date.AddDays(14);
         //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
         //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 
@@ -99,8 +99,8 @@ namespace ProjectManagement.Tests.Sprint
         // {
         //     //Arrange
         //     var name = SeededData.RandomString("SprintName_");
-        //     var startDate = DateTime.Now.Date;
-        //     var endDate = DateTime.Now.Date.AddDays(14);
+        //     var startDate = DateTime.UtcNow.Date;
+        //     var endDate = DateTime.UtcNow.Date.AddDays(14);
         //     var createSprint = new CreateSprint(seededData.ProjectId, name, startDate, endDate);
         //     var commandQueryBus = context.Resolve<ICommandQueryBus>();
 

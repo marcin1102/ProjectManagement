@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectManagementView.Storage.Models
 {
     public class Comment
     {
-        public Comment(Guid memberId, string content, DateTime addedAt)
+        public Comment(Guid memberId, string content, DateTimeOffset addedAt)
         {
             MemberId = memberId;
             Content = content;
@@ -17,6 +13,6 @@ namespace ProjectManagementView.Storage.Models
 
         public Guid MemberId { get; }
         public string Content { get; }
-        public DateTime AddedAt { get; }
+        public DateTimeOffset AddedAt { get; }
     }
 }

@@ -75,7 +75,7 @@ namespace ProjectManagement.Issue.Model.Abstract
                 throw new CannotChangeIssueStatus(Id, Status, IssueStatus.InProgress, DomainInformationProvider.Name);
 
             Status = IssueStatus.InProgress;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public virtual async System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService)
@@ -96,7 +96,7 @@ namespace ProjectManagement.Issue.Model.Abstract
                 throw new CannotChangeIssueStatus(Id, Status, IssueStatus.Done, DomainInformationProvider.Name);
 
             Status = IssueStatus.Done;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public virtual async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
@@ -183,7 +183,7 @@ namespace ProjectManagement.Issue.Model.Abstract
                 throw new CannotChangeIssueStatus(Id, Status, IssueStatus.InProgress, DomainInformationProvider.Name);
 
             Status = IssueStatus.InProgress;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public virtual async System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService)
@@ -204,7 +204,7 @@ namespace ProjectManagement.Issue.Model.Abstract
                 throw new CannotChangeIssueStatus(Id, Status, IssueStatus.Done, DomainInformationProvider.Name);
 
             Status = IssueStatus.Done;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public virtual async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)

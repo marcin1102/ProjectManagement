@@ -7,6 +7,8 @@ using UserManagement.User.Repository;
 using UserManagement.Hashing;
 using UserManagement.User.Searchers;
 using UserManagement.Contracts.User.Exceptions;
+using UserManagement.Authentication;
+using UserManagement.User.Services;
 
 namespace UserManagement.User.Handlers
 {
@@ -18,18 +20,24 @@ namespace UserManagement.User.Handlers
         private readonly UserRepository repository;
         private readonly IHashingService hashingService;
         private readonly IUserSearcher userSearcher;
+        private readonly ITokenFactory tokenFactory;
+        private readonly AuthTokenStore authTokenStore;
+        private readonly IUserFactory userFactory;
 
-        public UserCommandHandler(UserRepository repository, IHashingService hashingService, IUserSearcher userSearcher)
+        public UserCommandHandler(UserRepository repository, IHashingService hashingService, IUserSearcher userSearcher, ITokenFactory tokenFactory, AuthTokenStore authTokenStore, IUserFactory userFactory)
         {
             this.repository = repository;
             this.hashingService = hashingService;
             this.userSearcher = userSearcher;
+            this.tokenFactory = tokenFactory;
+            this.authTokenStore = authTokenStore;
+            this.userFactory = userFactory;
         }
 
         public Task HandleAsync(CreateUser command)
         {
-            command.CreatedId = Guid.NewGuid();
-            var user = new Model.User(command.CreatedId, command.FirstName, command.LastName, command.Email, command.Password, command.Role, hashingService);
+            var user = userFactory.Create(command.FirstName, command.LastName, command.Email, command.Password, command.Role);
+            command.CreatedId = user.Id;
             return repository.AddAsync(user);
         }
 
@@ -48,7 +56,7 @@ namespace UserManagement.User.Handlers
             if (user == null)
                 throw new LoginFailed("UserManagement", "Email or password do not match. Login failed");
 
-            user.Login(command, hashingService);
+            await user.Login(command, hashingService, tokenFactory, authTokenStore);
         }
     }
 }

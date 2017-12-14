@@ -13,11 +13,11 @@ namespace ProjectManagement.Contracts.Nfr.Events
         public AssigneeAssignedToNfr(Guid nfrId, Guid assigneedId)
         {
             IssueId = nfrId;
-            AssigneedId = assigneedId;
+            AssigneeId = assigneedId;
         }
 
         public Guid IssueId { get; private set; }
-        public Guid AssigneedId { get; private set; }
+        public Guid AssigneeId { get; private set; }
         public long AggregateVersion { get; set; }
     }
 }

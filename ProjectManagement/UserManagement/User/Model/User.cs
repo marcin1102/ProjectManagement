@@ -6,6 +6,7 @@ using UserManagement.Hashing;
 using UserManagement.Contracts.User.Exceptions;
 using UserManagement.Contracts.User.Commands;
 using UserManagement.Authentication;
+using System.Threading.Tasks;
 
 namespace UserManagement.User.Model
 {
@@ -15,43 +16,40 @@ namespace UserManagement.User.Model
         {
         }
 
-        public User(Guid id, string firstName, string lastName, string email, string password, Role role, IHashingService hashingService) : base(id)
+        public User(Guid id, string firstName, string lastName, string email, string password, Role role) : base(id)
         {
             FirstName = firstName;
             LastName = lastName;
             Email = email;
-            this.role = role;
-            Password = hashingService.GeneratePasswordHash(password);
-            Update(new UserCreated(Id, FirstName, LastName, Email, role));
+            this.Role = role;
+            Password = password;
         }
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
-        private Role role;
-        public string Role
-            {
-                get => role.ToString();
-                set {
-                    role = (Role) Enum.Parse(typeof(Role), value);
-                }
-            }
+        public Role Role { get; private set; }
+
+        public override void Created()
+        {
+            Update(new UserCreated(Id, FirstName, LastName, Email, Role));
+        }
 
         public void GrantRole(Role role)
         {
-            this.role = role;
+            this.Role = role;
             Update(new RoleGranted(Id, role));
         }
 
-        public void Login(Login loginCommand, IHashingService hashingService)
+        public async Task Login(Login loginCommand, IHashingService hashingService, ITokenFactory tokenFactory, AuthTokenStore tokenStore)
         {
             if (!hashingService.DoPasswordsMatch(loginCommand.Password, Password))
                 throw new LoginFailed("UserManagement", "Email or password do not match. Login failed");
 
-            var tokenValue = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
-            AuthTokenStore.AddToken(tokenValue, Id);
-            loginCommand.GeneratedToken = tokenValue;
+            var token = await tokenFactory.Create(Id);
+            tokenStore.AddToken(token);
+            loginCommand.GeneratedToken = token.Value;
         }
     }
 }

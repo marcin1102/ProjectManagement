@@ -81,7 +81,7 @@ namespace ProjectManagement.Tests.Infrastructure
             Task.Run(() => commandQueryBus.SendAsync(createNfrsBug)).Wait();
             NfrsBugId = createNfrsBug.CreatedId;
 
-            var createSprint = new CreateSprint(RandomString("Sprint_"), DateTime.Now.Date, DateTime.Now.Date.AddDays(14)){ ProjectId = ProjectId};
+            var createSprint = new CreateSprint(RandomString("Sprint_"), DateTime.UtcNow.Date, DateTime.UtcNow.Date.AddDays(14)){ ProjectId = ProjectId};
             Task.Run(() => commandQueryBus.SendAsync(createSprint)).Wait();
             SprintId = createSprint.CreatedId;
         }

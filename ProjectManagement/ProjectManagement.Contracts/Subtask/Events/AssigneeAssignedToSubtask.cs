@@ -13,11 +13,11 @@ namespace ProjectManagement.Contracts.Subtask.Events
         public AssigneeAssignedToSubtask(Guid subtaskId, Guid assigneedId)
         {
             IssueId = subtaskId;
-            AssigneedId = assigneedId;
+            AssigneeId = assigneedId;
         }
 
         public Guid IssueId { get; private set; }
-        public Guid AssigneedId { get; private set; }
+        public Guid AssigneeId { get; private set; }
         public long AggregateVersion { get; set; }
     }
 }
