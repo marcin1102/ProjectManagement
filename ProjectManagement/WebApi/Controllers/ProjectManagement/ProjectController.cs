@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure.Message.CommandQueryBus;
-using Infrastructure.WebApi;
+using ProjectManagement.Infrastructure.Message.CommandQueryBus;
+using ProjectManagement.Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Contracts.Project.Queries;
 using ProjectManagement.Contracts.Label.Queries;
-using Infrastructure.WebApi.Filters;
+using ProjectManagement.Infrastructure.WebApi.Filters;
 
 namespace WebApi.Controllers.ProjectManagement
 {

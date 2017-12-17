@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Storage.EF;
 using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagement.User.Model

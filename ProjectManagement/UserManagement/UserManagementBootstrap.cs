@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Autofac;
-using Infrastructure.Bootstrap;
-using Infrastructure.Providers;
-using Infrastructure.Settings;
-using Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Bootstrap;
+using ProjectManagement.Infrastructure.Providers;
+using ProjectManagement.Infrastructure.Settings;
+using ProjectManagement.Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

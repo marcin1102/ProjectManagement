@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Bug.Commands;
 using ProjectManagement.Issue.Repository;
 using ProjectManagement.Issue.Factory;

@@ -1,4 +1,4 @@
-﻿using Infrastructure.Exceptions;
+﻿using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Project.Searchers;
 using System;

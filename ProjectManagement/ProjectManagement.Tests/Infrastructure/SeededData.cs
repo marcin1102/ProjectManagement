@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure.Message;
-using Infrastructure.Message.CommandQueryBus;
-using Infrastructure.Message.EventDispatcher;
+using ProjectManagement.Infrastructure.Message.CommandQueryBus;
+using ProjectManagement.Infrastructure.Message.EventDispatcher;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Tests.Issue;
 using UserManagement.Contracts.User.Enums;
 using UserManagement.Contracts.User.Events;
 using ProjectManagement.Contracts.Sprint.Commands;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace ProjectManagement.Tests.Infrastructure
 {

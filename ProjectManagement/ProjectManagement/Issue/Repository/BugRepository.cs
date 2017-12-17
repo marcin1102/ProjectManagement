@@ -1,4 +1,4 @@
-using Infrastructure.Message.EventDispatcher;
+using ProjectManagement.Infrastructure.Message.EventDispatcher;
 using ProjectManagement.Issue.Model;
 
 namespace ProjectManagement.Issue.Repository

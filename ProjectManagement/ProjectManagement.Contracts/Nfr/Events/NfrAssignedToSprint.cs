@@ -1,5 +1,5 @@
 ﻿using System;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using ProjectManagement.Contracts.Issue.Events;
 
 namespace ProjectManagement.Contracts.Nfr.Events

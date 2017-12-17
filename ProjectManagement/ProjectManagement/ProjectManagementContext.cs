@@ -1,4 +1,4 @@
-﻿using Infrastructure.Storage.EF;
+﻿using ProjectManagement.Infrastructure.Storage.EF;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Issue.Model;
 using ProjectManagement.Issue.Model.Abstract;

@@ -1,8 +1,5 @@
 ﻿using System;
-using Infrastructure.Message;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using UserManagement.Contracts.User.Enums;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace UserManagement.Contracts.User.Queries
 {

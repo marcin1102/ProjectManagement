@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
-using Infrastructure.Storage.EF.Repository;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Storage.EF.Repository;
 using ProjectManagement.Contracts.Project.Events;
 
 namespace ProjectManagementView.Storage.Handlers

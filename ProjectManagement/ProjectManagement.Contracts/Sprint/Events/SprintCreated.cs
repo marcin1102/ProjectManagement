@@ -1,4 +1,4 @@
-﻿using Infrastructure.Message;
+﻿using ProjectManagement.Infrastructure.Primitives.Message;
 using System;
 using System.Collections.Generic;
 using System.Text;

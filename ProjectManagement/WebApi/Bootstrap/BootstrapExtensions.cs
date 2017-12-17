@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autofac;
-using Infrastructure.Bootstrap;
+using ProjectManagement.Infrastructure.Bootstrap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectManagement;

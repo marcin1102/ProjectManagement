@@ -1,9 +1,9 @@
-﻿using Infrastructure.CallContexts;
-using Infrastructure.Exceptions;
-using Infrastructure.Message;
+﻿using ProjectManagement.Infrastructure.CallContexts;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using UserManagement.Contracts.User.Enums;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace ProjectManagement.PipelineItems
 {

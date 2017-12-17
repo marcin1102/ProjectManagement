@@ -1,9 +1,6 @@
-﻿using System;
+﻿using ProjectManagement.Infrastructure.Primitives.Message;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure.Message;
 
 namespace ProjectManagement.Contracts.Bug.Events
 {

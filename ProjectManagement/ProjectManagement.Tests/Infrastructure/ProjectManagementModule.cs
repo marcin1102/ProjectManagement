@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Autofac;
-using Infrastructure.Message.CommandQueryBus;
-using Infrastructure.Message.EventDispatcher;
+using ProjectManagement.Infrastructure.Message.CommandQueryBus;
+using ProjectManagement.Infrastructure.Message.EventDispatcher;
 
 namespace ProjectManagement.Tests.Infrastructure
 {

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Infrastructure.Message.CommandQueryBus;
+using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using ProjectManagement.Contracts.DomainExceptions;
 using ProjectManagement.Contracts.Issue.Commands;
 using ProjectManagement.Contracts.Issue.Enums;

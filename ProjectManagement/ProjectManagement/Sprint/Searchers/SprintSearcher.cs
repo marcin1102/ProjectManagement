@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
 
 namespace ProjectManagement.Sprint.Searchers
 {

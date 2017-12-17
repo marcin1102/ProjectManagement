@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\ProjectManagement.Contracts\ProjectManagement.Contracts.csproj" />
+    <ProjectReference Include="..\ProjectManagement.Infrastructure\ProjectManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\ProjectManagement\ProjectManagement.csproj" />
     <ProjectReference Include="..\UserManagement.Contracts\UserManagement.Contracts.csproj" />
   </ItemGroup>

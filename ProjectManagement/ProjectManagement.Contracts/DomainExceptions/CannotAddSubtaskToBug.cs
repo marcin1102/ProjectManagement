@@ -1,4 +1,4 @@
-﻿using Infrastructure.Exceptions;
+﻿using ProjectManagement.Infrastructure.Primitives.Exceptions;
 
 namespace ProjectManagement.Contracts.DomainExceptions
 {

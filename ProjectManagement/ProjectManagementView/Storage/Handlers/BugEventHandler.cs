@@ -1,5 +1,5 @@
-﻿using Infrastructure.Message.Handlers;
-using Infrastructure.Storage.EF.Repository;
+﻿using ProjectManagement.Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Storage.EF.Repository;
 using ProjectManagement.Contracts.Bug.Events;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Contracts.Task.Commands;

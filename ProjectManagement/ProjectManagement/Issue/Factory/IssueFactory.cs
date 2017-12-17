@@ -9,7 +9,7 @@ using ProjectManagement.Services;
 using ProjectManagement.Sprint.Repository;
 using ProjectManagement.User.Repository;
 using ProjectManagement.Project.Repository;
-using Infrastructure.Exceptions;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagement.Contracts.Bug.Commands;
 
 namespace ProjectManagement.Issue.Factory

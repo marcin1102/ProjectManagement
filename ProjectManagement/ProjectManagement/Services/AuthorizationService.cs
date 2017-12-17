@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagement.Contracts.DomainExceptions;
 using ProjectManagement.Project.Searchers;
 using ProjectManagement.User.Repository;

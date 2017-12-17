@@ -1,7 +1,7 @@
-﻿using Infrastructure.WebApi;
+﻿using ProjectManagement.Infrastructure.WebApi;
 using System;
 using System.Threading.Tasks;
-using Infrastructure.Message.CommandQueryBus;
+using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Contracts.Sprint.Queries;

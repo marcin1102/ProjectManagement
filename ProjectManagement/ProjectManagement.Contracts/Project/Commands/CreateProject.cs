@@ -1,5 +1,5 @@
 ﻿using System;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using Newtonsoft.Json;
 
 namespace ProjectManagement.Contracts.Project.Commands

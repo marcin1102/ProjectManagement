@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using ProjectManagement.Contracts.Issue.Enums;
 
 namespace ProjectManagement.Contracts.Issue.Events

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FluentValidation;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using Newtonsoft.Json;
 using ProjectManagement.Contracts.Issue.Enums;
 

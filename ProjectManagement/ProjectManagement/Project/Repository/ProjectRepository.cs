@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.EventDispatcher;
-using Infrastructure.Storage.EF.Repository;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.EventDispatcher;
+using ProjectManagement.Infrastructure.Storage.EF.Repository;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Project.Model;
 

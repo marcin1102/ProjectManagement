@@ -1,6 +1,6 @@
 ﻿using System;
 using FluentValidation;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace ProjectManagement.Contracts.Label.Queries
 {

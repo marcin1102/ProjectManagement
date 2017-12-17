@@ -1,5 +1,5 @@
 ﻿using System;
-using Infrastructure.Exceptions;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagement.Contracts.Sprint.Enums;
 
 namespace ProjectManagement.Contracts.DomainExceptions

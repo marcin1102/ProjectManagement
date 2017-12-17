@@ -1,4 +1,4 @@
-﻿using Infrastructure.Exceptions;
+﻿using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace ProjectManagement.Contracts.Label.Queries
 {

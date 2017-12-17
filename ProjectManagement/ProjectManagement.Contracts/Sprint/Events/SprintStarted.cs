@@ -1,4 +1,4 @@
-﻿using Infrastructure.Message;
+﻿using ProjectManagement.Infrastructure.Primitives.Message;
 using ProjectManagement.Contracts.Sprint.Enums;
 using System;
 

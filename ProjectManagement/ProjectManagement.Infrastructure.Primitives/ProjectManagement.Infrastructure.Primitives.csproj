@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>ProjectManagement.Infrastructure.Primitives</AssemblyName>
+    <RootNamespace>ProjectManagement.Infrastructure.Primitives</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Marcin Gurbiel</Authors>
+    <Company>ProjectManagement</Company>
+  </PropertyGroup>
+
+</Project>

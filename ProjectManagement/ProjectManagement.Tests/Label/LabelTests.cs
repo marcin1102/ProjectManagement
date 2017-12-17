@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Infrastructure.Message.CommandQueryBus;
+using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Tests.Infrastructure;

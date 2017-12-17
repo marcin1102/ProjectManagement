@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

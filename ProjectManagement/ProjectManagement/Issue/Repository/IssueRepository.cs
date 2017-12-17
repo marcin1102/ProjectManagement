@@ -4,11 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.EventDispatcher;
-using Infrastructure.Storage;
-using Infrastructure.Storage.EF;
-using Infrastructure.Storage.EF.Repository;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.EventDispatcher;
+using ProjectManagement.Infrastructure.Storage;
+using ProjectManagement.Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Storage.EF.Repository;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Issue.Model.Abstract;
 

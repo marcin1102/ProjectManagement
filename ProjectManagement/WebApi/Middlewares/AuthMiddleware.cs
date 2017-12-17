@@ -1,6 +1,6 @@
-﻿using Infrastructure.CallContexts;
-using Infrastructure.Exceptions;
-using Infrastructure.WebApi.Exceptions;
+﻿using ProjectManagement.Infrastructure.CallContexts;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.WebApi.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;

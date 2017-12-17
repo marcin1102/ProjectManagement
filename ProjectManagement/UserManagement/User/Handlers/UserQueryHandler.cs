@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using UserManagement.Contracts.User.Queries;
 using UserManagement.User.Repository;
-using Infrastructure.CallContexts;
+using ProjectManagement.Infrastructure.CallContexts;
 
 namespace UserManagement.User.Handlers
 {

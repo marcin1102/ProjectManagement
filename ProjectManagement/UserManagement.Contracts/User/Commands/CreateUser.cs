@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using FluentValidation;
-using Infrastructure.Message;
 using Newtonsoft.Json;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using UserManagement.Contracts.User.Enums;
 
 namespace UserManagement.Contracts.User.Commands

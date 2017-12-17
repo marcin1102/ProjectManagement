@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "User", "User", "{BA19C6F5-3267-4A53-989A-F31CEAF20705}"
 EndProject
@@ -12,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Contracts", "ProjectManagement.Contracts\ProjectManagement.Contracts.csproj", "{05F0E3AD-C7EA-4873-B626-346F5728DD35}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Tests", "ProjectManagement.Tests\ProjectManagement.Tests.csproj", "{061729C9-6832-42A9-970F-63F49B8EC51A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391} = {4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement", "UserManagement\UserManagement.csproj", "{BEB3E38D-C71A-423D-9CA5-A61BA9D67139}"
 EndProject
@@ -21,13 +24,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Tests", "Use
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{A2108C60-881D-44E6-A732-BB4CED54BC11}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C89295C2-0552-4688-AEC2-F70294848126}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagementView", "ProjectManagementView\ProjectManagementView.csproj", "{2FAA224E-2B8B-4802-A3CF-BE46A638C19E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagementView", "ProjectManagementView\ProjectManagementView.csproj", "{2FAA224E-2B8B-4802-A3CF-BE46A638C19E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagementView.Contracts", "ProjectManagementView.Contracts\ProjectManagementView.Contracts.csproj", "{FAAB806C-5167-418B-A409-665CE876FE47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagementView.Contracts", "ProjectManagementView.Contracts\ProjectManagementView.Contracts.csproj", "{FAAB806C-5167-418B-A409-665CE876FE47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagementView.Tests", "ProjectManagementView.Tests\ProjectManagementView.Tests.csproj", "{393EB521-9BA4-496D-8BDF-75AD563C6BC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391} = {4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagementView.Tests", "ProjectManagementView.Tests\ProjectManagementView.Tests.csproj", "{393EB521-9BA4-496D-8BDF-75AD563C6BC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Infrastructure", "ProjectManagement.Infrastructure\ProjectManagement.Infrastructure.csproj", "{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Infrastructure.Primitives", "ProjectManagement.Infrastructure.Primitives\ProjectManagement.Infrastructure.Primitives.csproj", "{AD4A88B4-237B-4C12-88EF-20E2724089B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,10 +71,6 @@ Global
 		{A2108C60-881D-44E6-A732-BB4CED54BC11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2108C60-881D-44E6-A732-BB4CED54BC11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2108C60-881D-44E6-A732-BB4CED54BC11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C89295C2-0552-4688-AEC2-F70294848126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C89295C2-0552-4688-AEC2-F70294848126}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C89295C2-0552-4688-AEC2-F70294848126}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C89295C2-0552-4688-AEC2-F70294848126}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FAA224E-2B8B-4802-A3CF-BE46A638C19E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FAA224E-2B8B-4802-A3CF-BE46A638C19E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FAA224E-2B8B-4802-A3CF-BE46A638C19E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,6 +83,14 @@ Global
 		{393EB521-9BA4-496D-8BDF-75AD563C6BC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393EB521-9BA4-496D-8BDF-75AD563C6BC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393EB521-9BA4-496D-8BDF-75AD563C6BC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F82B093-3D1D-4D5E-AADA-8A7A0D05F391}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD4A88B4-237B-4C12-88EF-20E2724089B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD4A88B4-237B-4C12-88EF-20E2724089B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD4A88B4-237B-4C12-88EF-20E2724089B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD4A88B4-237B-4C12-88EF-20E2724089B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

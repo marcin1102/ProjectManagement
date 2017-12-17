@@ -1,5 +1,5 @@
 ﻿using System;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 using UserManagement.Contracts.User.Enums;
 
 namespace UserManagement.Contracts.User.Events

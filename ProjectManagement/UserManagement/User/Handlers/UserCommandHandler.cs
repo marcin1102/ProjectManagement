@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using UserManagement.Contracts.User.Commands;
 using UserManagement.User.Repository;
 using UserManagement.Hashing;

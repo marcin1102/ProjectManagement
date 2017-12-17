@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Storage.EF;
 using Newtonsoft.Json;
 using ProjectManagement.Contracts.Sprint.Enums;
 

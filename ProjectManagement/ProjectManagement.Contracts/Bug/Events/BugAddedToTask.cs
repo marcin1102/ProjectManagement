@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace ProjectManagement.Contracts.Bug.Events
 {

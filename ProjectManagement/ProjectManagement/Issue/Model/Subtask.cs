@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Infrastructure.Exceptions;
-using Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Storage.EF;
 using ProjectManagement.Contracts.DomainExceptions;
 using ProjectManagement.Contracts.Issue.Enums;
 using ProjectManagement.Issue.Model.Abstract;

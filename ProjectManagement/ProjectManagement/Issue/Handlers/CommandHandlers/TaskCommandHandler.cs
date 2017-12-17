@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Task.Commands;
 using ProjectManagement.Issue.Factory;
 using ProjectManagement.Issue.Repository;

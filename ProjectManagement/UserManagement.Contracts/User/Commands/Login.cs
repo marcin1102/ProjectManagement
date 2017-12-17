@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Infrastructure.Message;
+using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace UserManagement.Contracts.User.Commands
 {

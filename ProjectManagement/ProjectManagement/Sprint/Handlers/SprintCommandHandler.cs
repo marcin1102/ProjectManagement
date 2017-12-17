@@ -1,5 +1,5 @@
-﻿using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
+﻿using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Project.Searchers;
 using ProjectManagement.Sprint.Factory;

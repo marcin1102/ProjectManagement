@@ -1,11 +1,11 @@
-﻿using Infrastructure.Bootstrap;
+﻿using ProjectManagement.Infrastructure.Bootstrap;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Infrastructure.Settings;
+using ProjectManagement.Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
-using Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Storage.EF;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Project.Handlers;
 using ProjectManagement.Project.Repository;
@@ -34,10 +34,10 @@ using ProjectManagement.Project.Factory;
 using ProjectManagement.Sprint.Factory;
 using ProjectManagement.Contracts.Bug.Commands;
 using ProjectManagement.Issue.Mappers;
-using Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 using System;
 using System.Linq;
-using Infrastructure.Message.Pipeline.PipelineItems;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
 
 namespace ProjectManagement
 {

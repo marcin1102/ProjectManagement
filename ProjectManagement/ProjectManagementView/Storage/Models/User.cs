@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Infrastructure.Storage.EF;
+using ProjectManagement.Infrastructure.Storage.EF;
 using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagementView.Storage.Models

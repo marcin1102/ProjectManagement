@@ -1,4 +1,4 @@
-﻿using Infrastructure.Storage.EF.Repository;
+﻿using ProjectManagement.Infrastructure.Storage.EF.Repository;
 
 namespace ProjectManagement.User.Repository
 {

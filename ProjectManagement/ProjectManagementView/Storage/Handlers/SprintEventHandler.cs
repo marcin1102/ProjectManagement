@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Contracts.Sprint.Events;
 

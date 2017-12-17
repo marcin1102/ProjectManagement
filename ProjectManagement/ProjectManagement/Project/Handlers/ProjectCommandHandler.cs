@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Infrastructure.Exceptions;
-using Infrastructure.Message.Handlers;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Project.Factory;
 using ProjectManagement.Project.Repository;
