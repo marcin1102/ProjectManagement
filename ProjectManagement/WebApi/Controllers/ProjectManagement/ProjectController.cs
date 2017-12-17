@@ -5,9 +5,9 @@ using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using ProjectManagement.Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Project.Commands;
-using ProjectManagement.Contracts.Project.Queries;
 using ProjectManagement.Contracts.Label.Queries;
 using ProjectManagement.Infrastructure.WebApi.Filters;
+using ProjectManagementView.Contracts.Projects;
 
 namespace WebApi.Controllers.ProjectManagement
 {
@@ -33,16 +33,19 @@ namespace WebApi.Controllers.ProjectManagement
             return Ok();
         }
 
-        [HttpGet("{projectId}")]
-        public Task<ProjectResponse> GetProject([FromRoute] Guid projectId)
-        {
-            return commandQueryBus.SendAsync(new GetProject(projectId));
-        }
+        //[HttpGet("{projectId}")]
+        //public Task<ProjectResponse> GetProject([FromRoute] Guid projectId)
+        //{
+        //    return commandQueryBus.SendAsync(new GetProject(projectId));
+        //}
 
         [HttpGet]
-        public Task<ICollection<ProjectResponse>> GetProjects()
+        public Task<IReadOnlyCollection<ProjectListItem>> GetProjects([FromQuery] bool isAdmin)
         {
-            return commandQueryBus.SendAsync(new GetProjects());
+            if (isAdmin)
+                return commandQueryBus.SendAsync(new GetProjectsAsAdmin());
+            else
+                return commandQueryBus.SendAsync(new GetProjects());
         }
 
         [HttpPost("{projectId}/labels")]

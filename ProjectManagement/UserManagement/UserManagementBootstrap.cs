@@ -17,6 +17,8 @@ using UserManagement.User.Searchers;
 using UserManagement.Authentication;
 using System.Linq;
 using UserManagement.User.Services;
+using UserManagement.UserView.Handlers;
+using UserManagement.UserView.Repository;
 
 namespace UserManagement
 {
@@ -67,6 +69,11 @@ namespace UserManagement
         {
             builder
                 .RegisterType<UserRepository>()
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<UserViewRepository>()
                 .AsSelf()
                 .InstancePerLifetimeScope();
         }

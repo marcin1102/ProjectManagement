@@ -23,11 +23,11 @@ namespace ProjectManagement.Infrastructure.Primitives.Exceptions
             public Result(string domainName, string message)
             {
                 DomainName = domainName;
-                Message = message;
+                ErrorMessage = message;
             }
 
             public string DomainName { get; private set; }
-            public string Message { get; private set; }
+            public string ErrorMessage { get; private set; }
         }
     }
 }

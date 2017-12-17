@@ -5,7 +5,7 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class CommentTask : CommentIssue
     {
-        public CommentTask(Guid memberId, string content) : base(memberId, content)
+        public CommentTask(string content) : base(content)
         {
         }
     }

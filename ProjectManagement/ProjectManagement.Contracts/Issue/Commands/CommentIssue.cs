@@ -10,9 +10,8 @@ namespace ProjectManagement.Contracts.Issue.Commands
     /// </summary>
     public class CommentIssue : ICommand
     {
-        public CommentIssue(Guid memberId, string content)
+        public CommentIssue(string content)
         {
-            MemberId = memberId;
             Content = content;
         }
 
@@ -20,7 +19,6 @@ namespace ProjectManagement.Contracts.Issue.Commands
         public Guid ProjectId { get; set; }
         [JsonIgnore]
         public Guid IssueId { get; set; }
-        public Guid MemberId { get; private set; }
         public string Content { get; private set; }
     }
 

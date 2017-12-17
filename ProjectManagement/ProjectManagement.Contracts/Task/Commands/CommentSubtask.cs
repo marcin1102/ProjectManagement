@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class CommentSubtask : CommentIssue
     {
-        public CommentSubtask(Guid memberId, string content) : base(memberId, content)
+        public CommentSubtask(string content) : base(content)
         {
         }
 

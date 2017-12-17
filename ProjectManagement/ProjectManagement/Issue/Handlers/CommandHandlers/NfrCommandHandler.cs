@@ -10,6 +10,7 @@ using ProjectManagement.Project.Repository;
 using ProjectManagement.Services;
 using ProjectManagement.Sprint.Searchers;
 using ProjectManagement.User.Repository;
+using ProjectManagement.Infrastructure.CallContexts;
 
 namespace ProjectManagement.Issue.Handlers.CommandHandlers
 {
@@ -36,8 +37,9 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         private readonly IAuthorizationService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
+        private readonly CallContext callContext;
 
-        public NfrCommandHandler(NfrRepository nfrRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher)
+        public NfrCommandHandler(NfrRepository nfrRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
         {
             this.nfrRepository = nfrRepository;
             this.issueFactory = issueFactory;
@@ -46,6 +48,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
             this.authorizationService = authorizationService;
             this.userRepository = userRepository;
             this.sprintSearcher = sprintSearcher;
+            this.callContext = callContext;
         }
 
         public async Task HandleAsync(CreateNfr command)
@@ -65,7 +68,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         public async Task HandleAsync(CommentNfr command)
         {
             var issue = await nfrRepository.GetAsync(command.IssueId);
-            await issue.Comment(command.MemberId, command.Content, authorizationService);
+            await issue.Comment(callContext.UserId, command.Content, authorizationService);
             await nfrRepository.Update(issue, issue.Version);
         }
 
@@ -127,7 +130,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var nfr = await nfrRepository.GetAsync(command.NfrId);
             var originalVersion = nfr.Version;
-            await nfr.CommentBug(command.IssueId, command.MemberId, command.Content, authorizationService);
+            await nfr.CommentBug(command.IssueId, callContext.UserId, command.Content, authorizationService);
             var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
             await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }

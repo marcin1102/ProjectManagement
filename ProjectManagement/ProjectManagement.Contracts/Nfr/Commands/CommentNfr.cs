@@ -9,7 +9,7 @@ namespace ProjectManagement.Contracts.Nfr.Commands
 {
     public class CommentNfr : CommentIssue
     {
-        public CommentNfr(Guid memberId, string content) : base(memberId, content)
+        public CommentNfr(string content) : base(content)
         {
         }
     }

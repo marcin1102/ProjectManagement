@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using System.Threading.Tasks;
 using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Infrastructure.Primitives.Message;
 

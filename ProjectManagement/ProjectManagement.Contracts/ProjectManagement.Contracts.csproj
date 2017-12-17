@@ -6,6 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>2.0.0</Version>
+    <Description>Removed adminId and userId from few commands</Description>
   </PropertyGroup>
 
   <ItemGroup>

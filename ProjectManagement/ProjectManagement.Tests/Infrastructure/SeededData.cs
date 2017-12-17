@@ -54,7 +54,7 @@ namespace ProjectManagement.Tests.Infrastructure
             Task.Run(() => commandQueryBus.SendAsync(createProject)).Wait();
             ProjectId = createProject.CreatedId;
 
-            Task.Run(() => commandQueryBus.SendAsync(new AssignUserToProject(AdminId, UserAssignedToProjectId, 1) { ProjectId = ProjectId})).Wait();
+            //Task.Run(() => commandQueryBus.SendAsync(new AssignUserToProject(AdminId, UserAssignedToProjectId, 1) { ProjectId = ProjectId})).Wait();
 
             AddLabel createLabel;
             for (int i = 0; i < 5; i++)

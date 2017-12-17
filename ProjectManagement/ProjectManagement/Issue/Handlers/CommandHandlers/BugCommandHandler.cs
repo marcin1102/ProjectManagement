@@ -7,6 +7,7 @@ using ProjectManagement.Label.Searcher;
 using ProjectManagement.Services;
 using ProjectManagement.User.Repository;
 using ProjectManagement.Sprint.Searchers;
+using ProjectManagement.Infrastructure.CallContexts;
 
 namespace ProjectManagement.Issue.Handlers.CommandHandlers
 {
@@ -25,8 +26,9 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         private readonly IAuthorizationService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
+        private readonly CallContext callContext;
 
-        public BugCommandHandler(BugRepository bugRepository, IssueFactory issueFactory, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher)
+        public BugCommandHandler(BugRepository bugRepository, IssueFactory issueFactory, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
         {
             this.bugRepository = bugRepository;
             this.issueFactory = issueFactory;
@@ -34,6 +36,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
             this.authorizationService = authorizationService;
             this.userRepository = userRepository;
             this.sprintSearcher = sprintSearcher;
+            this.callContext = callContext;
         }
 
         public async Task HandleAsync(CreateBug command)
@@ -53,7 +56,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         public async Task HandleAsync(CommentBug command)
         {
             var Bug = await bugRepository.GetAsync(command.IssueId);
-            await Bug.Comment(command.MemberId, command.Content, authorizationService);
+            await Bug.Comment(callContext.UserId, command.Content, authorizationService);
             await bugRepository.Update(Bug, Bug.Version);
         }
 

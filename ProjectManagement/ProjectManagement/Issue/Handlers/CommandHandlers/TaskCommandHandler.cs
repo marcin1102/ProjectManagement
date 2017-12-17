@@ -11,6 +11,7 @@ using ProjectManagement.Services;
 using ProjectManagement.Sprint.Searchers;
 using ProjectManagement.User.Repository;
 using ProjectManagement.Issue.Mappers;
+using ProjectManagement.Infrastructure.CallContexts;
 
 namespace ProjectManagement.task.Handlers.CommandHandlers
 {
@@ -46,8 +47,9 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
         private readonly IBugMapper bugMapper;
+        private readonly CallContext callContext;
 
-        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper)
+        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper, CallContext callContext)
         {
             this.taskRepository = taskRepository;
             this.taskFactory = taskFactory;
@@ -57,6 +59,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
             this.userRepository = userRepository;
             this.sprintSearcher = sprintSearcher;
             this.bugMapper = bugMapper;
+            this.callContext = callContext;
         }
 
         public async Task HandleAsync(CreateTask command)
@@ -76,7 +79,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         public async Task HandleAsync(CommentTask command)
         {
             var task = await taskRepository.GetAsync(command.IssueId);
-            await task.Comment(command.MemberId, command.Content, authorizationService);
+            await task.Comment(callContext.UserId, command.Content, authorizationService);
             await taskRepository.Update(task, task.Version);
         }
 
@@ -136,7 +139,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            await task.CommentBug(command.IssueId, command.MemberId, command.Content, authorizationService);
+            await task.CommentBug(command.IssueId, callContext.UserId, command.Content, authorizationService);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
@@ -213,7 +216,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            await task.CommentSubtask(command.IssueId, command.MemberId, command.Content, authorizationService);
+            await task.CommentSubtask(command.IssueId, callContext.UserId, command.Content, authorizationService);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }

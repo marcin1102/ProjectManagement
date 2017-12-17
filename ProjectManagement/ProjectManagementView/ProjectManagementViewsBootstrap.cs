@@ -20,6 +20,13 @@ using ProjectManagementView.Storage.Handlers;
 using ProjectManagementView.Storage.Models;
 using ProjectManagementView.Storage.Searchers;
 using UserManagement.Contracts.User.Events;
+using ProjectManagementViews.PipelineItems;
+using ProjectManagementView.Contracts.Projects;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
+using System.Linq;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
+using ProjectManagementView.Searchers;
+using ProjectManagementView.Handlers.Projects;
 
 namespace ProjectManagementView
 {
@@ -49,6 +56,11 @@ namespace ProjectManagementView
             builder
                 .RegisterType<LabelSearcher>()
                 .As<ILabelSearcher>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<ProjectSearcher>()
+                .As<IProjectSearcher>()
                 .InstancePerLifetimeScope();
         }
 
@@ -152,12 +164,28 @@ namespace ProjectManagementView
 
         public override void RegisterQueryHandlers()
         {
-            //throw new NotImplementedException();
+            RegisterAsyncQueryHandler<GetProjects, IReadOnlyCollection<ProjectListItem>, ProjectQueryHandler>();
+            RegisterAsyncQueryHandler<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>, ProjectQueryHandler>();
         }
 
         public override void AddAssemblyToProvider()
         {
             AssembliesProvider.assemblies.Add(typeof(ProjectManagementViewsBootstrap).GetTypeInfo().Assembly);
+        }
+
+        public override void RegisterQueryPipelines()
+        {
+            var getProjectsAsAdmin = (IEnumerable<Type>)new List<Type>
+            {
+                typeof(AuthorizationPipelineItem<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>>)
+            };
+            var standardPipeline = PredefinedQueryPipelines.DefaultQueryPipeline;
+
+            getProjectsAsAdmin = getProjectsAsAdmin.Concat(standardPipeline);
+            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
+            pipelineConfiguration.SetQueryPipeline<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>>(getProjectsAsAdmin);
+
+            base.RegisterQueryPipelines();
         }
     }
 }

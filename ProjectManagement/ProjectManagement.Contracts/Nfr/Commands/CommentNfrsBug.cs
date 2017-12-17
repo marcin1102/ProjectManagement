@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Nfr.Commands
 {
     public class CommentNfrsBug : CommentIssue
     {
-        public CommentNfrsBug(Guid memberId, string content) : base(memberId, content)
+        public CommentNfrsBug(string content) : base(content)
         {
         }
 

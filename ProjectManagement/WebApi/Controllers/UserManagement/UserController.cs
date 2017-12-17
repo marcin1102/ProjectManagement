@@ -33,6 +33,14 @@ namespace WebApi.Controllers.UserManagement
             return response;
         }
 
+        [HttpGet("{email}")]
+        [ProducesResponseType(typeof(UserResponse), 200)]
+        public async Task<UserResponse> Get([FromRoute] string email)
+        {
+            var response = await commandQueryBus.SendAsync(new GetUser(email));
+            return response;
+        }
+
         [HttpPatch("{userId}/grant-role")]
         public async Task<IActionResult> GrantRole([FromRoute] Guid userId, [FromBody] GrantRole command)
         {

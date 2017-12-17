@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using Autofac;
-using ProjectManagement.Infrastructure.Message;
 using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Infrastructure.Providers;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProjectManagement.Infrastructure.Primitives.Message;
 
@@ -38,6 +33,7 @@ namespace ProjectManagement.Infrastructure.Bootstrap
         {
             this.context = context;
             RegisterCommandPipelines();
+            RegisterQueryPipelines();
         }
 
         public abstract void RegisterCommandHandlers();
@@ -46,6 +42,8 @@ namespace ProjectManagement.Infrastructure.Bootstrap
 
         public virtual void RegisterPipelineItems() { }
         public virtual void RegisterCommandPipelines() { }
+        public virtual void RegisterQueryPipelines() { }
+
         public virtual void AddAssemblyToProvider()
         {
             AssembliesProvider.assemblies.Add(this.GetType().GetTypeInfo().Assembly);

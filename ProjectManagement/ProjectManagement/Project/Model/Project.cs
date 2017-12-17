@@ -45,9 +45,8 @@ namespace ProjectManagement.Project.Model
             Update(new ProjectCreated(Id, Name));
         }
 
-        public void AssignUser(IAuthorizationService authorizationService, UserRepository userRepository, AssignUserToProject command)
+        public void AssignUser(UserRepository userRepository, AssignUserToProject command)
         {
-            CheckUserRole(authorizationService, command.AdminId);
             CheckIfUserExistsInSystem(userRepository, command.UserToAssignId);
             CheckIfUserIsAlreadyAssigned(command.UserToAssignId);
 

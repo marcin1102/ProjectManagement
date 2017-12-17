@@ -9,7 +9,7 @@ namespace ProjectManagement.Infrastructure.Primitives.Exceptions
     public class NotAuthorized : Exception
     {
         public NotAuthorized(Guid userId, string commandName)
-            : base($"User with id `{userId}` is not authorized to execute `{commandName}` command")
+            : base($"User with id `{userId}` is not authorized to execute action `{commandName}`")
         {
             UserId = userId;
             CommandName = commandName;

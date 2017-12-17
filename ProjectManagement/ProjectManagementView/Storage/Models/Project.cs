@@ -7,6 +7,8 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Project : IEntity
     {
+        private Project() { }
+
         public Project(Guid id)
         {
             Id = id;

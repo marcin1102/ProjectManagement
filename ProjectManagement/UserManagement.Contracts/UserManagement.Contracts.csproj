@@ -6,6 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>1.1.0</Version>
+    <Description>get user by id and by email</Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation;
 using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace UserManagement.Contracts.User.Queries
@@ -10,7 +11,13 @@ namespace UserManagement.Contracts.User.Queries
             Id = id;
         }
 
+        public GetUser(string email)
+        {
+            this.Email = email;
+        }
+
         public Guid Id { get; private set; }
+        public string Email { get; private set; }
     }
 
     public class UserResponse
@@ -31,5 +38,15 @@ namespace UserManagement.Contracts.User.Queries
         public string Email { get; private set; }
         public string Role { get; private set; }
         public long Version { get; private set; }
+    }
+
+    public class GetUserValidator : AbstractValidator<GetUser>
+    {
+        public GetUserValidator()
+        {
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .When(x => x.Id == Guid.Empty);
+        }
     }
 }
