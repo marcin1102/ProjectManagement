@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using UserManagement.Contracts.User.Enums;
 using ProjectManagement.Infrastructure.Primitives.Message;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
 
 namespace ProjectManagement.PipelineItems
 {
-    public class AuthorizationPipelineItem<TCommand> : Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems.AuthorizationPipelineItem<TCommand>
-        where TCommand : class, ICommand
+    public class AuthorizationPipelineItem<TCommand> : CommandPipelineItem<TCommand>
+        where TCommand : ICommand
     {
         private readonly ProjectManagementContext context;
         private readonly CallContext callContext;

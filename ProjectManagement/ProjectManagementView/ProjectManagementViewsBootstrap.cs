@@ -67,38 +67,75 @@ namespace ProjectManagementView
         private void RegisterRepositories()
         {
             builder
-                .RegisterType<Repository<Sprint>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Sprint>(db);
+                })
                 .As<IRepository<Sprint>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<Repository<Project>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Project>(db);
+                })
                 .As<IRepository<Project>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<Repository<Task>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Task>(db);
+                })
                 .As<IRepository<Task>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<Repository<Bug>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Bug>(db);
+                })
                 .As<IRepository<Bug>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<Repository<Subtask>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Subtask>(db);
+                })
                 .As<IRepository<Subtask>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<Repository<Nfr>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Nfr>(db);
+                })
                 .As<IRepository<Nfr>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<Repository<User>>()
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<User>(db);
+                })
                 .As<IRepository<User>>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Label>(db);
+                })
+                .As<IRepository<Label>>()
                 .InstancePerLifetimeScope();
         }
 

@@ -6,13 +6,11 @@ namespace ProjectManagement.Contracts.Project.Commands
 {
     public class CreateProject : ICommand
     {
-        public CreateProject(Guid adminId, string name)
+        public CreateProject(string name)
         {
-            AdminId = adminId;
             Name = name;
         }
 
-        public Guid AdminId { get; private set; }
         public string Name { get; private set; }
 
         [JsonIgnore]

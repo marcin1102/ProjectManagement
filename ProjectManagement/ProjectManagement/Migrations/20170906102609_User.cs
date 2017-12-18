@@ -18,7 +18,7 @@ namespace ProjectManagement.Migrations
                     Email = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
-                    Role = table.Column<string>(nullable: false)
+                    Role = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

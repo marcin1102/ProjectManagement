@@ -69,7 +69,7 @@ namespace ProjectManagement.Migrations
                     b.Property<string>("LastName")
                         .IsRequired();
 
-                    b.Property<string>("Role")
+                    b.Property<int>("Role")
                         .IsRequired();
 
                     b.HasKey("Id");

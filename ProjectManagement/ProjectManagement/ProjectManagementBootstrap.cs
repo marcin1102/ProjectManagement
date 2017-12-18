@@ -38,6 +38,7 @@ using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems.CommandPip
 using System;
 using System.Linq;
 using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
+using ProjectManagement.PipelineItems;
 
 namespace ProjectManagement
 {
@@ -223,6 +224,17 @@ namespace ProjectManagement
 
         public override void RegisterQueryHandlers()
         {
+        }
+
+        public override void RegisterPipelineItems()
+        {
+            builder
+                .RegisterType<AuthorizationPipelineItem<AssignUserToProject>>()
+                .AsSelf();
+
+            builder
+                .RegisterType<AuthorizationPipelineItem<CreateProject>>()
+                .AsSelf();
         }
 
         public override void RegisterCommandPipelines()

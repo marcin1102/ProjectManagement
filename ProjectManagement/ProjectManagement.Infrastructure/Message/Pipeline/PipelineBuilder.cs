@@ -26,8 +26,13 @@ namespace ProjectManagement.Infrastructure.Message.Pipeline
             var commandType = command.GetType();
             var pipelineItemsTypes = pipelineConfiguration.GetCommandPipelineItems<TCommand>();
 
+            var genericTypes = pipelineItemsTypes.Where(x => x.IsGenericTypeDefinition);
+            pipelineItemsTypes = pipelineItemsTypes.Except(genericTypes);
+            genericTypes = genericTypes.Select(x => x.MakeGenericType(commandType));
+
+            pipelineItemsTypes = pipelineItemsTypes.Union(genericTypes);
+
             var pipelineItems = pipelineItemsTypes
-                .Select(x => x.MakeGenericType(commandType))
                 .Select(x => container.Resolve(x))
                 .Select(x => (CommandPipelineItem<TCommand>)x)
                 .ToList();

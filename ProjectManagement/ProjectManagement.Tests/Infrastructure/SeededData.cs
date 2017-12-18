@@ -47,7 +47,7 @@ namespace ProjectManagement.Tests.Infrastructure
             queue.Enqueue(userAssignedCreated);
             queue.Enqueue(userNotAssignedCreated);
 
-            var createProject = new CreateProject(AdminId, ProjectName);
+            var createProject = new CreateProject(ProjectName);
 
             Task.Run(() => eventManager.PublishEventsAsync(queue)).Wait();
 
