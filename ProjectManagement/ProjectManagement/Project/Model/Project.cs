@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagement.Infrastructure.Storage;
@@ -10,7 +9,6 @@ using ProjectManagement.Contracts.Project.Commands;
 using ProjectManagement.Contracts.Project.Events;
 using ProjectManagement.Contracts.Project.Exceptions;
 using ProjectManagement.Services;
-using ProjectManagement.User.Model;
 using ProjectManagement.User.Repository;
 
 namespace ProjectManagement.Project.Model

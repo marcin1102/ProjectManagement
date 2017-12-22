@@ -210,6 +210,15 @@ namespace ProjectManagementView
             AssembliesProvider.assemblies.Add(typeof(ProjectManagementViewsBootstrap).GetTypeInfo().Assembly);
         }
 
+        public override void RegisterPipelineItems()
+        {
+            builder
+               .RegisterType<AuthorizationPipelineItem<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>>>()
+               .AsSelf();
+
+            base.RegisterPipelineItems();
+        }
+
         public override void RegisterQueryPipelines()
         {
             var getProjectsAsAdmin = (IEnumerable<Type>)new List<Type>

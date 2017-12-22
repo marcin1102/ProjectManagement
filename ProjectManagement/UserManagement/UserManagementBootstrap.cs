@@ -19,6 +19,11 @@ using System.Linq;
 using UserManagement.User.Services;
 using UserManagement.UserView.Handlers;
 using UserManagement.UserView.Repository;
+using UserManagement.UserView.Searchers;
+using System.Collections.Generic;
+using UserManagement.PipelineItems;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
 
 namespace UserManagement
 {
@@ -62,6 +67,11 @@ namespace UserManagement
             builder
                 .RegisterType<UserSearcher>()
                 .As<IUserSearcher>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<UserViewSearcher>()
+                .As<IUserViewSearcher>()
                 .InstancePerLifetimeScope();
         }
 
@@ -107,11 +117,36 @@ namespace UserManagement
         public override void RegisterQueryHandlers()
         {
             RegisterAsyncQueryHandler<GetUser, UserResponse, UserQueryHandler>();
+            RegisterAsyncQueryHandler<GetUsers, IReadOnlyCollection<UserListItem>, UserQueryHandler>();
         }
 
         public override void AddAssemblyToProvider()
         {
             AssembliesProvider.assemblies.Add(typeof(UserManagementBootstrap).GetTypeInfo().Assembly);
+        }
+
+        public override void RegisterPipelineItems()
+        {
+            builder
+                .RegisterType<AuthorizationPipelineItem<GetUsers, IReadOnlyCollection<UserListItem>>>()
+                .AsSelf();
+
+            base.RegisterPipelineItems();
+        }
+
+        public override void RegisterQueryPipelines()
+        {
+            var getUsers = (IEnumerable<Type>)new List<Type>
+            {
+                typeof(AuthorizationPipelineItem<GetUsers, IReadOnlyCollection<UserListItem>>)
+            };
+            var standardPipeline = PredefinedQueryPipelines.DefaultQueryPipeline;
+
+            getUsers = getUsers.Concat(standardPipeline);
+            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
+            pipelineConfiguration.SetQueryPipeline<GetUsers, IReadOnlyCollection<UserListItem>>(getUsers);
+
+            base.RegisterQueryPipelines();
         }
 
         public override void Run(IComponentContext context)
