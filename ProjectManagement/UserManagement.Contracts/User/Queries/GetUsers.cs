@@ -14,13 +14,14 @@ namespace UserManagement.Contracts.User.Queries
 
     public class UserListItem
     {
-        public UserListItem(Guid id, string firstName, string lastName, string email, string role)
+        public UserListItem(Guid id, string firstName, string lastName, string email, string role, long version)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
             Email = email;
             Role = role;
+            Version = version;
         }
 
         public Guid Id { get; private set; }
@@ -28,5 +29,6 @@ namespace UserManagement.Contracts.User.Queries
         public string LastName { get; private set; }
         public string Email { get; private set; }
         public string Role { get; private set; }
+        public long Version { get; private set; }
     }
 }

@@ -46,7 +46,7 @@ namespace UserManagement.UserView.Handlers
         public async Task<IReadOnlyCollection<UserListItem>> HandleAsync(GetUsers query)
         {
             var users = await userViewSearcher.GetUsers();
-            return users.Select(x => new UserListItem(x.Id, x.FirstName, x.LastName, x.Email, x.Role.ToString())).ToList();
+            return users.Select(x => new UserListItem(x.Id, x.FirstName, x.LastName, x.Email, x.Role.ToString(), x.Version)).ToList();
         }
     }
 }
