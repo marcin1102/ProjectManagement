@@ -159,7 +159,7 @@ namespace UserManagement
             {
                 typeof(AuthorizationPipelineItem<GrantRole>)
             };
-            grantRole = createUser.Concat(standardPipeline);
+            grantRole = grantRole.Concat(standardPipeline);
             pipelineConfiguration.SetCommandPipeline<GrantRole>(grantRole);
 
             base.RegisterCommandPipelines();

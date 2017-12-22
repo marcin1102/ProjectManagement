@@ -5,6 +5,11 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Label : IEntity
     {
+        private Label()
+        {
+
+        }
+
         public Label(Guid id, string name, string description)
         {
             Id = id;

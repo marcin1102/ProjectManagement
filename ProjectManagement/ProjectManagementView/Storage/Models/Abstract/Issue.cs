@@ -8,6 +8,11 @@ namespace ProjectManagementView.Storage.Models.Abstract
 {
     public abstract class Issue : IEntity
     {
+        internal Issue()
+        {
+
+        }
+
         public Issue(Guid id)
         {
             Id = id;

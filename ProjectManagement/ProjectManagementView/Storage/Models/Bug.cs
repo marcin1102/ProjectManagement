@@ -7,6 +7,9 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Bug : Issue
     {
+        private Bug() : base() { }
+
+
         public Bug(Guid id) : base(id)
         {
         }

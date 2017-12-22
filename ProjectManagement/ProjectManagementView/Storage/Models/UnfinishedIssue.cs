@@ -9,6 +9,11 @@ namespace ProjectManagementView.Storage.Models
 {
     public class UnfinishedIssue
     {
+        private UnfinishedIssue()
+        {
+
+        }
+
         public UnfinishedIssue(Guid issueId, IssueType issueType, Guid assigneeId)
         {
             IssueId = issueId;

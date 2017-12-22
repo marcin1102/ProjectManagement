@@ -7,6 +7,8 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Task : Issue
     {
+        private Task() : base() { }
+
         public Task(Guid id) : base(id)
         {
         }

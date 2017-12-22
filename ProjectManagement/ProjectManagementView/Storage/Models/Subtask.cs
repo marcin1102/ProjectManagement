@@ -7,6 +7,9 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Subtask : Issue
     {
+        private Subtask() : base() { }
+
+
         public Subtask(Guid id) : base(id)
         {
         }

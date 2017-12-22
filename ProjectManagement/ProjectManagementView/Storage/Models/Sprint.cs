@@ -8,6 +8,11 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Sprint : IEntity
     {
+        private Sprint()
+        {
+
+        }
+
         public Sprint(Guid id)
         {
             Id = id;

@@ -7,6 +7,9 @@ namespace ProjectManagementView.Storage.Models
 {
     public class Nfr : Issue
     {
+        private Nfr() : base() { }
+
+
         public Nfr(Guid id) : base(id)
         {
         }
