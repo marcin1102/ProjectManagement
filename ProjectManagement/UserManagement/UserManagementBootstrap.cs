@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using UserManagement.PipelineItems;
 using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems.QueryPipelineItems;
 using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
+using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems.CommandPipelineItems;
 
 namespace UserManagement
 {
@@ -131,7 +132,37 @@ namespace UserManagement
                 .RegisterType<AuthorizationPipelineItem<GetUsers, IReadOnlyCollection<UserListItem>>>()
                 .AsSelf();
 
+            builder
+                .RegisterType<AuthorizationPipelineItem<CreateUser>>()
+                .AsSelf();
+
+            builder
+                .RegisterType<AuthorizationPipelineItem<GrantRole>>()
+                .AsSelf();
+
             base.RegisterPipelineItems();
+        }
+
+        public override void RegisterCommandPipelines()
+        {
+            var createUser = (IEnumerable<Type>)new List<Type>
+            {
+                typeof(AuthorizationPipelineItem<CreateUser>)
+            };
+            var standardPipeline = PredefinedCommandPipelines.TransactionalCommandExecutionPipeline();
+
+            createUser = createUser.Concat(standardPipeline);
+            var pipelineConfiguration = context.Resolve<IPipelineItemsConfiguration>();
+            pipelineConfiguration.SetCommandPipeline<CreateUser>(createUser);
+
+            var grantRole = (IEnumerable<Type>)new List<Type>
+            {
+                typeof(AuthorizationPipelineItem<GrantRole>)
+            };
+            grantRole = createUser.Concat(standardPipeline);
+            pipelineConfiguration.SetCommandPipeline<GrantRole>(grantRole);
+
+            base.RegisterCommandPipelines();
         }
 
         public override void RegisterQueryPipelines()

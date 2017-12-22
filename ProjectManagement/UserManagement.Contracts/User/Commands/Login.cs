@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Newtonsoft.Json;
 using ProjectManagement.Infrastructure.Primitives.Message;
 
 namespace UserManagement.Contracts.User.Commands
@@ -14,6 +15,7 @@ namespace UserManagement.Contracts.User.Commands
         public string Email { get; }
         public string Password { get; }
 
+        [JsonIgnore]
         public string GeneratedToken { get; set; }
     }
 

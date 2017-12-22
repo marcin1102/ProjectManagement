@@ -37,4 +37,29 @@ namespace UserManagement.PipelineItems
             return await base.HandleAsync(command);
         }
     }
+
+    public class AuthorizationPipelineItem<TCommand> : CommandPipelineItem<TCommand>
+        where TCommand : class, ICommand
+    {
+        private readonly UserManagementContext context;
+        private readonly CallContext callContext;
+
+        public AuthorizationPipelineItem(UserManagementContext context, CallContext callContext)
+        {
+            this.context = context;
+            this.callContext = callContext;
+        }
+
+        public async override Task HandleAsync(TCommand command)
+        {
+            var user = await context.Users.SingleOrDefaultAsync(x => x.Id == callContext.UserId);
+            if (user == null)
+                throw new EntityDoesNotExist(callContext.UserId, "User");
+
+            if (user.Role != Role.Admin)
+                throw new NotAuthorized(callContext.UserId, typeof(TCommand).Name);
+
+            await base.HandleAsync(command);
+        }
+    }
 }
