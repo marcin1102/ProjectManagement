@@ -6,11 +6,12 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.1.0</Version>
-    <Description>GetProjects, GetProjectsAsAdmin</Description>
+    <Version>1.2.0</Version>
+    <Description>Get Issues</Description>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ProjectManagement.Contracts\ProjectManagement.Contracts.csproj" />
     <ProjectReference Include="..\ProjectManagement.Infrastructure.Primitives\ProjectManagement.Infrastructure.Primitives.csproj" />
   </ItemGroup>
 

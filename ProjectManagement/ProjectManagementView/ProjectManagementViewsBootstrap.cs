@@ -27,6 +27,8 @@ using System.Linq;
 using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
 using ProjectManagementView.Searchers;
 using ProjectManagementView.Handlers.Projects;
+using ProjectManagementView.Contracts.Issues;
+using ProjectManagementView.Handlers.Issues;
 
 namespace ProjectManagementView
 {
@@ -61,6 +63,11 @@ namespace ProjectManagementView
             builder
                 .RegisterType<ProjectSearcher>()
                 .As<IProjectSearcher>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<IssueSearcher>()
+                .As<IIssueSearcher>()
                 .InstancePerLifetimeScope();
         }
 
@@ -203,6 +210,8 @@ namespace ProjectManagementView
         {
             RegisterAsyncQueryHandler<GetProjects, IReadOnlyCollection<ProjectListItem>, ProjectQueryHandler>();
             RegisterAsyncQueryHandler<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>, ProjectQueryHandler>();
+
+            RegisterAsyncQueryHandler<GetIssues, IReadOnlyCollection<IssueListItem>, IssueQueryHandler>();
         }
 
         public override void AddAssemblyToProvider()
