@@ -17,6 +17,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         {
         }
 
+        [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyCollection<IssueListItem>), 200)]
         public async Task<IReadOnlyCollection<IssueListItem>> GetIssues([FromRoute] Guid projectId)
         {
