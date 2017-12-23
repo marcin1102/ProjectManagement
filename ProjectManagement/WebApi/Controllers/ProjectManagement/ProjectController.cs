@@ -33,12 +33,6 @@ namespace WebApi.Controllers.ProjectManagement
             return Ok();
         }
 
-        //[HttpGet("{projectId}")]
-        //public Task<ProjectResponse> GetProject([FromRoute] Guid projectId)
-        //{
-        //    return commandQueryBus.SendAsync(new GetProject(projectId));
-        //}
-
         [HttpGet]
         public Task<IReadOnlyCollection<ProjectListItem>> GetProjects([FromQuery] bool isAdmin)
         {
@@ -65,11 +59,18 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpGet("{projectId}/labels")]
-        [ProducesResponseType(typeof(LabelResponse), 200)]
+        [ProducesResponseType(typeof(ICollection<LabelResponse>), 200)]
         [ProducesResponseType(typeof(ValidationFailureException), 400)]
         public Task<ICollection<LabelResponse>> GetLabels([FromRoute] Guid projectId)
         {
             return commandQueryBus.SendAsync(new GetLabels(projectId));
+        }
+
+        [HttpGet("{projectId}/users")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<UserData>), 200)]
+        public Task<IReadOnlyCollection<UserData>> GetUsers([FromRoute] Guid projectId)
+        {
+            return commandQueryBus.SendAsync(new GetUsers(projectId));
         }
     }
 }

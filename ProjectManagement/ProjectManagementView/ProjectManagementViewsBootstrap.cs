@@ -210,6 +210,7 @@ namespace ProjectManagementView
         {
             RegisterAsyncQueryHandler<GetProjects, IReadOnlyCollection<ProjectListItem>, ProjectQueryHandler>();
             RegisterAsyncQueryHandler<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>, ProjectQueryHandler>();
+            RegisterAsyncQueryHandler<GetUsers, IReadOnlyCollection<UserData>, ProjectQueryHandler>();
 
             RegisterAsyncQueryHandler<GetIssues, IReadOnlyCollection<IssueListItem>, IssueQueryHandler>();
         }

@@ -12,7 +12,8 @@ namespace ProjectManagementView.Handlers.Projects
 {
     public class ProjectQueryHandler :
         IAsyncQueryHandler<GetProjects, IReadOnlyCollection<ProjectListItem>>,
-        IAsyncQueryHandler<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>>
+        IAsyncQueryHandler<GetProjectsAsAdmin, IReadOnlyCollection<ProjectListItem>>,
+        IAsyncQueryHandler<GetUsers, IReadOnlyCollection<UserData>>
 
     {
         private readonly IProjectSearcher projectSearcher;
@@ -34,6 +35,12 @@ namespace ProjectManagementView.Handlers.Projects
         {
             var projects = await projectSearcher.GetProjects();
             return projects.Select(x => new ProjectListItem(x.Id, x.Name)).ToList();
+        }
+
+        public async Task<IReadOnlyCollection<UserData>> HandleAsync(GetUsers query)
+        {
+            var users = await projectSearcher.GetUsersInProject(query.ProjectId);
+            return users.Select(x => new UserData(x.Id, x.FirstName, x.LastName)).ToList();
         }
     }
 }
