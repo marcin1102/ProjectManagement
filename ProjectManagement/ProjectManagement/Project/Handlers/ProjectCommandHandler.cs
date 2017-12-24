@@ -37,8 +37,9 @@ namespace ProjectManagement.Project.Handlers
         public async Task HandleAsync(AssignUserToProject command)
         {
             var project = await projectRepository.GetAsync(command.ProjectId);
+            var projectVersion = project.Version;
             project.AssignUser(userRepository, command);
-            await projectRepository.Update(project, command.ProjectVersion);
+            await projectRepository.Update(project, projectVersion);
         }
 
         public async Task HandleAsync(AddLabel command)

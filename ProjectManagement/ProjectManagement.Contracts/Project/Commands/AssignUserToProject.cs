@@ -6,15 +6,13 @@ namespace ProjectManagement.Contracts.Project.Commands
 {
     public class AssignUserToProject : ICommand
     {
-        public AssignUserToProject(Guid userToAssignId, long projectVersion)
+        public AssignUserToProject(Guid userToAssignId)
         {
             UserToAssignId = userToAssignId;
-            ProjectVersion = projectVersion;
         }
 
         [JsonIgnore]
         public Guid ProjectId { get; set; }
         public Guid UserToAssignId { get; private set; }
-        public long ProjectVersion { get; private set; }
     }
 }
