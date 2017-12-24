@@ -29,6 +29,7 @@ using ProjectManagementView.Searchers;
 using ProjectManagementView.Handlers.Projects;
 using ProjectManagementView.Contracts.Issues;
 using ProjectManagementView.Handlers.Issues;
+using ProjectManagementView.Storage.Repositories;
 
 namespace ProjectManagementView
 {
@@ -74,29 +75,17 @@ namespace ProjectManagementView
         private void RegisterRepositories()
         {
             builder
-                .Register(componentContext =>
-                {
-                    var db = componentContext.Resolve<ProjectManagementViewContext>();
-                    return new Repository<Sprint>(db);
-                })
+                .RegisterType<SprintRepository>()
                 .As<IRepository<Sprint>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .Register(componentContext =>
-                {
-                    var db = componentContext.Resolve<ProjectManagementViewContext>();
-                    return new Repository<Project>(db);
-                })
+                .RegisterType<ProjectRepository>()
                 .As<IRepository<Project>>()
                 .InstancePerLifetimeScope();
 
             builder
-                .Register(componentContext =>
-                {
-                    var db = componentContext.Resolve<ProjectManagementViewContext>();
-                    return new Repository<Task>(db);
-                })
+                .RegisterType<TaskRepository>()
                 .As<IRepository<Task>>()
                 .InstancePerLifetimeScope();
 
@@ -119,11 +108,7 @@ namespace ProjectManagementView
                 .InstancePerLifetimeScope();
 
             builder
-                .Register(componentContext =>
-                {
-                    var db = componentContext.Resolve<ProjectManagementViewContext>();
-                    return new Repository<Nfr>(db);
-                })
+                .RegisterType<NfrRepository>()
                 .As<IRepository<Nfr>>()
                 .InstancePerLifetimeScope();
 

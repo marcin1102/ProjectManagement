@@ -11,6 +11,8 @@ namespace ProjectManagementView.Storage.Models
 
         public Task(Guid id) : base(id)
         {
+            Subtasks = new List<Subtask>();
+            Bugs = new List<Bug>();
         }
 
         public ICollection<Subtask> Subtasks { get; set; }

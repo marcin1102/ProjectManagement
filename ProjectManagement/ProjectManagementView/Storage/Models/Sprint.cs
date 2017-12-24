@@ -16,6 +16,10 @@ namespace ProjectManagementView.Storage.Models
         public Sprint(Guid id)
         {
             Id = id;
+            Tasks = new List<Task>();
+            Nfrs = new List<Nfr>();
+            Bugs = new List<Bug>();
+            Subtasks = new List<Subtask>();
         }
 
         public Guid Id { get; private set; }

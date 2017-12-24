@@ -12,6 +12,7 @@ namespace ProjectManagementView.Storage.Models
 
         public Nfr(Guid id) : base(id)
         {
+            Bugs = new List<Bug>();
         }
 
         public ICollection<Bug> Bugs { get; set; }

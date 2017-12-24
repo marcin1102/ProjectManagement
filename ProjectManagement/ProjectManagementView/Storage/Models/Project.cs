@@ -12,7 +12,14 @@ namespace ProjectManagementView.Storage.Models
         public Project(Guid id)
         {
             Id = id;
-        }
+            Sprints = new List<Sprint>();
+            Users = new List<User>();
+            Tasks = new List<Task>();
+            Nfrs = new List<Nfr>();
+            Bugs = new List<Bug>();
+            Subtasks = new List<Subtask>();
+            Labels = new List<Label>();
+    }
 
         public Guid Id { get; private set; }
         public string Name { get; set; }
