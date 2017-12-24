@@ -24,7 +24,7 @@ namespace ProjectManagementView.Searchers
 
         public Task<List<Issue>> GetProjectIssues(Guid projectId)
         {
-            return db.Issues.Where(x => x.ProjectId == projectId).ToListAsync();
+            return db.Issues.Include(x => x.Assignee).Include(x => x.Reporter).Where(x => x.ProjectId == projectId).ToListAsync();
         }
     }
 }
