@@ -40,7 +40,7 @@ namespace ProjectManagementView.Handlers.Projects
         public async Task<IReadOnlyCollection<UserData>> HandleAsync(GetUsers query)
         {
             var users = await projectSearcher.GetUsersInProject(query.ProjectId);
-            return users.Select(x => new UserData(x.Id, x.FirstName, x.LastName)).ToList();
+            return users.Select(x => new UserData(x.Id, x.FirstName, x.LastName, x.Email)).ToList();
         }
     }
 }

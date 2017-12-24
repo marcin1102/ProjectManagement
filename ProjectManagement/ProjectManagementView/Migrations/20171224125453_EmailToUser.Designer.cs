@@ -15,9 +15,10 @@ using UserManagement.Contracts.User.Enums;
 namespace ProjectManagementView.Migrations
 {
     [DbContext(typeof(ProjectManagementViewContext))]
-    partial class ProjectManagementViewContextModelSnapshot : ModelSnapshot
+    [Migration("20171224125453_EmailToUser")]
+    partial class EmailToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

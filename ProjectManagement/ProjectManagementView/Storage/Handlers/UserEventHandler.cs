@@ -24,6 +24,7 @@ namespace ProjectManagementView.Storage.Handlers
                 FirstName = @event.FirstName,
                 LastName = @event.LastName,
                 Role = @event.Role,
+                Email = @event.Email,
                 Version = @event.AggregateVersion
             };
 

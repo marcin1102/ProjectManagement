@@ -19,15 +19,17 @@ namespace ProjectManagementView.Contracts.Projects
 
     public class UserData
     {
-        public UserData(Guid id, string firstName, string lastName)
+        public UserData(Guid id, string firstName, string lastName, string email)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
+            Email = email;
         }
 
         public Guid Id { get; private set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public string Email { get; private set; }
     }
 }
