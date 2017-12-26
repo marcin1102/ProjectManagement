@@ -5,8 +5,6 @@ using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using ProjectManagement.Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Project.Commands;
-using ProjectManagement.Contracts.Label.Queries;
-using ProjectManagement.Infrastructure.WebApi.Filters;
 using ProjectManagementView.Contracts.Projects;
 
 namespace WebApi.Controllers.ProjectManagement
@@ -48,22 +46,6 @@ namespace WebApi.Controllers.ProjectManagement
             command.ProjectId = projectId;
             await commandQueryBus.SendAsync(command);
             return Created("api/project-management/labels/", command.CreatedId);
-        }
-
-        [HttpGet("{projectId}/labels/{labelId}")]
-        [ProducesResponseType(typeof(LabelResponse), 200)]
-        [ProducesResponseType(typeof(ValidationFailureException), 400)]
-        public Task<LabelResponse> GetLabel([FromRoute]Guid projectId, [FromRoute] Guid labelId)
-        {
-            return commandQueryBus.SendAsync(new GetLabel(labelId, projectId));
-        }
-
-        [HttpGet("{projectId}/labels")]
-        [ProducesResponseType(typeof(ICollection<LabelResponse>), 200)]
-        [ProducesResponseType(typeof(ValidationFailureException), 400)]
-        public Task<ICollection<LabelResponse>> GetLabels([FromRoute] Guid projectId)
-        {
-            return commandQueryBus.SendAsync(new GetLabels(projectId));
         }
 
         [HttpGet("{projectId}/users")]

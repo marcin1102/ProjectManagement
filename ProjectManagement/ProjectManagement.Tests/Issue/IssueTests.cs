@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
-using ProjectManagement.Infrastructure.Message.CommandQueryBus;
-using ProjectManagement.Contracts.DomainExceptions;
-using ProjectManagement.Contracts.Issue.Commands;
-using ProjectManagement.Contracts.Issue.Enums;
-using ProjectManagement.Contracts.Issue.Queries;
-using ProjectManagement.Contracts.Project.Commands;
-using ProjectManagement.Contracts.Task.Commands;
 using ProjectManagement.Tests.Infrastructure;
 using Xunit;
 

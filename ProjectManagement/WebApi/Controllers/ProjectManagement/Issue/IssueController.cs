@@ -24,5 +24,13 @@ namespace WebApi.Controllers.ProjectManagement.Issue
             var response = await commandQueryBus.SendAsync(new GetIssues(projectId));
             return response;
         }
+
+        [HttpGet("{issueId}")]
+        [ProducesResponseType(typeof(IssueResponse), 200)]
+        public async Task<IssueResponse> GetIssue([FromRoute] Guid projectId, [FromRoute] Guid issueId)
+        {
+            var response = await commandQueryBus.SendAsync(new GetIssue(projectId, issueId));
+            return response;
+        }
     }
 }

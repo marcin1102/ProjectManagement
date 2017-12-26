@@ -24,5 +24,7 @@ namespace ProjectManagementView.Storage.Models
         public string Email { get; set; }
         public Role Role { get; set; }
         public long Version { get; set; }
+
+        public string GetFullName() => $"{FirstName} {LastName}";
     }
 }

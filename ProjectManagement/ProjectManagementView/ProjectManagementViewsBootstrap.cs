@@ -30,6 +30,7 @@ using ProjectManagementView.Handlers.Projects;
 using ProjectManagementView.Contracts.Issues;
 using ProjectManagementView.Handlers.Issues;
 using ProjectManagementView.Storage.Repositories;
+using ProjectManagementView.Storage.Models.Abstract;
 
 namespace ProjectManagementView
 {
@@ -69,6 +70,11 @@ namespace ProjectManagementView
             builder
                 .RegisterType<IssueSearcher>()
                 .As<IIssueSearcher>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<UserSearcher>()
+                .As<IUserSearcher>()
                 .InstancePerLifetimeScope();
         }
 
@@ -128,6 +134,15 @@ namespace ProjectManagementView
                     return new Repository<Label>(db);
                 })
                 .As<IRepository<Label>>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .Register(componentContext =>
+                {
+                    var db = componentContext.Resolve<ProjectManagementViewContext>();
+                    return new Repository<Issue>(db);
+                })
+                .As<IRepository<Issue>>()
                 .InstancePerLifetimeScope();
         }
 
@@ -198,6 +213,7 @@ namespace ProjectManagementView
             RegisterAsyncQueryHandler<GetUsers, IReadOnlyCollection<UserData>, ProjectQueryHandler>();
 
             RegisterAsyncQueryHandler<GetIssues, IReadOnlyCollection<IssueListItem>, IssueQueryHandler>();
+            RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
         }
 
         public override void AddAssemblyToProvider()

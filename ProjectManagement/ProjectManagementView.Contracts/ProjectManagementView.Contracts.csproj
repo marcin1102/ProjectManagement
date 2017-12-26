@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.4.0</Version>
-    <Description>Added email to UserData</Description>
+    <Version>1.5.0</Version>
+    <Description>Get issue</Description>
   </PropertyGroup>
 
   <ItemGroup>
