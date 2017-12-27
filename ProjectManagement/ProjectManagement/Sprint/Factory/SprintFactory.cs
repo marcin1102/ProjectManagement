@@ -22,7 +22,7 @@ namespace ProjectManagement.Sprint.Factory
 
         public async Task<Model.Sprint> GenerateSprint(CreateSprint command)
         {
-            if (await projectSearcher.DoesProjectExist(command.ProjectId))
+            if (!await projectSearcher.DoesProjectExist(command.ProjectId))
                 throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
 
             var sprint = new Model.Sprint(Guid.NewGuid(), command.ProjectId, command.Name, command.Start, command.End);

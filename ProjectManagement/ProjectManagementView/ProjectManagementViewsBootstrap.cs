@@ -33,6 +33,7 @@ using ProjectManagementView.Storage.Repositories;
 using ProjectManagementView.Storage.Models.Abstract;
 using ProjectManagementView.Contracts.Projects.Sprints;
 using ProjectManagementView.Handlers.Sprints;
+using ProjectManagement.Contracts.Sprint.Events;
 
 namespace ProjectManagementView
 {
@@ -207,6 +208,11 @@ namespace ProjectManagementView
             RegisterAsyncEventHandler<BugCommented, BugEventHandler>();
             RegisterAsyncEventHandler<BugMarkedAsInProgress, BugEventHandler>();
             RegisterAsyncEventHandler<BugMarkedAsDone, BugEventHandler>();
+
+            //Sprint
+            RegisterAsyncEventHandler<SprintCreated, SprintEventHandler>();
+            RegisterAsyncEventHandler<SprintStarted, SprintEventHandler>();
+            RegisterAsyncEventHandler<SprintFinished, SprintEventHandler>();
         }
 
         public override void RegisterQueryHandlers()

@@ -20,7 +20,7 @@ namespace ProjectManagementView.Storage.Handlers
 
         public async Task HandleAsync(SprintCreated @event)
         {
-            var project = await db.Projects.SingleOrDefaultAsync(x => x.Id == @event.ProjectId);
+            var project = await db.Projects.Include(x => x.Sprints).SingleOrDefaultAsync(x => x.Id == @event.ProjectId);
             if (project == null)
                 throw new EntityDoesNotExist(@event.ProjectId, nameof(Models.Project));
 

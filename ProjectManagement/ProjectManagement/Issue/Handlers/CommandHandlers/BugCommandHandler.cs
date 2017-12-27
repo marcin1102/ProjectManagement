@@ -81,7 +81,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var Bug = await bugRepository.GetAsync(command.IssueId);
             var originalVersion = Bug.Version;
-            var assignee = await userRepository.GetAsync(command.UserId);
+            var assignee = await userRepository.GetAsync(command.AssigneeId);
             await Bug.AssignAssignee(assignee, authorizationService);
             await bugRepository.Update(Bug, originalVersion);
         }

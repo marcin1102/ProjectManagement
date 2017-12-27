@@ -9,7 +9,7 @@ namespace ProjectManagement.Contracts.Bug.Commands
 {
     public class AssignAssigneeToBug : AssignAssigneeToIssue
     {
-        public AssignAssigneeToBug(Guid userId, Guid assigneeId) : base(userId, assigneeId)
+        public AssignAssigneeToBug(Guid assigneeId) : base(assigneeId)
         {
         }
     }

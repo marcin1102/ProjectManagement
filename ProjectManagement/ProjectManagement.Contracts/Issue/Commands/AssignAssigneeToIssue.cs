@@ -9,9 +9,8 @@ namespace ProjectManagement.Contracts.Issue.Commands
 {
     public class AssignAssigneeToIssue : ICommand
     {
-        public AssignAssigneeToIssue(Guid userId, Guid assigneeId)
+        public AssignAssigneeToIssue(Guid assigneeId)
         {
-            UserId = userId;
             AssigneeId = assigneeId;
         }
 
@@ -19,7 +18,6 @@ namespace ProjectManagement.Contracts.Issue.Commands
         public Guid ProjectId { get; set; }
         [JsonIgnore]
         public Guid IssueId { get; set; }
-        public Guid UserId { get; private set; }
         public Guid AssigneeId { get; private set; }
     }
 

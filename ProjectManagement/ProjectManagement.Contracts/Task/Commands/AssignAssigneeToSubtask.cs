@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class AssignAssigneeToSubtask : AssignAssigneeToIssue
     {
-        public AssignAssigneeToSubtask(Guid userId, Guid assigneeId) : base(userId, assigneeId)
+        public AssignAssigneeToSubtask(Guid assigneeId) : base(assigneeId)
         {
         }
 

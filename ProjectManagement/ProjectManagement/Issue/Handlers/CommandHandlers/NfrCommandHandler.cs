@@ -94,7 +94,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var issue = await nfrRepository.GetAsync(command.IssueId);
             var originalVersion = issue.Version;
-            var assignee = await userRepository.GetAsync(command.UserId);
+            var assignee = await userRepository.GetAsync(command.AssigneeId);
             await issue.AssignAssignee(assignee, authorizationService);
             await nfrRepository.Update(issue, originalVersion);
         }
@@ -158,7 +158,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var nfr = await nfrRepository.GetAsync(command.NfrId);
             var originalVersion = nfr.Version;
-            var assignee = await userRepository.GetAsync(command.UserId);
+            var assignee = await userRepository.GetAsync(command.AssigneeId);
             await nfr.AssignAssigneeToBug(command.IssueId, assignee, authorizationService);
             var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
             await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);

@@ -9,7 +9,7 @@ namespace ProjectManagement.Contracts.Nfr.Commands
 {
     public class AssignAssigneeToNfr : AssignAssigneeToIssue
     {
-        public AssignAssigneeToNfr(Guid userId, Guid assigneeId) : base(userId, assigneeId)
+        public AssignAssigneeToNfr(Guid assigneeId) : base(assigneeId)
         {
         }
     }
