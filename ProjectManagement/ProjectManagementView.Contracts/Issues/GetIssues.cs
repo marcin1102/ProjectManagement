@@ -41,5 +41,6 @@ namespace ProjectManagementView.Contracts.Issues
         public IssueStatus Status { get; }
         public Guid ReporterId { get; }
         public Guid? AssigneeId { get; }
+        public string TitleWithType { get => $"{IssueType.ToString()}: {Title}"; }
     }
 }

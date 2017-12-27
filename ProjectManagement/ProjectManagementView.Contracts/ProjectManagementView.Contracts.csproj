@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.9.1</Version>
-    <Description>optional parameters to IssueResponse constructor</Description>
+    <Version>1.9.2</Version>
+    <Description>added TitleWithType prop to IssueListItem</Description>
   </PropertyGroup>
 
   <ItemGroup>
