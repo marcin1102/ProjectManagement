@@ -90,7 +90,7 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var Bug = await bugRepository.GetAsync(@event.IssueId);
             var comments = Bug.Comments;
-            comments.Add(new Models.Comment(@event.CommentId, @event.Content, @event.AddedAt));
+            comments.Add(new Models.Comment(@event.CommentId, @event.MemberId, @event.Content, @event.AddedAt));
             Bug.Comments = comments;
             await bugRepository.Update(Bug);
         }

@@ -93,7 +93,7 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var Nfr = await nfrRepository.GetAsync(@event.IssueId);
             var comments = Nfr.Comments;
-            comments.Add(new Models.Comment(@event.CommentId, @event.Content, @event.AddedAt));
+            comments.Add(new Models.Comment(@event.CommentId, @event.MemberId, @event.Content, @event.AddedAt));
             Nfr.Comments = comments;
             Nfr.Version = @event.AggregateVersion;
             await nfrRepository.Update(Nfr);

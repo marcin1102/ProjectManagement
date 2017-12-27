@@ -79,8 +79,9 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         public async Task HandleAsync(CommentTask command)
         {
             var task = await taskRepository.GetAsync(command.IssueId);
+            var version = task.Version;
             await task.Comment(callContext.UserId, command.Content, authorizationService);
-            await taskRepository.Update(task, task.Version);
+            await taskRepository.Update(task, version);
         }
 
         public async Task HandleAsync(MarkTaskAsInProgress command)

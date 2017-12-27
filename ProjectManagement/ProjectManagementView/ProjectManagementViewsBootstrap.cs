@@ -137,11 +137,7 @@ namespace ProjectManagementView
                 .InstancePerLifetimeScope();
 
             builder
-                .Register(componentContext =>
-                {
-                    var db = componentContext.Resolve<ProjectManagementViewContext>();
-                    return new Repository<Issue>(db);
-                })
+                .RegisterType<IssueRepository>()
                 .As<IRepository<Issue>>()
                 .InstancePerLifetimeScope();
         }

@@ -100,7 +100,7 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var task = await taskRepository.GetAsync(@event.IssueId);
             var comments = task.Comments;
-            comments.Add(new Models.Comment(@event.CommentId, @event.Content, @event.AddedAt));
+            comments.Add(new Models.Comment(@event.CommentId, @event.MemberId, @event.Content, @event.AddedAt));
             task.Comments = comments;
             task.Version = @event.AggregateVersion;
             await taskRepository.Update(task);
@@ -188,7 +188,7 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var subtask = await subtaskRepository.GetAsync(@event.IssueId);
             var comments = subtask.Comments;
-            comments.Add(new Models.Comment(@event.CommentId, @event.Content, @event.AddedAt));
+            comments.Add(new Models.Comment(@event.CommentId, @event.MemberId, @event.Content, @event.AddedAt));
             subtask.Comments = comments;
             subtask.Version = @event.AggregateVersion;
             await subtaskRepository.Update(subtask);

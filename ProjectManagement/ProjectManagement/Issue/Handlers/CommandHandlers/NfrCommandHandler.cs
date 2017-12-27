@@ -68,8 +68,9 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         public async Task HandleAsync(CommentNfr command)
         {
             var issue = await nfrRepository.GetAsync(command.IssueId);
+            var version = issue.Version;
             await issue.Comment(callContext.UserId, command.Content, authorizationService);
-            await nfrRepository.Update(issue, issue.Version);
+            await nfrRepository.Update(issue, version);
         }
 
         public async Task HandleAsync(MarkNfrAsInProgress command)

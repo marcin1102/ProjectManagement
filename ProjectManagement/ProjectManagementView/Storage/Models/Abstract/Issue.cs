@@ -15,7 +15,9 @@ namespace ProjectManagementView.Storage.Models.Abstract
 
         public Issue(Guid id)
         {
-            Id = id;
+            Id = id; ;
+            Labels = new List<Label>();
+            Comments = new List<Comment>();
         }
 
         public Guid Id { get; set; }

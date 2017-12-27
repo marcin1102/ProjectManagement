@@ -56,8 +56,9 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         public async Task HandleAsync(CommentBug command)
         {
             var Bug = await bugRepository.GetAsync(command.IssueId);
+            var version = Bug.Version;
             await Bug.Comment(callContext.UserId, command.Content, authorizationService);
-            await bugRepository.Update(Bug, Bug.Version);
+            await bugRepository.Update(Bug, version);
         }
 
         public async Task HandleAsync(MarkBugAsInProgress command)
