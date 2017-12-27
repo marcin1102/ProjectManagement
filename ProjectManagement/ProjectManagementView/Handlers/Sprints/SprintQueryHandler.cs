@@ -22,7 +22,7 @@ namespace ProjectManagementView.Handlers.Sprints
         public async Task<IReadOnlyCollection<SprintListItem>> HandleAsync(GetSprints query)
         {
             var sprints = await sprintSearcher.GetSprints(query.ProjectId, query.NotFinishedOnly);
-            return sprints.Select(x => new SprintListItem(x.Id, x.Name, x.Start, x.End)).ToList();
+            return sprints.Select(x => new SprintListItem(x.Id, x.Name, x.Start, x.End, x.Status)).ToList();
         }
     }
 }

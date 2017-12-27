@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.9.2</Version>
-    <Description>added TitleWithType prop to IssueListItem</Description>
+    <Version>1.9.3</Version>
+    <Description>sprint status added to sprint list item</Description>
   </PropertyGroup>
 
   <ItemGroup>
