@@ -49,6 +49,7 @@ namespace ProjectManagementView
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.ProjectId);
+                x.Property(y => y.SprintId);
                 x.Property("labels");
                 x.Property("comments");
                 x.Ignore(y => y.Labels);

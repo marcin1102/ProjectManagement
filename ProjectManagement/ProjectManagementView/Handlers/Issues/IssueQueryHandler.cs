@@ -39,7 +39,7 @@ namespace ProjectManagementView.Handlers.Issues
             var issueType = GetIssueType(issue);
             var usersNames = await userSearcher.GetUsers(issue.Comments.Select(x => x.MemberId).ToList());
 
-            var issueResponse = new IssueResponse(issue.Id, issue.ProjectId, issueType, issue.Title, issue.Description,
+            var issueResponse = new IssueResponse(issue.Id, issue.ProjectId, issue.SprintId, issueType, issue.Title, issue.Description,
                 issue.Status, issue.Reporter.Id, issue.Reporter.GetFullName(), issue.Reporter.Email, issue.Assignee?.Id,
                 issue.Comments.Select(x => new CommentResponse(x.MemberId, usersNames[x.MemberId], x.Content, x.AddedAt)).ToList(), 
                 issue.Labels.Select(x => new LabelResponse(x.Id, x.Name, x.Description)).ToList(), issue.Version);

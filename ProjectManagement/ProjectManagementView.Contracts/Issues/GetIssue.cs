@@ -26,12 +26,13 @@ namespace ProjectManagementView.Contracts.Issues
 
     public class IssueResponse
     {
-        public IssueResponse(Guid id, Guid projectId, Enums.IssueType issueType, string title, string description,
-            IssueStatus status, Guid reporterId, string reporterFullName, string reporterEmail, Guid? assigneeId,
-            IReadOnlyCollection<CommentResponse> comments, IReadOnlyCollection<LabelResponse> labels, long version)
+        public IssueResponse(Guid id, Guid projectId, Guid? sprintId, Enums.IssueType issueType, string title,
+            string description, IssueStatus status, Guid reporterId, string reporterFullName, string reporterEmail,
+            Guid? assigneeId, IReadOnlyCollection<CommentResponse> comments, IReadOnlyCollection<LabelResponse> labels, long version)
         {
             Id = id;
             ProjectId = projectId;
+            SprintId = sprintId;
             IssueType = issueType;
             Title = title;
             Description = description;
@@ -43,11 +44,11 @@ namespace ProjectManagementView.Contracts.Issues
             Comments = comments;
             Labels = labels;
             Version = version;
-            IsLinkedIssue = false;
         }
 
         public Guid Id { get; }
         public Guid ProjectId { get; }
+        public Guid? SprintId { get; }
         public Enums.IssueType IssueType { get; }
         public string Title { get; }
         public string Description { get; }

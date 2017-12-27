@@ -22,6 +22,7 @@ namespace ProjectManagementView.Storage.Models.Abstract
 
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
+        public Guid? SprintId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public IssueStatus Status { get; set; }

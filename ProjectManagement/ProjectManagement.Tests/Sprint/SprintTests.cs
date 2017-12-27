@@ -1,17 +1,6 @@
 ﻿using Autofac;
-using ProjectManagement.Infrastructure.Message.CommandQueryBus;
-using ProjectManagement.Contracts.DomainExceptions;
-using ProjectManagement.Contracts.Issue.Commands;
-using ProjectManagement.Contracts.Issue.Enums;
-using ProjectManagement.Contracts.Sprint.Commands;
-using ProjectManagement.Contracts.Sprint.Enums;
-using ProjectManagement.Contracts.Sprint.Queries;
 using ProjectManagement.Tests.Infrastructure;
-using ProjectManagement.Tests.Issue;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ProjectManagement.Tests.Sprint
