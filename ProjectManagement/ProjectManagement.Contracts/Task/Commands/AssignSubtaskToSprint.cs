@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class AssignSubtaskToSprint : AssignIssueToSprint
     {
-        public AssignSubtaskToSprint(Guid subtaskId, Guid sprintId) : base(sprintId)
+        public AssignSubtaskToSprint(Guid sprintId) : base(sprintId)
         {
         }
 

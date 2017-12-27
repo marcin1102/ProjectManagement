@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>4.0.0</Version>
-    <Description>Removed userId from assign assignee contracts</Description>
+    <Version>5.0.0</Version>
+    <Description>Removed subtaskId from constructor</Description>
   </PropertyGroup>
 
   <ItemGroup>
