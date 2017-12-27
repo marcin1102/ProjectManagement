@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.9.0</Version>
-    <Description>sprint Id added to issue response</Description>
+    <Version>1.9.1</Version>
+    <Description>optional parameters to IssueResponse constructor</Description>
   </PropertyGroup>
 
   <ItemGroup>

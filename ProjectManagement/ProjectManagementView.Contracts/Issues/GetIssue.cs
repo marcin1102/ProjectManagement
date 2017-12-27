@@ -28,7 +28,7 @@ namespace ProjectManagementView.Contracts.Issues
     {
         public IssueResponse(Guid id, Guid projectId, Guid? sprintId, Enums.IssueType issueType, string title,
             string description, IssueStatus status, Guid reporterId, string reporterFullName, string reporterEmail,
-            Guid? assigneeId, IReadOnlyCollection<CommentResponse> comments, IReadOnlyCollection<LabelResponse> labels, long version)
+            Guid? assigneeId, IReadOnlyCollection<CommentResponse> comments, IReadOnlyCollection<LabelResponse> labels, long version, bool isLinkedIssue = false, LinkedTo linkedTo = null, IReadOnlyCollection<LinkedIssue> linkedIssues = null)
         {
             Id = id;
             ProjectId = projectId;
@@ -44,6 +44,9 @@ namespace ProjectManagementView.Contracts.Issues
             Comments = comments;
             Labels = labels;
             Version = version;
+            IsLinkedIssue = isLinkedIssue;
+            LinkedTo = linkedTo;
+            LinkedIssues = linkedIssues;
         }
 
         public Guid Id { get; }

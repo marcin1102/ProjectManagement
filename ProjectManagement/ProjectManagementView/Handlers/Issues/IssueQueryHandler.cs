@@ -1,4 +1,5 @@
-﻿using ProjectManagement.Infrastructure.Message.Handlers;
+﻿using Newtonsoft.Json;
+using ProjectManagement.Infrastructure.Message.Handlers;
 using ProjectManagement.Infrastructure.Storage.EF.Repository;
 using ProjectManagementView.Contracts.Issues;
 using ProjectManagementView.Contracts.Issues.Enums;

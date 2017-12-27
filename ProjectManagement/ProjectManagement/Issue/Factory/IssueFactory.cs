@@ -21,6 +21,7 @@ namespace ProjectManagement.Issue.Factory
         Task<Model.ChildBug> GenerateChildBug<TAddBugTo>(TAddBugTo command)
             where TAddBugTo : class, IAddBugTo;
         Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command);
+        Task<Model.Bug> GenerateBug(CreateBug command);
     }
     public class IssueFactory : IIssueFactory
     {

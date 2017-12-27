@@ -21,14 +21,14 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         IAsyncCommandHandler<AssignBugToSprint>
     {
         private readonly BugRepository bugRepository;
-        private readonly IssueFactory issueFactory;
+        private readonly IIssueFactory issueFactory;
         private readonly ILabelsSearcher labelsSearcher;
         private readonly IAuthorizationService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
         private readonly CallContext callContext;
 
-        public BugCommandHandler(BugRepository bugRepository, IssueFactory issueFactory, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
+        public BugCommandHandler(BugRepository bugRepository, IIssueFactory issueFactory, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
         {
             this.bugRepository = bugRepository;
             this.issueFactory = issueFactory;
