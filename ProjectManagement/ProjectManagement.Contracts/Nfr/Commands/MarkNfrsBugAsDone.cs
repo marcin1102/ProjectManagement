@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Nfr.Commands
 {
     public class MarkNfrsBugAsDone : MarkAsDone
     {
-        public MarkNfrsBugAsDone(Guid userId) : base(userId)
+        public MarkNfrsBugAsDone() : base()
         {
         }
 

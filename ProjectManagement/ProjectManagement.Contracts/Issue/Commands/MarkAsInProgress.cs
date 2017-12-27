@@ -9,16 +9,14 @@ namespace ProjectManagement.Contracts.Issue.Commands
 {
     public class MarkAsInProgress : ICommand
     {
-        public MarkAsInProgress(Guid userId)
+        public MarkAsInProgress()
         {
-            UserId = userId;
         }
 
         [JsonIgnore]
         public Guid ProjectId { get; set; }
         [JsonIgnore]
         public Guid IssueId { get; set; }
-        public Guid UserId { get; private set; }
     }
 
     public class MarkAsInProgressValidator : AbstractValidator<MarkAsInProgress>
@@ -26,7 +24,6 @@ namespace ProjectManagement.Contracts.Issue.Commands
         public MarkAsInProgressValidator()
         {
             RuleFor(x => x.IssueId).NotNull();
-            RuleFor(x => x.UserId).NotNull();
         }
     }
 }

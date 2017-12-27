@@ -5,7 +5,7 @@ namespace ProjectManagement.Contracts.Bug.Commands
 {
     public class MarkBugAsDone : MarkAsDone
     {
-        public MarkBugAsDone(Guid userId) : base(userId)
+        public MarkBugAsDone() : base()
         {
         }
     }

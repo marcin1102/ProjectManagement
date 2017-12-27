@@ -34,10 +34,14 @@ namespace ProjectManagement.Infrastructure.Storage.EF.Repository
             await dbContext.SaveChangesAsync();
         }
 
-        public virtual Task Update(TEntity entity)
+        public virtual async Task Update(TEntity entity)
         {
-            Query.Update(entity);
-            return dbContext.SaveChangesAsync();
+            var entry = dbContext.Entry(entity);
+            if (entry.State == EntityState.Detached)
+            {
+                Query.Add(entity);
+            };
+            await dbContext.SaveChangesAsync();
         }
 
         public virtual async Task<TEntity> GetAsync(Guid id)

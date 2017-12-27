@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>5.0.0</Version>
-    <Description>Removed subtaskId from constructor</Description>
+    <Version>6.0.0</Version>
+    <Description>removed user id from MarkAs... commands</Description>
   </PropertyGroup>
 
   <ItemGroup>

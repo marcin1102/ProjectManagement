@@ -27,14 +27,14 @@ namespace ProjectManagementView.Storage.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public SprintStatus Status { get; set; }
-        public ICollection<Task> Tasks { get; set; }
-        public ICollection<Nfr> Nfrs { get; set; }
-        public ICollection<Bug> Bugs { get; set; }
-        public ICollection<Subtask> Subtasks { get; set; }
+        public List<Task> Tasks { get; set; }
+        public List<Nfr> Nfrs { get; set; }
+        public List<Bug> Bugs { get; set; }
+        public List<Subtask> Subtasks { get; set; }
         public string unfinishedIssues { get; private set; }
-        public ICollection<UnfinishedIssue> UnfinishedIssues
+        public List<UnfinishedIssue> UnfinishedIssues
         {
-            get => JsonConvert.DeserializeObject<ICollection<UnfinishedIssue>>(unfinishedIssues);
+            get => JsonConvert.DeserializeObject<List<UnfinishedIssue>>(unfinishedIssues);
             set
             {
                 unfinishedIssues = JsonConvert.SerializeObject(value);

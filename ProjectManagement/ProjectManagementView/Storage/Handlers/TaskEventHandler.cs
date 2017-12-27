@@ -74,8 +74,9 @@ namespace ProjectManagementView.Storage.Handlers
             var sprint = await sprintRepository.GetAsync(@event.SprintId);
             var task = await taskRepository.GetAsync(@event.IssueId);
             sprint.Tasks.Add(task);
-            task.Version = @event.AggregateVersion;
             await sprintRepository.Update(sprint);
+            task.Version = @event.AggregateVersion;
+            await taskRepository.Update(task);
         }
 
         public async Task HandleAsync(AssigneeAssignedToTask @event)

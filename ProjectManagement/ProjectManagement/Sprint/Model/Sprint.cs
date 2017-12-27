@@ -44,7 +44,7 @@ namespace ProjectManagement.Sprint.Model
                 throw new CannotChangeSprintStatus(Id, Status, SprintStatus.InProgress, DomainInformationProvider.Name);
 
             var sprints = await sprintSearcher.GetSprints(ProjectId);
-            if (sprints.Any(x => x.Status != SprintStatus.Finished))
+            if (sprints.Any(x => x.Status == SprintStatus.InProgress))
                 throw new CannotStartSprintWhenAnyOtherIsNotFinished(Id);
 
             var currentDate = DateTime.UtcNow.Date;

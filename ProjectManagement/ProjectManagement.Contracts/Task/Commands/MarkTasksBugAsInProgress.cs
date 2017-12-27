@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class MarkTasksBugAsInProgress : MarkAsInProgress
     {
-        public MarkTasksBugAsInProgress(Guid userId) : base(userId)
+        public MarkTasksBugAsInProgress() : base()
         {
         }
 

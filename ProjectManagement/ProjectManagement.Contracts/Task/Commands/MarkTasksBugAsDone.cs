@@ -10,7 +10,7 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class MarkTasksBugAsDone : MarkAsDone
     {
-        public MarkTasksBugAsDone(Guid userId) : base(userId)
+        public MarkTasksBugAsDone() : base()
         {
         }
 

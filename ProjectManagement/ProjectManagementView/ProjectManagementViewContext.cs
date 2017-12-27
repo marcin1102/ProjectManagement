@@ -67,6 +67,9 @@ namespace ProjectManagementView
                 x.HasMany(y => y.Bugs).WithOne();
             });
 
+            modelBuilder.Entity<Bug>();
+            modelBuilder.Entity<Subtask>();
+
             modelBuilder.HasDefaultSchema(SCHEMA);
             base.OnModelCreating(modelBuilder);
         }

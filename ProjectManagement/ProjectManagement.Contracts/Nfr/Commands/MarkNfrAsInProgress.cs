@@ -9,7 +9,7 @@ namespace ProjectManagement.Contracts.Nfr.Commands
 {
     public class MarkNfrAsInProgress : MarkAsInProgress
     {
-        public MarkNfrAsInProgress(Guid userId) : base(userId)
+        public MarkNfrAsInProgress() : base()
         {
         }
     }

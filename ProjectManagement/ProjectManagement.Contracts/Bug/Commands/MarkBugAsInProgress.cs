@@ -5,7 +5,7 @@ namespace ProjectManagement.Contracts.Bug.Commands
 {
     public class MarkBugAsInProgress : MarkAsInProgress
     {
-        public MarkBugAsInProgress(Guid userId) : base(userId)
+        public MarkBugAsInProgress() : base()
         {
         }
     }
