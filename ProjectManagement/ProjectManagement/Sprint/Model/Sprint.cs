@@ -8,6 +8,10 @@ using ProjectManagement.Providers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using ProjectManagement.Sprint.Searchers;
+using System.Linq;
+using ProjectManagement.Contracts.Sprint.Exceptions;
 
 namespace ProjectManagement.Sprint.Model
 {
@@ -34,10 +38,14 @@ namespace ProjectManagement.Sprint.Model
             Update(new SprintCreated(Id, ProjectId, Name, StartDate.Date, EndDate.Date, Status));
         }
 
-        public void StartSprint()
+        public async Task StartSprint(ISprintSearcher sprintSearcher)
         {
             if (Status != SprintStatus.Planned)
                 throw new CannotChangeSprintStatus(Id, Status, SprintStatus.InProgress, DomainInformationProvider.Name);
+
+            var sprints = await sprintSearcher.GetSprints(ProjectId);
+            if (sprints.Any(x => x.Status != SprintStatus.Finished))
+                throw new CannotStartSprintWhenAnyOtherIsNotFinished(Id);
 
             var currentDate = DateTime.UtcNow.Date;
             if (StartDate.Date != currentDate)

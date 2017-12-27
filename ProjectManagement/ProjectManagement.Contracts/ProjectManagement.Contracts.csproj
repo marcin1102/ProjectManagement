@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Label\Commands\" />
-    <Folder Include="Sprint\Exceptions\" />
     <Folder Include="Subtask\Commands\" />
   </ItemGroup>
 

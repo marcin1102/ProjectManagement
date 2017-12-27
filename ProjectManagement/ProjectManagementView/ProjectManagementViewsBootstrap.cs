@@ -31,6 +31,8 @@ using ProjectManagementView.Contracts.Issues;
 using ProjectManagementView.Handlers.Issues;
 using ProjectManagementView.Storage.Repositories;
 using ProjectManagementView.Storage.Models.Abstract;
+using ProjectManagementView.Contracts.Projects.Sprints;
+using ProjectManagementView.Handlers.Sprints;
 
 namespace ProjectManagementView
 {
@@ -75,6 +77,11 @@ namespace ProjectManagementView
             builder
                 .RegisterType<UserSearcher>()
                 .As<IUserSearcher>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<SprintSearcher>()
+                .As<ISprintSearcher>()
                 .InstancePerLifetimeScope();
         }
 
@@ -210,6 +217,8 @@ namespace ProjectManagementView
 
             RegisterAsyncQueryHandler<GetIssues, IReadOnlyCollection<IssueListItem>, IssueQueryHandler>();
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
+
+            RegisterAsyncQueryHandler<GetSprints, IReadOnlyCollection<SprintListItem>, SprintQueryHandler>();
         }
 
         public override void AddAssemblyToProvider()

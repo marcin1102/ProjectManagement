@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Sprint.Commands;
-using ProjectManagement.Contracts.Sprint.Queries;
+using ProjectManagementView.Contracts.Projects.Sprints;
+using System.Collections.Generic;
 
 namespace WebApi.Controllers.ProjectManagement
 {
-    [Route("api/project-management/projects/{projectId}/sprint/")]
+    [Route("api/project-management/projects/{projectId}/sprints/")]
     public class SprintController : BaseController
     {
         public SprintController(ICommandQueryBus commandQueryBus) : base(commandQueryBus)
@@ -23,11 +24,17 @@ namespace WebApi.Controllers.ProjectManagement
             return Created("api/project-management/sprint/", command.CreatedId);
         }
 
-        [HttpGet("{sprintId}")]
-        public Task<SprintResponse> Get([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
+        [HttpGet]
+        public Task<IReadOnlyCollection<SprintListItem>> Get([FromRoute] Guid projectId, [FromQuery] bool notFinishedOnly)
         {
-            return commandQueryBus.SendAsync(new GetSprint(sprintId, projectId));
+            return commandQueryBus.SendAsync(new GetSprints(projectId, notFinishedOnly));
         }
+
+        //[HttpGet("{sprintId}")]
+        //public Task<SprintResponse> Get([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
+        //{
+        //    return commandQueryBus.SendAsync(new GetSprint(sprintId, projectId));
+        //}
 
         [HttpPatch("{sprintId}/start")]
         public async Task<IActionResult> StartSprint([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
