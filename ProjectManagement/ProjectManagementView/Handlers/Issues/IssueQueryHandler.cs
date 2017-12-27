@@ -55,8 +55,20 @@ namespace ProjectManagementView.Handlers.Issues
                 var issues = await issueSearcher.GetIssuesRelatedToNfr(issue.Id);
                 linkedIssues = issues.Select(x => new LinkedIssue(x.Id, x.Title, GetIssueType(x))).ToList();
             }
+            else if(issue is Storage.Models.Subtask)
+            {
+                var parentIssue = await issueSearcher.GetParentIssueToSubtask(issue.Id);
+                issueResponse.SetLinkedTo(parentIssue.Id, parentIssue.Title, IssueType.Task);
+            }
+            else
+            {
+                var parentIssue = await issueSearcher.GetParentIssueToBug(issue.Id);
+                if(parentIssue != null)
+                    issueResponse.SetLinkedTo(parentIssue.Id, parentIssue.Title, GetIssueType(parentIssue));
+            }
 
-            if(linkedIssues.Count != 0)
+
+            if (linkedIssues.Count != 0)
                 issueResponse.SetLinkedIssues(linkedIssues);
 
             return issueResponse;

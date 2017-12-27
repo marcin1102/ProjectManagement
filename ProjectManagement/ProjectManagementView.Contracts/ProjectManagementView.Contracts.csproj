@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.6.0</Version>
-    <Description>Get issue</Description>
+    <Version>1.7.0</Version>
+    <Description>Get issue improved</Description>
   </PropertyGroup>
 
   <ItemGroup>

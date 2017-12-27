@@ -43,6 +43,7 @@ namespace ProjectManagementView.Contracts.Issues
             Comments = comments;
             Labels = labels;
             Version = version;
+            IsLinkedIssue = false;
         }
 
         public Guid Id { get; }
@@ -59,6 +60,9 @@ namespace ProjectManagementView.Contracts.Issues
         public IReadOnlyCollection<LabelResponse> Labels { get; }
         public long Version { get; set; }
 
+        public bool IsLinkedIssue { get; private set; }
+        public LinkedTo LinkedTo { get; private set; }
+
         public IReadOnlyCollection<LinkedIssue> LinkedIssues { get; private set; }
 
 
@@ -66,8 +70,14 @@ namespace ProjectManagementView.Contracts.Issues
         {
             LinkedIssues = linkedIssues;
         }
-    }
 
+        public void SetLinkedTo(Guid issueId, string title, Enums.IssueType issueType)
+        {
+            IsLinkedIssue = true;
+            LinkedTo = new Issues.LinkedTo(issueId, title, issueType);
+        }
+    }
+    
     public class LinkedIssue
     {
         public LinkedIssue(Guid id, string title, Enums.IssueType issueType)
@@ -110,5 +120,20 @@ namespace ProjectManagementView.Contracts.Issues
         public Guid Id { get; set; }
         public string Name { get; }
         public string Description { get; }
+    }
+
+
+    public class LinkedTo
+    {
+        public LinkedTo(Guid issueId, string title, Enums.IssueType issueType)
+        {
+            IssueId = issueId;
+            Title = title;
+            IssueType = issueType;
+        }
+
+        public Guid IssueId { get; private set; }
+        public string Title { get; private set; }
+        public Enums.IssueType IssueType { get; private set; }
     }
 }

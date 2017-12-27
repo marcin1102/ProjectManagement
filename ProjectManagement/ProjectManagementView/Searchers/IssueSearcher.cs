@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagementView.Storage.Models.Abstract;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace ProjectManagementView.Searchers
         Task<List<Issue>> GetProjectIssues(Guid projectId);
         Task<List<Issue>> GetIssuesRelatedToTask(Guid taskId);
         Task<List<Issue>> GetIssuesRelatedToNfr(Guid nfrId);
+        Task<Issue> GetParentIssueToSubtask(Guid id);
+        Task<Issue> GetParentIssueToBug(Guid id);
     }
 
     public class IssueSearcher : IIssueSearcher
@@ -35,6 +38,24 @@ namespace ProjectManagementView.Searchers
             var task = await db.Tasks.Include(x => x.Bugs).Include(x => x.Subtasks).SingleAsync(x => x.Id == taskId);
             var relatedTasks = task.Bugs.ToList().Cast<Issue>().Union(task.Subtasks).ToList();
             return relatedTasks;
+        }
+
+        public async Task<Issue> GetParentIssueToBug(Guid bugId)
+        {
+            var task = await db.Tasks.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Bugs.Any(y => y.Id == bugId));
+            if (task != null)
+                return task;
+
+            var nfr = await db.Nfrs.Include(x => x.Bugs).SingleOrDefaultAsync(x => x.Bugs.Any(y => y.Id == bugId));
+            return nfr;
+        }
+
+        public async Task<Issue> GetParentIssueToSubtask(Guid subtaskId)
+        {
+            var task = await db.Tasks.Include(x => x.Subtasks).SingleOrDefaultAsync(x => x.Subtasks.Any(y => y.Id == subtaskId));
+            if (task == null)
+                throw new EntityDoesNotExist($"Parent Issue to Subtask with id {subtaskId} does not exist");
+            return task;
         }
 
         public Task<List<Issue>> GetProjectIssues(Guid projectId)
