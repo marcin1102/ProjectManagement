@@ -7,6 +7,7 @@ using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using ProjectManagement.Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Task.Commands;
+using ProjectManagementView.Contracts.Issues;
 
 namespace WebApi.Controllers.ProjectManagement.Issue
 {
@@ -77,6 +78,14 @@ namespace WebApi.Controllers.ProjectManagement.Issue
             command.IssueId = taskId;
             await commandQueryBus.SendAsync(command);
             return Ok();
+        }
+
+        [HttpGet("{taskId}/related-issues")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<IssueListItem>), 200)]
+        public async Task<IReadOnlyCollection<IssueListItem>> GetRelatedIssues([FromRoute] Guid projectId, [FromRoute] Guid taskId)
+        {
+            var response = await commandQueryBus.SendAsync(new GetIssuesRelatedToTask(projectId, taskId));
+            return response;
         }
 
         #region Bugs

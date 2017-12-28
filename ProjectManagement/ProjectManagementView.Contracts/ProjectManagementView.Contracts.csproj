@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.10.1</Version>
-    <Description>corrected prop "NameWithDate" in SprintListItem</Description>
+    <Version>1.11.0</Version>
+    <Description>get issues related to task and nfr</Description>
   </PropertyGroup>
 
   <ItemGroup>

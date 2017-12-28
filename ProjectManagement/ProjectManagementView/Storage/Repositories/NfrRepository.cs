@@ -19,6 +19,7 @@ namespace ProjectManagementView.Storage.Repositories
         {
             var nfr = await Query
                 .Include(x => x.Bugs)
+                .Include(x => x.Assignee).Include(x => x.Reporter)
                 .SingleOrDefaultAsync(x => x.Id == id);
             if (nfr == null)
                 throw new EntityDoesNotExist(id, nameof(Models.Nfr));
@@ -29,6 +30,7 @@ namespace ProjectManagementView.Storage.Repositories
         {
             return Query
                 .Include(x => x.Bugs)
+                .Include(x => x.Assignee).Include(x => x.Reporter)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
     }

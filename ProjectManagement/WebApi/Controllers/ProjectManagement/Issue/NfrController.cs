@@ -7,6 +7,7 @@ using ProjectManagement.Infrastructure.Message.CommandQueryBus;
 using ProjectManagement.Infrastructure.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManagement.Contracts.Nfr.Commands;
+using ProjectManagementView.Contracts.Issues;
 
 namespace WebApi.Controllers.ProjectManagement.Issue
 {
@@ -18,6 +19,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPost]
+        [ProducesResponseType(201)]
         public async Task<IActionResult> CreateNfr([FromRoute] Guid projectId, [FromBody] CreateNfr command)
         {
             command.ProjectId = projectId;
@@ -26,6 +28,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPatch("{nfrId}/assign-labels")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> AssignLabels([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] AssignLabelsToNfr command)
         {
             command.ProjectId = projectId;
@@ -35,6 +38,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPatch("{nfrId}/comment")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> Comment([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] CommentNfr command)
         {
             command.ProjectId = projectId;
@@ -44,6 +48,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPatch("{nfrId}/mark-as-in-progress")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> MarkAsInProgress([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] MarkNfrAsInProgress command)
         {
             command.ProjectId = projectId;
@@ -53,6 +58,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPatch("{nfrId}/mark-as-done")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> MarkAsDone([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] MarkNfrAsDone command)
         {
             command.ProjectId = projectId;
@@ -62,6 +68,7 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPatch("{nfrId}/assign-assignee")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> AssignAssignee([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] AssignAssigneeToNfr command)
         {
             command.ProjectId = projectId;
@@ -71,12 +78,21 @@ namespace WebApi.Controllers.ProjectManagement.Issue
         }
 
         [HttpPatch("{nfrId}/assign-to-sprint")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> AssignToSprint([FromRoute] Guid projectId, [FromRoute] Guid nfrId, [FromBody] AssignNfrToSprint command)
         {
             command.ProjectId = projectId;
             command.IssueId = nfrId;
             await commandQueryBus.SendAsync(command);
             return Ok();
+        }
+
+        [HttpGet("{nfrId}/related-issues")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<IssueListItem>), 200)]
+        public async Task<IReadOnlyCollection<IssueListItem>> GetRelatedIssues([FromRoute] Guid projectId, [FromRoute] Guid nfrId)
+        {
+            var response = await commandQueryBus.SendAsync(new GetIssuesRelatedToNfr(projectId, nfrId));
+            return response;
         }
 
         #region Bugs

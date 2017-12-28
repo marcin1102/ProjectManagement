@@ -223,6 +223,8 @@ namespace ProjectManagementView
 
             RegisterAsyncQueryHandler<GetIssues, IReadOnlyCollection<IssueListItem>, IssueQueryHandler>();
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
+            RegisterAsyncQueryHandler<GetIssuesRelatedToTask, IReadOnlyCollection<IssueListItem>, TaskQueryHandler>();
+            RegisterAsyncQueryHandler<GetIssuesRelatedToNfr, IReadOnlyCollection<IssueListItem>, NfrQueryHandler>();
 
             RegisterAsyncQueryHandler<GetSprints, IReadOnlyCollection<SprintListItem>, SprintQueryHandler>();
             RegisterAsyncQueryHandler<GetSprint, SprintResponse, SprintQueryHandler>();
