@@ -17,6 +17,7 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpPost]
+        [ProducesResponseType(201)]
         public async Task<IActionResult> Create([FromRoute] Guid projectId, [FromBody] CreateSprint command)
         {
             command.ProjectId = projectId;
@@ -25,18 +26,21 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IReadOnlyCollection<SprintListItem>), 200)]
         public Task<IReadOnlyCollection<SprintListItem>> Get([FromRoute] Guid projectId, [FromQuery] bool notFinishedOnly)
         {
             return commandQueryBus.SendAsync(new GetSprints(projectId, notFinishedOnly));
         }
 
-        //[HttpGet("{sprintId}")]
-        //public Task<SprintResponse> Get([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
-        //{
-        //    return commandQueryBus.SendAsync(new GetSprint(sprintId, projectId));
-        //}
+        [HttpGet("{sprintId}")]
+        [ProducesResponseType(typeof(SprintResponse), 200)]
+        public Task<SprintResponse> Get([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
+        {
+            return commandQueryBus.SendAsync(new GetSprint(sprintId, projectId));
+        }
 
         [HttpPatch("{sprintId}/start")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> StartSprint([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
         {
             await commandQueryBus.SendAsync(new StartSprint(sprintId, projectId));
@@ -44,6 +48,7 @@ namespace WebApi.Controllers.ProjectManagement
         }
 
         [HttpPatch("{sprintId}/finish")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> FinishSprint([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
         {
             await commandQueryBus.SendAsync(new FinishSprint(sprintId, projectId));
