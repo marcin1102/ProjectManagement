@@ -54,7 +54,7 @@ namespace UserManagement.Authentication
         {
             Value = value;
             UserId = userId;
-            LastlyUsed = DateTime.UtcNow;
+            LastlyUsed = DateTimeOffset.UtcNow;
         }
 
         public string Value { get; private set; }

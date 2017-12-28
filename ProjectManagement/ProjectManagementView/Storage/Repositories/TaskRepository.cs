@@ -18,7 +18,8 @@ namespace ProjectManagementView.Storage.Repositories
         public override async Task<Models.Task> GetAsync(Guid id)
         {
             var task = await Query
-                .Include(x => x.Bugs).Include(x => x.Subtasks)
+                .Include(x => x.Bugs).ThenInclude(x => x.Reporter)
+                .Include(x => x.Subtasks).ThenInclude(x => x.Reporter)
                 .Include(x => x.Assignee).Include(x => x.Reporter)
                 .SingleOrDefaultAsync(x => x.Id == id);
             if (task == null)
