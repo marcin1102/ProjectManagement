@@ -38,6 +38,6 @@ namespace ProjectManagementView.Contracts.Projects.Sprints
         public DateTime Start { get; }
         public DateTime End { get; }
         public SprintStatus Status{ get; }
-        public string NameWithDate => $"{Name}({Start.Date} : {End.Date})";
+        public string NameWithDate => $"{Name}({Start.Date.ToShortDateString()} : {End.Date.ToShortDateString()})";
     }
 }

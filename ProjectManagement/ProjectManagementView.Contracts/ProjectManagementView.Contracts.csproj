@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.10.0</Version>
-    <Description>Get Sprint</Description>
+    <Version>1.10.1</Version>
+    <Description>corrected prop "NameWithDate" in SprintListItem</Description>
   </PropertyGroup>
 
   <ItemGroup>

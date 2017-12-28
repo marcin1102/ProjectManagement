@@ -21,6 +21,7 @@ namespace ProjectManagementView.Storage.Models
             Nfrs = new List<Nfr>();
             Bugs = new List<Bug>();
             Subtasks = new List<Subtask>();
+            UnfinishedIssues = new List<UnfinishedIssue>();
         }
 
         public Guid Id { get; private set; }

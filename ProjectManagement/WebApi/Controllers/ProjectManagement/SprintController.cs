@@ -36,7 +36,7 @@ namespace WebApi.Controllers.ProjectManagement
         [ProducesResponseType(typeof(SprintResponse), 200)]
         public Task<SprintResponse> Get([FromRoute] Guid projectId, [FromRoute] Guid sprintId)
         {
-            return commandQueryBus.SendAsync(new GetSprint(sprintId, projectId));
+            return commandQueryBus.SendAsync(new GetSprint(projectId, sprintId));
         }
 
         [HttpPatch("{sprintId}/start")]
