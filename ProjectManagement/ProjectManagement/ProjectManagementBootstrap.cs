@@ -36,6 +36,7 @@ using System;
 using System.Linq;
 using ProjectManagement.Infrastructure.Message.Pipeline.PipelineItems;
 using ProjectManagement.PipelineItems;
+using ProjectManagement.Issue.Searchers;
 
 namespace ProjectManagement
 {
@@ -97,6 +98,11 @@ namespace ProjectManagement
                .RegisterType<SprintSearcher>()
                .As<ISprintSearcher>()
                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<IssueSearcher>()
+                .As<IIssueSearcher>()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterRepositories()

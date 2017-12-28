@@ -65,13 +65,11 @@ namespace ProjectManagementView.Storage.Handlers
             sprint.Status = @event.Status;
             sprint.Version = @event.AggregateVersion;
 
-            var issues = new List<Issue>();
-            issues.AddRange(sprint.Bugs.Where(x => x.Status != IssueStatus.Done).Cast<Issue>());
-            issues.AddRange(sprint.Tasks.Where(x => x.Status != IssueStatus.Done).Cast<Issue>());
-            issues.AddRange(sprint.Subtasks.Where(x => x.Status != IssueStatus.Done).Cast<Issue>());
-            issues.AddRange(sprint.Nfrs.Where(x => x.Status != IssueStatus.Done).Cast<Issue>());
-            var unfinishedIssues = issues.Select(x => new UnfinishedIssue(x.Id, IssueHelpers.GetIssueType(x), x.Assignee?.Id));
-            sprint.UnfinishedIssues = unfinishedIssues.ToList();
+            var unfinishedIssueIds = @event.UnfinishedIssueIds;
+            var issues = await db.Issues.Where(x => unfinishedIssueIds.Any(y => x.Id == y)).ToListAsync();
+
+            var unfinishedIssues = issues.Select(x => new UnfinishedIssue(x.Id, IssueHelpers.GetIssueType(x), x.Title)).ToList();
+            sprint.UnfinishedIssues = unfinishedIssues;
 
             await db.SaveChangesAsync();
         }

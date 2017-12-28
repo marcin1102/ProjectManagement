@@ -7,6 +7,7 @@ using ProjectManagement.Sprint.Repository;
 using System;
 using System.Threading.Tasks;
 using ProjectManagement.Sprint.Searchers;
+using ProjectManagement.Issue.Searchers;
 
 namespace ProjectManagement.Sprint.Handlers
 {
@@ -18,12 +19,14 @@ namespace ProjectManagement.Sprint.Handlers
         private readonly SprintRepository sprintRepository;
         private readonly ISprintFactory sprintFactory;
         private readonly ISprintSearcher sprintSearcher;
+        private readonly IIssueSearcher issueSearcher;
 
-        public SprintCommandHandler(SprintRepository sprintRepository, ISprintFactory sprintFactory, ISprintSearcher sprintSearcher)
+        public SprintCommandHandler(SprintRepository sprintRepository, ISprintFactory sprintFactory, ISprintSearcher sprintSearcher, IIssueSearcher issueSearcher)
         {
             this.sprintRepository = sprintRepository;
             this.sprintFactory = sprintFactory;
             this.sprintSearcher = sprintSearcher;
+            this.issueSearcher = issueSearcher;
         }
 
         public async Task HandleAsync(CreateSprint command)
@@ -46,7 +49,7 @@ namespace ProjectManagement.Sprint.Handlers
             var sprint = await sprintRepository.GetAsync(command.Id);
             var originalVersion = sprint.Version;
 
-            sprint.FinishSprint();
+            await sprint.FinishSprint(issueSearcher);
             await sprintRepository.Update(sprint, originalVersion);
         }
     }

@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>6.0.0</Version>
-    <Description>removed user id from MarkAs... commands</Description>
+    <Version>6.1.0</Version>
+    <Description>added collection of unfinished issue ids to FinishSprint event</Description>
   </PropertyGroup>
 
   <ItemGroup>

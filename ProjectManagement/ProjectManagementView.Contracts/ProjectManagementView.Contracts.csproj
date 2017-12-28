@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.11.0</Version>
-    <Description>get issues related to task and nfr</Description>
+    <Version>2.0.0</Version>
+    <Description>Changed structure of Unfinished issue</Description>
   </PropertyGroup>
 
   <ItemGroup>

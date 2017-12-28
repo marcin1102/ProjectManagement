@@ -9,20 +9,17 @@ namespace ProjectManagementView.Contracts.Issues
 {
     public class UnfinishedIssue
     {
-        private UnfinishedIssue()
-        {
-
-        }
-
-        public UnfinishedIssue(Guid issueId, IssueType issueType, Guid? assigneeId)
+        private UnfinishedIssue() { }
+        public UnfinishedIssue(Guid issueId, IssueType issueType, string title)
         {
             IssueId = issueId;
             IssueType = issueType;
-            AssigneeId = assigneeId;
+            Title = title;
         }
 
         public Guid IssueId { get; private set; }
-        public IssueType IssueType { get; private set; }
-        public Guid? AssigneeId { get; private set; }
+        public IssueType IssueType { get; }
+        public string Title { get; }
+        public string TitleWithType { get => $"{IssueType.ToString()}: {Title}"; }
     }
 }

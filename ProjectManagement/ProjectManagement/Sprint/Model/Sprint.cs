@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using ProjectManagement.Sprint.Searchers;
 using System.Linq;
 using ProjectManagement.Contracts.Sprint.Exceptions;
+using ProjectManagement.Issue.Searchers;
 
 namespace ProjectManagement.Sprint.Model
 {
@@ -55,7 +56,7 @@ namespace ProjectManagement.Sprint.Model
             Update(new SprintStarted(Id, Status, StartDate));
         }
 
-        public void FinishSprint()
+        public async Task FinishSprint(IIssueSearcher issueSearcher)
         {
             if (Status != SprintStatus.InProgress)
                 throw new CannotChangeSprintStatus(Id, Status, SprintStatus.Finished, DomainInformationProvider.Name);
@@ -65,7 +66,9 @@ namespace ProjectManagement.Sprint.Model
                 EndDate = currentDate;
 
             Status = SprintStatus.Finished;
-            Update(new SprintFinished(Id, Status, EndDate));
+            var unfinishedIssueIds = await issueSearcher.FindUnfinishedIssuesForSprint(ProjectId, Id);
+
+            Update(new SprintFinished(Id, Status, EndDate, unfinishedIssueIds));
         }
     }
 }
