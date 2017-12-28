@@ -6,8 +6,8 @@
     <Company>ProjectManagement</Company>
     <Authors>Marcin Gurbiel</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.9.3</Version>
-    <Description>sprint status added to sprint list item</Description>
+    <Version>1.10.0</Version>
+    <Description>Get Sprint</Description>
   </PropertyGroup>
 
   <ItemGroup>

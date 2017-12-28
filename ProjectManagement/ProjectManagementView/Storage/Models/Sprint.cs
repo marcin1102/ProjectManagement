@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProjectManagement.Infrastructure.Storage.EF;
 using Newtonsoft.Json;
 using ProjectManagement.Contracts.Sprint.Enums;
+using ProjectManagementView.Contracts.Issues;
 
 namespace ProjectManagementView.Storage.Models
 {

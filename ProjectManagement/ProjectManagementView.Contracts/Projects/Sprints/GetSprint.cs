@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ProjectManagement.Contracts.Sprint.Enums;
 using ProjectManagement.Infrastructure.Primitives.Message;
+using ProjectManagementView.Contracts.Issues;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,35 +10,39 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementView.Contracts.Projects.Sprints
 {
-    public class GetSprints : IQuery<IReadOnlyCollection<SprintListItem>>
+    public class GetSprint : IQuery<SprintResponse>
     {
-        public GetSprints(Guid projectId, bool notFinishedOnly)
+        public GetSprint(Guid projectId, Guid sprintId)
         {
             ProjectId = projectId;
-            NotFinishedOnly = notFinishedOnly;
+            SprintId = sprintId;
         }
 
         [JsonIgnore]
         public Guid ProjectId { get; private set; }
-        public bool NotFinishedOnly { get; private set; }
+        [JsonIgnore]
+        public Guid SprintId { get; private set; }
     }
 
-    public class SprintListItem
+    public class SprintResponse
     {
-        public SprintListItem(Guid id, string name, DateTime start, DateTime end, SprintStatus status)
+        public SprintResponse(Guid id, string name, DateTime start, DateTime end, SprintStatus status, IReadOnlyCollection<UnfinishedIssue> unfinishedIssues, long version)
         {
             Id = id;
             Name = name;
             Start = start;
             End = end;
             Status = status;
+            UnfinishedIssues = unfinishedIssues;
+            Version = version;
         }
 
         public Guid Id { get; }
         public string Name { get; }
         public DateTime Start { get; }
         public DateTime End { get; }
-        public SprintStatus Status{ get; }
-        public string NameWithDate => $"{Name}({Start.Date} : {End.Date})";
+        public SprintStatus Status { get; }
+        public IReadOnlyCollection<UnfinishedIssue> UnfinishedIssues { get; }
+        public long Version { get; }
     }
 }

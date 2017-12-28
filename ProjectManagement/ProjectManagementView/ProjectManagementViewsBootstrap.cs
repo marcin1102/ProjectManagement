@@ -225,6 +225,7 @@ namespace ProjectManagementView
             RegisterAsyncQueryHandler<GetIssue, IssueResponse, IssueQueryHandler>();
 
             RegisterAsyncQueryHandler<GetSprints, IReadOnlyCollection<SprintListItem>, SprintQueryHandler>();
+            RegisterAsyncQueryHandler<GetSprint, SprintResponse, SprintQueryHandler>();
         }
 
         public override void AddAssemblyToProvider()
