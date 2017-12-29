@@ -59,9 +59,9 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToBug(Id, Labels.Select(x => x.Id).ToList()));
         }
 
-        public override void MarkAsInProgress()
+        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
         {
-            base.MarkAsInProgress();
+            await base.MarkAsInProgress(memberId, authorizationService);
             Update(new BugMarkedAsInProgress(Id, Status));
         }
 
@@ -72,9 +72,9 @@ namespace ProjectManagement.Issue.Model
             Update(new BugCommented(Id, comment.Id, comment.Content, comment.MemberId, comment.CreatedAt));
         }
 
-        public override void MarkAsDone()
+        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
         {
-            base.MarkAsDone();
+            await base.MarkAsDone(memberId, authorizationService);
             Update(new BugMarkedAsDone(Id, Status));
         }
         public override async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)

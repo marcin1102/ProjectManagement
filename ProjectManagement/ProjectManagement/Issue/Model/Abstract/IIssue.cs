@@ -22,9 +22,9 @@ namespace ProjectManagement.Issue.Model.Abstract
 
         void AssignLabels(ICollection<Guid> requestedLabelsIds, ICollection<Label.Label> fetchedLabels);
         System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService);
-        void MarkAsInProgress();
+        System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService);
+        System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService);
         System.Threading.Tasks.Task AssignAssignee(User.Model.User Assignee, IAuthorizationService authorizationService);
         System.Threading.Tasks.Task AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher);
     }
-
 }

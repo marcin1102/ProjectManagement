@@ -42,9 +42,9 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToTask(Id, Labels.Select(x => x.Id).ToList()));
         }
 
-        public override void MarkAsInProgress()
+        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
         {
-            base.MarkAsInProgress();
+            await base.MarkAsInProgress(memberId, authorizationService);
             Update(new TaskMarkedAsInProgress(Id, Status));
         }
 
@@ -55,10 +55,10 @@ namespace ProjectManagement.Issue.Model
             Update(new TaskCommented(Id, comment.Id, comment.Content, comment.MemberId, comment.CreatedAt));
         }
 
-        public override void MarkAsDone()
-        {
+        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
+        { 
             CheckIfRelatedIssuesAreDone();
-            base.MarkAsDone();
+            await base.MarkAsDone(memberId, authorizationService);
             Update(new TaskMarkedAsDone(Id, Status));
         }
 
@@ -113,11 +113,11 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToBug(bugId, bug.Labels.Select(x => x.Id).ToList()));
         }
 
-        public void MarkBugAsInProgress(Guid bugId)
+        public async System.Threading.Tasks.Task MarkBugAsInProgress(Guid bugId, Guid memberId, IAuthorizationService authorizationService)
         {
             var bug = GetBugWithId(bugId);
 
-            bug.MarkAsInProgress();
+            await bug.MarkAsInProgress(memberId, authorizationService);
             Update(new BugMarkedAsInProgress(bugId, Contracts.Issue.Enums.IssueStatus.InProgress));
         }
 
@@ -130,10 +130,10 @@ namespace ProjectManagement.Issue.Model
             Update(new BugCommented(bugId, newComment.Id, newComment.Content, newComment.MemberId, newComment.CreatedAt));
         }
 
-        public void MarkBugAsDone(Guid bugId)
+        public async System.Threading.Tasks.Task MarkBugAsDone(Guid bugId, Guid memberId, IAuthorizationService authorizationService)
         {
             var bug = GetBugWithId(bugId);
-            bug.MarkAsDone();
+            await bug.MarkAsDone(memberId, authorizationService);
             Update(new BugMarkedAsDone(bugId, Contracts.Issue.Enums.IssueStatus.Done));
         }
 
@@ -168,10 +168,10 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToSubtask(subtaskId, subtask.Labels.Select(x => x.Id).ToList()));
         }
 
-        public void MarkSubtaskAsInProgress(Guid subtaskId)
+        public async System.Threading.Tasks.Task MarkSubtaskAsInProgress(Guid subtaskId, Guid memberId, IAuthorizationService authorizationService)
         {
             var subtask = GetSubtaskWithId(subtaskId);
-            subtask.MarkAsInProgress();
+            await subtask.MarkAsInProgress(memberId, authorizationService);
             Update(new SubtaskMarkedAsInProgress(subtaskId, Contracts.Issue.Enums.IssueStatus.InProgress));
         }
 
@@ -183,10 +183,10 @@ namespace ProjectManagement.Issue.Model
             Update(new SubtaskCommented(subtaskId, newComment.Id, newComment.Content, newComment.MemberId, newComment.CreatedAt));
         }
 
-        public void MarkSubtaskAsDone(Guid subtaskId)
+        public async System.Threading.Tasks.Task MarkSubtaskAsDone(Guid subtaskId, Guid memberId, IAuthorizationService authorizationService)
         {
             var subtask = GetSubtaskWithId(subtaskId);
-            subtask.MarkAsDone();
+            await subtask.MarkAsDone(memberId, authorizationService);
             Update(new SubtaskMarkedAsDone(subtaskId, Contracts.Issue.Enums.IssueStatus.Done));
         }
 

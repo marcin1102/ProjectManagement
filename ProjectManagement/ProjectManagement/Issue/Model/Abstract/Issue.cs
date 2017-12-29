@@ -66,8 +66,9 @@ namespace ProjectManagement.Issue.Model.Abstract
             }
         }
 
-        public virtual void MarkAsInProgress()
+        public virtual async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
         {
+            await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
                 throw new IssueNotAssignedToSprint(Id, DomainInformationProvider.Name);
 
@@ -87,8 +88,9 @@ namespace ProjectManagement.Issue.Model.Abstract
             Comments.Add(comment);
         }
 
-        public virtual void MarkAsDone()
+        public virtual async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
         {
+            await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
                 throw new IssueNotAssignedToSprint(Id, DomainInformationProvider.Name);
 
@@ -174,8 +176,9 @@ namespace ProjectManagement.Issue.Model.Abstract
             }
         }
 
-        public virtual void MarkAsInProgress()
+        public virtual async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
         {
+            await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
                 throw new IssueNotAssignedToSprint(Id, DomainInformationProvider.Name);
 
@@ -195,8 +198,9 @@ namespace ProjectManagement.Issue.Model.Abstract
             Comments.Add(comment);
         }
 
-        public virtual void MarkAsDone()
+        public virtual async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
         {
+            await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
                 throw new IssueNotAssignedToSprint(Id, DomainInformationProvider.Name);
 

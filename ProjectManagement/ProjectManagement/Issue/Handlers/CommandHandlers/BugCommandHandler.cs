@@ -65,7 +65,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var Bug = await bugRepository.GetAsync(command.IssueId);
             var originalVersion = Bug.Version;
-            Bug.MarkAsInProgress();
+            await Bug.MarkAsInProgress(callContext.UserId, authorizationService);
             await bugRepository.Update(Bug, originalVersion);
         }
 
@@ -73,7 +73,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var Bug = await bugRepository.GetAsync(command.IssueId);
             var originalVersion = Bug.Version;
-            Bug.MarkAsDone();
+            await Bug.MarkAsDone(callContext.UserId, authorizationService);
             await bugRepository.Update(Bug, originalVersion);
         }
 

@@ -77,7 +77,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var issue = await nfrRepository.GetAsync(command.IssueId);
             var originalVersion = issue.Version;
-            issue.MarkAsInProgress();
+            await issue.MarkAsInProgress(callContext.UserId, authorizationService);
             await nfrRepository.Update(issue, originalVersion);
         }
 
@@ -86,7 +86,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
             var Nfr = await nfrRepository.GetAsync(command.IssueId);
             var originalVersion = Nfr.Version;
 
-            Nfr.MarkAsDone();
+            await Nfr.MarkAsDone(callContext.UserId, authorizationService);
             await nfrRepository.Update(Nfr, originalVersion);
         }
 
@@ -140,7 +140,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var nfr = await nfrRepository.GetAsync(command.NfrId);
             var originalVersion = nfr.Version;
-            nfr.MarkBugAsInProgress(command.IssueId);
+            await nfr.MarkBugAsInProgress(command.IssueId, callContext.UserId, authorizationService);
             var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
             await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }
@@ -149,7 +149,7 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         {
             var nfr = await nfrRepository.GetAsync(command.NfrId);
             var originalVersion = nfr.Version;
-            nfr.MarkBugAsDone(command.IssueId);
+            await nfr.MarkBugAsDone(command.IssueId, callContext.UserId, authorizationService);
             var bug = nfr.Bugs.Single(x => x.Id == command.IssueId);
             await nfrRepository.UpdateChildEntity(nfr, originalVersion, bug);
         }

@@ -88,7 +88,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.IssueId);
             var originalVersion = task.Version;
-            task.MarkAsInProgress();
+            await task.MarkAsInProgress(callContext.UserId, authorizationService);
             await taskRepository.Update(task, originalVersion);
         }
 
@@ -96,7 +96,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.IssueId);
             var originalVersion = task.Version;
-            task.MarkAsDone();
+            await task.MarkAsDone(callContext.UserId, authorizationService);
             await taskRepository.Update(task, originalVersion);
         }
 
@@ -149,7 +149,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.MarkBugAsInProgress(command.IssueId);
+            await task.MarkBugAsInProgress(command.IssueId, callContext.UserId, authorizationService);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
@@ -158,7 +158,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.MarkBugAsDone(command.IssueId);
+            await task.MarkBugAsDone(command.IssueId, callContext.UserId, authorizationService);
             var bug = task.Bugs.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, bug);
         }
@@ -226,7 +226,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.MarkSubtaskAsInProgress(command.IssueId);
+            await task.MarkSubtaskAsInProgress(command.IssueId, callContext.UserId, authorizationService);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }
@@ -235,7 +235,7 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         {
             var task = await taskRepository.GetAsync(command.TaskId);
             var originalVersion = task.Version;
-            task.MarkSubtaskAsDone(command.IssueId);
+            await task.MarkSubtaskAsDone(command.IssueId, callContext.UserId, authorizationService);
             var Subtask = task.Subtasks.Single(x => x.Id == command.IssueId);
             await taskRepository.UpdateChildEntity(task, originalVersion, Subtask);
         }

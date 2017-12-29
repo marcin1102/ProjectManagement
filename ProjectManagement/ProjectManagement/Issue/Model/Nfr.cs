@@ -39,9 +39,9 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToNfr(Id, Labels.Select(x => x.Id).ToList()));
         }
 
-        public override void MarkAsInProgress()
+        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
         {
-            base.MarkAsInProgress();
+            await base.MarkAsInProgress(memberId, authorizationService);
             Update(new NfrMarkedAsInProgress(Id, Status));
         }
 
@@ -52,10 +52,10 @@ namespace ProjectManagement.Issue.Model
             Update(new NfrCommented(Id, comment.Id, comment.Content, comment.MemberId, comment.CreatedAt));
         }
 
-        public override void MarkAsDone()
+        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
         {
             CheckIfRelatedIssuesAreDone();
-            base.MarkAsDone();
+            await base.MarkAsDone(memberId, authorizationService);
             Update(new NfrMarkedAsDone(Id, Status));
         }
 
@@ -101,10 +101,10 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToBug(bugId, bug.Labels.Select(x => x.Id).ToList()));
         }
 
-        public void MarkBugAsInProgress(Guid bugId)
+        public async System.Threading.Tasks.Task MarkBugAsInProgress(Guid bugId, Guid memberId, IAuthorizationService authorizationService)
         {
             var bug = Bugs.Single(x => x.Id == bugId);
-            bug.MarkAsInProgress();
+            await bug.MarkAsInProgress(memberId, authorizationService);
             Update(new BugMarkedAsInProgress(bugId, Contracts.Issue.Enums.IssueStatus.InProgress));
         }
 
@@ -116,10 +116,10 @@ namespace ProjectManagement.Issue.Model
             Update(new BugCommented(bugId, newComment.Id, newComment.Content, newComment.MemberId, newComment.CreatedAt));
         }
 
-        public void MarkBugAsDone(Guid bugId)
+        public async System.Threading.Tasks.Task MarkBugAsDone(Guid bugId, Guid memberId, IAuthorizationService authorizationService)
         {
             var bug = Bugs.Single(x => x.Id == bugId);
-            bug.MarkAsDone();
+            await bug.MarkAsDone(memberId, authorizationService);
             Update(new BugMarkedAsDone(bugId, Contracts.Issue.Enums.IssueStatus.Done));
         }
 
