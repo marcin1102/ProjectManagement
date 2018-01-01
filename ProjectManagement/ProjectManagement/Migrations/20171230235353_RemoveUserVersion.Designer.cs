@@ -3,16 +3,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using ProjectManagement;
+using ProjectManagement.Contracts.Issue.Enums;
+using ProjectManagement.Contracts.Sprint.Enums;
 using System;
+using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagement.Migrations
 {
     [DbContext(typeof(ProjectManagementContext))]
-    partial class ProjectManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20171230235353_RemoveUserVersion")]
+    partial class RemoveUserVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +209,7 @@ namespace ProjectManagement.Migrations
                     b.ToTable("Sprint");
                 });
 
-            modelBuilder.Entity("ProjectManagement.User.Model.Member", b =>
+            modelBuilder.Entity("ProjectManagement.User.Model.User", b =>
                 {
                     b.Property<Guid>("Id");
 
@@ -220,7 +226,7 @@ namespace ProjectManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Member");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("ProjectManagement.Issue.Model.Bug", b =>

@@ -66,7 +66,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             }
         }
 
-        public virtual async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
@@ -79,7 +79,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public virtual async System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task Comment(Guid memberId, string content, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(memberId, ProjectId);
             var comment = new Comment.Comment(memberId, content);
@@ -88,7 +88,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             Comments.Add(comment);
         }
 
-        public virtual async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
@@ -101,7 +101,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public virtual async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task AssignAssignee(User.Model.Member assignee, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(assignee.Id, ProjectId);
             AssigneeId = assignee.Id;
@@ -176,7 +176,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             }
         }
 
-        public virtual async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
@@ -189,7 +189,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public virtual async System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task Comment(Guid memberId, string content, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(memberId, ProjectId);
             var comment = new Comment.Comment(memberId, content);
@@ -198,7 +198,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             Comments.Add(comment);
         }
 
-        public virtual async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(memberId, ProjectId);
             if (SprintId == null)
@@ -211,7 +211,7 @@ namespace ProjectManagement.Issue.Model.Abstract
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public virtual async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
+        public virtual async System.Threading.Tasks.Task AssignAssignee(User.Model.Member assignee, IMembershipService authorizationService)
         {
             await authorizationService.CheckUserMembership(assignee.Id, ProjectId);
             AssigneeId = assignee.Id;

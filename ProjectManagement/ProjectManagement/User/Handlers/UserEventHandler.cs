@@ -20,13 +20,13 @@ namespace ProjectManagement.User.Handlers
 
         public async Task HandleAsync(UserCreated @event)
         {
-            await repository.AddAsync(new Model.User(@event.Id, @event.FirstName, @event.LastName, @event.Email, @event.Role, @event.AggregateVersion));
+            await repository.AddAsync(new Model.Member(@event.Id, @event.FirstName, @event.LastName, @event.Email, @event.Role));
         }
 
         public async Task HandleAsync(RoleGranted @event)
         {
             var user = await repository.FindAsync(@event.UserId);
-            user.GrantRole(@event.Role, @event.AggregateVersion);
+            user.GrantRole(@event.Role);
             await repository.Update(user);
         }
     }

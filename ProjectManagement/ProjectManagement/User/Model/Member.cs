@@ -8,18 +8,17 @@ using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagement.User.Model
 {
-    public class User : IEntity
+    public class Member : IEntity
     {
-        private User() { }
+        private Member() { }
 
-        public User(Guid id, string firstName, string lastName, string email, Role role, long aggregateVersion)
+        public Member(Guid id, string firstName, string lastName, string email, Role role)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
             Email = email;
             Role = role;
-            AggregateVersion = aggregateVersion;
         }
 
         public Guid Id { get; private set; }
@@ -28,12 +27,9 @@ namespace ProjectManagement.User.Model
         public string Email { get; private set; }
         public Role Role { get; private set; }
 
-        public long AggregateVersion { get; set; }
-
-        public void GrantRole(Role role, long version)
+        public void GrantRole(Role role)
         {
             Role = role;
-            AggregateVersion = version;
         }
     }
 }

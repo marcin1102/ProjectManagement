@@ -11,142 +11,39 @@ using ProjectManagement.User.Repository;
 using ProjectManagement.Project.Repository;
 using ProjectManagement.Infrastructure.Primitives.Exceptions;
 using ProjectManagement.Contracts.Bug.Commands;
+using ProjectManagement.Issue.Model.Abstract;
+using ProjectManagement.Infrastructure.CallContexts;
 
 namespace ProjectManagement.Issue.Factory
 {
     public interface IIssueFactory
     {
-        Task<Model.Task> GenerateTask(CreateTask command);
-        Task<Model.Nfr> GenerateNfr(CreateNfr command);
-        Task<Model.ChildBug> GenerateChildBug<TAddBugTo>(TAddBugTo command)
-            where TAddBugTo : class, IAddBugTo;
+        Task<Model.ChildBug> GenerateChildBug(IAddBugTo command);
         Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command);
-        Task<Model.Bug> GenerateBug(CreateBug command);
+        Task<AggregateIssue> Create(ICreateAggregateIssue command);
     }
     public class IssueFactory : IIssueFactory
     {
         private readonly UserRepository userRepository;
         private readonly ILabelsSearcher labelsSearcher;
         private readonly SprintRepository sprintRepository;
-        private readonly IAuthorizationService authorizationService;
+        private readonly IMembershipService authorizationService;
         private readonly ProjectRepository projectRepository;
+        private readonly CallContext callContext;
 
-        public IssueFactory(UserRepository userRepository, ILabelsSearcher labelsSearcher, SprintRepository sprintRepository, IAuthorizationService authorizationService, ProjectRepository projectRepository)
+        public IssueFactory(UserRepository userRepository, ILabelsSearcher labelsSearcher, SprintRepository sprintRepository, IMembershipService authorizationService, ProjectRepository projectRepository, CallContext callContext)
         {
             this.userRepository = userRepository;
             this.labelsSearcher = labelsSearcher;
             this.sprintRepository = sprintRepository;
             this.authorizationService = authorizationService;
             this.projectRepository = projectRepository;
+            this.callContext = callContext;
         }
 
-        public async Task<Model.Task> GenerateTask(CreateTask command)
+        public async Task<Model.ChildBug> GenerateChildBug(IAddBugTo command)
         {
-            await CheckIfProjectExist(command.ProjectId);
-            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
-
-            var issue = new Model.Task(
-                                id: Guid.NewGuid(),
-                                projectId: command.ProjectId,
-                                title: command.Title,
-                                description: command.Description,
-                                status: IssueStatus.Todo,
-                                reporterId: command.ReporterId,
-                                assigneeId: null,
-                                createdAt: DateTime.UtcNow,
-                                updatedAt: DateTime.UtcNow
-                             );
-            issue.Created();
-
-            if (command.LabelsIds != null)
-            {
-                var labels = await labelsSearcher.GetLabels(command.ProjectId);
-                issue.AssignLabels(command.LabelsIds, labels);
-            }
-
-            if (command.AssigneeId != null)
-            {
-                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                await issue.AssignAssignee(assignee, authorizationService);
-            }
-
-            command.CreatedId = issue.Id;
-            return issue;
-        }
-
-        public async Task<Model.Nfr> GenerateNfr(CreateNfr command)
-        {
-            await CheckIfProjectExist(command.ProjectId);
-            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
-
-            var issue = new Model.Nfr(
-                                id: Guid.NewGuid(),
-                                projectId: command.ProjectId,
-                                title: command.Title,
-                                description: command.Description,
-                                status: IssueStatus.Todo,
-                                reporterId: command.ReporterId,
-                                assigneeId: null,
-                                createdAt: DateTime.UtcNow,
-                                updatedAt: DateTime.UtcNow
-                             );
-
-            issue.Created();
-
-            if (command.LabelsIds != null)
-            {
-                var labels = await labelsSearcher.GetLabels(command.ProjectId);
-                issue.AssignLabels(command.LabelsIds, labels);
-            }
-
-            if (command.AssigneeId != null)
-            {
-                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                await issue.AssignAssignee(assignee, authorizationService);
-            }
-
-            command.CreatedId = issue.Id;
-            return issue;
-        }
-
-        public async Task<Model.Bug> GenerateBug(CreateBug command)
-        {
-            await CheckIfProjectExist(command.ProjectId);
-            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
-
-            var issue = new Model.Bug(
-                                id: Guid.NewGuid(),
-                                projectId: command.ProjectId,
-                                title: command.Title,
-                                description: command.Description,
-                                status: IssueStatus.Todo,
-                                reporterId: command.ReporterId,
-                                assigneeId: null,
-                                createdAt: DateTime.UtcNow,
-                                updatedAt: DateTime.UtcNow
-                             );
-            issue.Created();
-
-            if (command.LabelsIds != null)
-            {
-                var labels = await labelsSearcher.GetLabels(command.ProjectId);
-                issue.AssignLabels(command.LabelsIds, labels);
-            }
-
-            if (command.AssigneeId != null)
-            {
-                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
-                await issue.AssignAssignee(assignee, authorizationService);
-            }
-
-            command.CreatedId = issue.Id;
-            return issue;
-        }
-
-        public async Task<Model.ChildBug> GenerateChildBug<TAddBugTo>(TAddBugTo command)
-            where TAddBugTo : class, IAddBugTo
-        {
-            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
+            await authorizationService.CheckUserMembership(callContext.UserId, command.ProjectId);
 
             var issue = new Model.ChildBug(
                                 id: Guid.NewGuid(),
@@ -154,7 +51,7 @@ namespace ProjectManagement.Issue.Factory
                                 title: command.Title,
                                 description: command.Description,
                                 status: IssueStatus.Todo,
-                                reporterId: command.ReporterId,
+                                reporterId: callContext.UserId,
                                 assigneeId: null,
                                 createdAt: DateTime.UtcNow,
                                 updatedAt: DateTime.UtcNow
@@ -178,7 +75,7 @@ namespace ProjectManagement.Issue.Factory
 
         public async Task<Model.Subtask> GenerateSubtask(AddSubtaskToTask command)
         {
-            await authorizationService.CheckUserMembership(command.ReporterId, command.ProjectId);
+            await authorizationService.CheckUserMembership(callContext.UserId, command.ProjectId);
 
             var issue = new Model.Subtask(
                                 id: Guid.NewGuid(),
@@ -186,7 +83,7 @@ namespace ProjectManagement.Issue.Factory
                                 title: command.Title,
                                 description: command.Description,
                                 status: IssueStatus.Todo,
-                                reporterId: command.ReporterId,
+                                reporterId: callContext.UserId,
                                 assigneeId: null,
                                 createdAt: DateTime.UtcNow,
                                 updatedAt: DateTime.UtcNow
@@ -212,6 +109,74 @@ namespace ProjectManagement.Issue.Factory
         {
             if (await projectRepository.FindAsync(projectId) == null)
                 throw new EntityDoesNotExist(projectId, nameof(Project.Model.Project));
+        }
+
+        public async Task<AggregateIssue> Create(ICreateAggregateIssue command)
+        {
+            await CheckIfProjectExist(command.ProjectId);
+            await authorizationService.CheckUserMembership(callContext.UserId, command.ProjectId);
+            AggregateIssue issue;
+            switch (command)
+            {
+                case CreateTask createTask:
+                    issue = new Model.Task(
+                                id: Guid.NewGuid(),
+                                projectId: command.ProjectId,
+                                title: command.Title,
+                                description: command.Description,
+                                status: IssueStatus.Todo,
+                                reporterId: callContext.UserId,
+                                assigneeId: null,
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
+                             );
+                    break;
+                case CreateNfr createNfr:
+                    issue = new Model.Nfr(
+                                id: Guid.NewGuid(),
+                                projectId: command.ProjectId,
+                                title: command.Title,
+                                description: command.Description,
+                                status: IssueStatus.Todo,
+                                reporterId: callContext.UserId,
+                                assigneeId: null,
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
+                             );
+                    break;
+                case CreateBug createBug:
+                    issue = new Model.Bug(
+                                id: Guid.NewGuid(),
+                                projectId: command.ProjectId,
+                                title: command.Title,
+                                description: command.Description,
+                                status: IssueStatus.Todo,
+                                reporterId: callContext.UserId,
+                                assigneeId: null,
+                                createdAt: DateTime.UtcNow,
+                                updatedAt: DateTime.UtcNow
+                             );
+                    break;
+                default:
+                    throw new InvalidCastException("Cannot cast command to Create Aggregate Issue command");
+            }
+
+            issue.Created();
+
+            if (command.LabelsIds != null)
+            {
+                var labels = await labelsSearcher.GetLabels(command.ProjectId);
+                issue.AssignLabels(command.LabelsIds, labels);
+            }
+
+            if (command.AssigneeId != null)
+            {
+                var assignee = await userRepository.GetAsync(command.AssigneeId.Value);
+                await issue.AssignAssignee(assignee, authorizationService);
+            }
+
+            command.CreatedId = issue.Id;
+            return issue;
         }
     }
 }

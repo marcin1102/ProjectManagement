@@ -17,10 +17,10 @@ namespace ProjectManagement.Project.Handlers
     {
         private readonly ProjectRepository projectRepository;
         private readonly UserRepository userRepository;
-        private readonly IAuthorizationService authorizationService;
+        private readonly IMembershipService authorizationService;
         private readonly IProjectFactory projectFactory;
 
-        public ProjectCommandHandler(ProjectRepository projectRepository, UserRepository userRepository, IAuthorizationService authorizationService, IProjectFactory projectFactory)
+        public ProjectCommandHandler(ProjectRepository projectRepository, UserRepository userRepository, IMembershipService authorizationService, IProjectFactory projectFactory)
         {
             this.projectRepository = projectRepository;
             this.userRepository = userRepository;

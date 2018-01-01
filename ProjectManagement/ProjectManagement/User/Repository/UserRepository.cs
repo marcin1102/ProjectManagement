@@ -2,7 +2,7 @@
 
 namespace ProjectManagement.User.Repository
 {
-    public class UserRepository : Repository<Model.User>
+    public class UserRepository : Repository<Model.Member>
     {
         public UserRepository(ProjectManagementContext dbContext) : base(dbContext)
         {

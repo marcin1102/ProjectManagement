@@ -72,10 +72,7 @@ namespace ProjectManagement.Project.Model
         {
             var user = Task.Run(() => userRepository.FindAsync(userId)).GetAwaiter().GetResult();
             if (user == null)
-                throw new EntityDoesNotExist(userId, nameof(User.Model.User));
+                throw new EntityDoesNotExist(userId, nameof(User.Model.Member));
         }
-
-        private void CheckUserRole(IAuthorizationService authorizationService, Guid adminId) =>
-            Task.Run(() => authorizationService.CheckUserRole(adminId, nameof(CreateProject))).GetAwaiter().GetResult();
     }
 }

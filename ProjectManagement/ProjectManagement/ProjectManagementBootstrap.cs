@@ -54,8 +54,8 @@ namespace ProjectManagement
         private void RegisterServices()
         {
             builder
-                .RegisterType<AuthorizationService>()
-                .As<IAuthorizationService>()
+                .RegisterType<MembershipService>()
+                .As<IMembershipService>()
                 .InstancePerLifetimeScope();
 
             builder

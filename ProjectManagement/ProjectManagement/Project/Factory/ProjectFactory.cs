@@ -15,9 +15,9 @@ namespace ProjectManagement.Project.Factory
     }
     public class ProjectFactory : IProjectFactory
     {
-        private readonly IAuthorizationService authorizationService;
+        private readonly IMembershipService authorizationService;
 
-        public ProjectFactory(IAuthorizationService authorizationService)
+        public ProjectFactory(IMembershipService authorizationService)
         {
             this.authorizationService = authorizationService;
         }

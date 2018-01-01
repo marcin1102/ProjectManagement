@@ -23,12 +23,12 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         private readonly BugRepository bugRepository;
         private readonly IIssueFactory issueFactory;
         private readonly ILabelsSearcher labelsSearcher;
-        private readonly IAuthorizationService authorizationService;
+        private readonly IMembershipService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
         private readonly CallContext callContext;
 
-        public BugCommandHandler(BugRepository bugRepository, IIssueFactory issueFactory, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
+        public BugCommandHandler(BugRepository bugRepository, IIssueFactory issueFactory, ILabelsSearcher labelsSearcher, IMembershipService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
         {
             this.bugRepository = bugRepository;
             this.issueFactory = issueFactory;
@@ -41,8 +41,8 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
 
         public async Task HandleAsync(CreateBug command)
         {
-            var Bug = await issueFactory.GenerateBug(command);
-            await bugRepository.AddAsync(Bug);
+            var Bug = await issueFactory.Create(command);
+            await bugRepository.AddAsync((Model.Bug)Bug);
         }
 
         public async Task HandleAsync(AssignLabelsToBug command)

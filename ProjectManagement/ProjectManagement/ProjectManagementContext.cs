@@ -15,7 +15,7 @@ namespace ProjectManagement
         }
 
         public DbSet<Project.Model.Project> Projects { get; set; }
-        public DbSet<User.Model.User> Users { get; set; }
+        public DbSet<User.Model.Member> Users { get; set; }
         public DbSet<Sprint.Model.Sprint> Sprints { get; set; }
         public DbSet<Label.Label> Labels { get; set; }
         public DbSet<AggregateIssue> AggregateIssue { get; set; }
@@ -45,7 +45,7 @@ namespace ProjectManagement
                 x.ToTable(nameof(Project.Model.Project));
             });
 
-            modelBuilder.Entity<User.Model.User>(x =>
+            modelBuilder.Entity<User.Model.Member>(x =>
             {
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Id).ValueGeneratedNever();
@@ -53,8 +53,7 @@ namespace ProjectManagement
                 x.Property(y => y.LastName).IsRequired();
                 x.Property(y => y.Email).IsRequired();
                 x.Property(y => y.Role).IsRequired();
-                x.Property(y => y.AggregateVersion);
-                x.ToTable(nameof(User.Model.User));
+                x.ToTable(nameof(User.Model.Member));
             });
 
             modelBuilder.Entity<AggregateIssue>(x =>

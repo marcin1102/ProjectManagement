@@ -3,6 +3,8 @@ using ProjectManagement.Contracts.Sprint.Commands;
 using ProjectManagement.Project.Searchers;
 using System;
 using System.Threading.Tasks;
+using ProjectManagement.Services;
+using ProjectManagement.Infrastructure.CallContexts;
 
 namespace ProjectManagement.Sprint.Factory
 {
@@ -14,14 +16,20 @@ namespace ProjectManagement.Sprint.Factory
     public class SprintFactory : ISprintFactory
     {
         private readonly IProjectSearcher projectSearcher;
+        private readonly IMembershipService authorizationService;
+        private readonly CallContext callContext;
 
-        public SprintFactory(IProjectSearcher projectSearcher)
+        public SprintFactory(IProjectSearcher projectSearcher, IMembershipService authorizationService, CallContext callContext)
         {
             this.projectSearcher = projectSearcher;
+            this.authorizationService = authorizationService;
+            this.callContext = callContext;
         }
 
         public async Task<Model.Sprint> GenerateSprint(CreateSprint command)
         {
+            await authorizationService.CheckUserMembership(callContext.UserId, command.ProjectId);
+
             if (!await projectSearcher.DoesProjectExist(command.ProjectId))
                 throw new EntityDoesNotExist(command.ProjectId, nameof(Project.Model.Project));
 

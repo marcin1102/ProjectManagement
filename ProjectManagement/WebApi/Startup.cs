@@ -22,6 +22,8 @@ using UserManagement;
 using UserManagement.Contracts.User.Commands;
 using WebApi.Bootstrap;
 using WebApi.Middlewares;
+using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace ProjectManagement.WebApi
 {
@@ -54,6 +56,8 @@ namespace ProjectManagement.WebApi
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("api", new Info { Title = "DDD-app" });
+                var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "WebApi.xml");
+                x.IncludeXmlComments(filePath);
             });
 
             var builder = new ContainerBuilder();

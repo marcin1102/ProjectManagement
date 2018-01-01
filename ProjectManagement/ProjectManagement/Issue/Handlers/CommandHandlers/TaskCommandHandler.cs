@@ -43,13 +43,13 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
         private readonly IIssueFactory taskFactory;
         private readonly ProjectRepository projectRepository;
         private readonly ILabelsSearcher labelsSearcher;
-        private readonly IAuthorizationService authorizationService;
+        private readonly IMembershipService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
         private readonly IBugMapper bugMapper;
         private readonly CallContext callContext;
 
-        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper, CallContext callContext)
+        public TaskCommandHandler(TaskRepository taskRepository, IIssueFactory taskFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IMembershipService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, IBugMapper bugMapper, CallContext callContext)
         {
             this.taskRepository = taskRepository;
             this.taskFactory = taskFactory;
@@ -64,8 +64,8 @@ namespace ProjectManagement.task.Handlers.CommandHandlers
 
         public async Task HandleAsync(CreateTask command)
         {
-            var task = await taskFactory.GenerateTask(command);
-            await taskRepository.AddAsync(task);
+            var task = await taskFactory.Create(command);
+            await taskRepository.AddAsync((Issue.Model.Task)task);
         }
 
         public async Task HandleAsync(AssignLabelsToTask command)

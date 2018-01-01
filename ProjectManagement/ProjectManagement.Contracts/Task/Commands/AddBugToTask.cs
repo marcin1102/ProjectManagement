@@ -9,11 +9,10 @@ namespace ProjectManagement.Contracts.Task.Commands
 {
     public class AddBugToTask : IAddBugTo
     {
-        public AddBugToTask(string title, string description, Guid reporterId, Guid? assigneeId, ICollection<Guid> labelsIds)
+        public AddBugToTask(string title, string description, Guid? assigneeId, ICollection<Guid> labelsIds)
         {
             Title = title;
             Description = description;
-            ReporterId = reporterId;
             AssigneeId = assigneeId;
             LabelsIds = labelsIds;
         }
@@ -24,7 +23,6 @@ namespace ProjectManagement.Contracts.Task.Commands
         public Guid ProjectId { get; set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public Guid ReporterId { get; private set; }
         public Guid? AssigneeId { get; private set; }
         public ICollection<Guid> LabelsIds { get; private set; }
 
@@ -46,7 +44,6 @@ namespace ProjectManagement.Contracts.Task.Commands
         public AddBugToTaskValidator()
         {
             RuleFor(x => x.ProjectId).NotNull();
-            RuleFor(x => x.ReporterId).NotNull();
             RuleFor(x => x.Description).NotEmpty();
             RuleFor(x => x.Title).NotEmpty();
             RuleFor(x => x.LabelsIds).Must(NotNullInCollection);

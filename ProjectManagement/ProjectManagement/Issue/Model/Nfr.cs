@@ -39,20 +39,20 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToNfr(Id, Labels.Select(x => x.Id).ToList()));
         }
 
-        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IMembershipService authorizationService)
         {
             await base.MarkAsInProgress(memberId, authorizationService);
             Update(new NfrMarkedAsInProgress(Id, Status));
         }
 
-        public override async System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task Comment(Guid memberId, string content, IMembershipService authorizationService)
         {
             await base.Comment(memberId, content, authorizationService);
             var comment = Comments.OrderBy(x => x.CreatedAt).Last();
             Update(new NfrCommented(Id, comment.Id, comment.Content, comment.MemberId, comment.CreatedAt));
         }
 
-        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IMembershipService authorizationService)
         {
             CheckIfRelatedIssuesAreDone();
             await base.MarkAsDone(memberId, authorizationService);
@@ -66,7 +66,7 @@ namespace ProjectManagement.Issue.Model
                 throw new AllRelatedIssuesMustBeDone(Id, DomainInformationProvider.Name);
         }
 
-        public override async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task AssignAssignee(User.Model.Member assignee, IMembershipService authorizationService)
         {
             await base.AssignAssignee(assignee, authorizationService);
             Update(new AssigneeAssignedToNfr(Id, AssigneeId.Value));
@@ -90,6 +90,9 @@ namespace ProjectManagement.Issue.Model
         #region Bug
         public async System.Threading.Tasks.Task AddBug(IIssueFactory issueFactory, AddBugToNfr command)
         {
+            if (Status == IssueStatus.Done)
+                throw new CannotAddChildIssueWhenParentIssueIsDone<Nfr, ChildBug>(Id);
+
             var bug = await issueFactory.GenerateChildBug(command);
             Bugs.Add(bug);
             Update(new BugAddedToNfr(bug.Id, Id, ProjectId, bug.Title, bug.Description, bug.ReporterId, bug.AssigneeId, bug.Labels.Select(x => x.Id).ToList(), bug.CreatedAt));
@@ -101,14 +104,14 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToBug(bugId, bug.Labels.Select(x => x.Id).ToList()));
         }
 
-        public async System.Threading.Tasks.Task MarkBugAsInProgress(Guid bugId, Guid memberId, IAuthorizationService authorizationService)
+        public async System.Threading.Tasks.Task MarkBugAsInProgress(Guid bugId, Guid memberId, IMembershipService authorizationService)
         {
             var bug = Bugs.Single(x => x.Id == bugId);
             await bug.MarkAsInProgress(memberId, authorizationService);
             Update(new BugMarkedAsInProgress(bugId, Contracts.Issue.Enums.IssueStatus.InProgress));
         }
 
-        public async System.Threading.Tasks.Task CommentBug(Guid bugId, Guid memberId, string content, IAuthorizationService authorizationService)
+        public async System.Threading.Tasks.Task CommentBug(Guid bugId, Guid memberId, string content, IMembershipService authorizationService)
         {
             var bug = Bugs.Single(x => x.Id == bugId);
             await bug.Comment(memberId, content, authorizationService);
@@ -116,14 +119,14 @@ namespace ProjectManagement.Issue.Model
             Update(new BugCommented(bugId, newComment.Id, newComment.Content, newComment.MemberId, newComment.CreatedAt));
         }
 
-        public async System.Threading.Tasks.Task MarkBugAsDone(Guid bugId, Guid memberId, IAuthorizationService authorizationService)
+        public async System.Threading.Tasks.Task MarkBugAsDone(Guid bugId, Guid memberId, IMembershipService authorizationService)
         {
             var bug = Bugs.Single(x => x.Id == bugId);
             await bug.MarkAsDone(memberId, authorizationService);
             Update(new BugMarkedAsDone(bugId, Contracts.Issue.Enums.IssueStatus.Done));
         }
 
-        public async System.Threading.Tasks.Task AssignAssigneeToBug(Guid bugId, User.Model.User assignee, IAuthorizationService authorizationService)
+        public async System.Threading.Tasks.Task AssignAssigneeToBug(Guid bugId, User.Model.Member assignee, IMembershipService authorizationService)
         {
             var bug = Bugs.Single(x => x.Id == bugId);
             await bug.AssignAssignee(assignee, authorizationService);

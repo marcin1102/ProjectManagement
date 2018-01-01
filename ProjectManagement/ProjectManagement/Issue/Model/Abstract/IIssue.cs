@@ -21,10 +21,10 @@ namespace ProjectManagement.Issue.Model.Abstract
         ICollection<Label.Label> Labels { get; set; }
 
         void AssignLabels(ICollection<Guid> requestedLabelsIds, ICollection<Label.Label> fetchedLabels);
-        System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService);
-        System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService);
-        System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService);
-        System.Threading.Tasks.Task AssignAssignee(User.Model.User Assignee, IAuthorizationService authorizationService);
+        System.Threading.Tasks.Task Comment(Guid memberId, string content, IMembershipService authorizationService);
+        System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IMembershipService authorizationService);
+        System.Threading.Tasks.Task MarkAsDone(Guid memberId, IMembershipService authorizationService);
+        System.Threading.Tasks.Task AssignAssignee(User.Model.Member Assignee, IMembershipService authorizationService);
         System.Threading.Tasks.Task AssignToSprint(Guid sprintId, ISprintSearcher sprintSearcher);
     }
 }

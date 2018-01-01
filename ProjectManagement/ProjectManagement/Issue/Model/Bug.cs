@@ -59,25 +59,25 @@ namespace ProjectManagement.Issue.Model
             Update(new LabelAssignedToBug(Id, Labels.Select(x => x.Id).ToList()));
         }
 
-        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task MarkAsInProgress(Guid memberId, IMembershipService authorizationService)
         {
             await base.MarkAsInProgress(memberId, authorizationService);
             Update(new BugMarkedAsInProgress(Id, Status));
         }
 
-        public override async System.Threading.Tasks.Task Comment(Guid memberId, string content, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task Comment(Guid memberId, string content, IMembershipService authorizationService)
         {
             await base.Comment(memberId, content, authorizationService);
             var comment = Comments.OrderBy(x => x.CreatedAt).Last();
             Update(new BugCommented(Id, comment.Id, comment.Content, comment.MemberId, comment.CreatedAt));
         }
 
-        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task MarkAsDone(Guid memberId, IMembershipService authorizationService)
         {
             await base.MarkAsDone(memberId, authorizationService);
             Update(new BugMarkedAsDone(Id, Status));
         }
-        public override async System.Threading.Tasks.Task AssignAssignee(User.Model.User assignee, IAuthorizationService authorizationService)
+        public override async System.Threading.Tasks.Task AssignAssignee(User.Model.Member assignee, IMembershipService authorizationService)
         {
             await base.AssignAssignee(assignee, authorizationService);
             Update(new AssigneeAssignedToBug(Id, AssigneeId.Value));

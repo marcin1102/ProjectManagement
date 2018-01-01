@@ -16,7 +16,7 @@ namespace ProjectManagement.Tests.Issue
         {
             var title = "TITLE_" + random.Next(100000, 999999);
             var description = "DESC" + random.Next(100000, 999999);
-            return new CreateTask(title, description, data.UserAssignedToProjectId, null, null)
+            return new CreateTask(title, description, null, null)
             {
                 ProjectId = data.ProjectId
             };
@@ -26,7 +26,7 @@ namespace ProjectManagement.Tests.Issue
         {
             var title = "TITLE_" + random.Next(100000, 999999);
             var description = "DESC" + random.Next(100000, 999999);
-            return new CreateNfr(title, description, data.UserAssignedToProjectId, null, null)
+            return new CreateNfr(title, description, null, null)
             {
                 ProjectId = data.ProjectId
             };
@@ -41,13 +41,13 @@ namespace ProjectManagement.Tests.Issue
                 issueId = issueType == IssueType.Nfr ? data.NfrId : data.TaskId;
 
             if(issueType == IssueType.Nfr)
-                return new AddBugToNfr(title, description, data.UserAssignedToProjectId, null, null)
+                return new AddBugToNfr(title, description, null, null)
                 {
                     ProjectId = data.ProjectId,
                     NfrId = issueId
                 };
             else
-                return new AddBugToTask(title, description, data.UserAssignedToProjectId, null, null)
+                return new AddBugToTask(title, description, null, null)
                 {
                     ProjectId = data.ProjectId,
                     TaskId = issueId

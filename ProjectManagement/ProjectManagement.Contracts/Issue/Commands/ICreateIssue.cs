@@ -14,7 +14,6 @@ namespace ProjectManagement.Contracts.Issue.Commands
          Guid ProjectId { get;}
          string Title { get; }
          string Description { get; }
-         Guid ReporterId { get;  }
          Guid? AssigneeId { get; }
          ICollection<Guid> LabelsIds { get; }
 
@@ -25,7 +24,7 @@ namespace ProjectManagement.Contracts.Issue.Commands
         void SetLabels(ICollection<Guid> labelsIds);
     }
 
-    public interface IAddRelatedIssueToTask : ICreateIssue { }
-    public interface IAddBugTo : IAddRelatedIssueToTask { }
-    public interface IAddSubtaskTo : IAddRelatedIssueToTask { }
+    public interface ICreateAggregateIssue : ICreateIssue { }
+    public interface IAddBugTo : ICreateIssue { }
+    public interface IAddSubtaskTo : ICreateIssue { }
 }

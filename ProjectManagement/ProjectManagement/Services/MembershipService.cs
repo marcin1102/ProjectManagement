@@ -10,17 +10,16 @@ using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagement.Services
 {
-    public interface IAuthorizationService
+    public interface IMembershipService
     {
         Task CheckUserMembership(Guid userId, Guid projectId);
-        Task CheckUserRole(Guid userId, string commandName);
     }
-    public class AuthorizationService : IAuthorizationService
+    public class MembershipService : IMembershipService
     {
         private readonly UserRepository userRepository;
         private readonly IProjectSearcher projectSearcher;
 
-        public AuthorizationService(UserRepository userRepository, IProjectSearcher projectSearcher)
+        public MembershipService(UserRepository userRepository, IProjectSearcher projectSearcher)
         {
             this.userRepository = userRepository;
             this.projectSearcher = projectSearcher;
@@ -31,14 +30,6 @@ namespace ProjectManagement.Services
             var isUserProjectMember = await projectSearcher.IsUserProjectMember(projectId, userId);
             if (!isUserProjectMember)
                 throw new UserIsNotProjectMember(userId, projectId);
-        }
-
-        public async Task CheckUserRole(Guid userId, string commandName)
-        {
-            var user = await userRepository.GetAsync(userId);
-
-            if (user.Role != Role.Admin)
-                throw new NotAuthorized(userId, commandName);
         }
     }
 }

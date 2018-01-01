@@ -34,12 +34,12 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
         private readonly IIssueFactory issueFactory;
         private readonly ProjectRepository projectRepository;
         private readonly ILabelsSearcher labelsSearcher;
-        private readonly IAuthorizationService authorizationService;
+        private readonly IMembershipService authorizationService;
         private readonly UserRepository userRepository;
         private readonly ISprintSearcher sprintSearcher;
         private readonly CallContext callContext;
 
-        public NfrCommandHandler(NfrRepository nfrRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IAuthorizationService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
+        public NfrCommandHandler(NfrRepository nfrRepository, IIssueFactory issueFactory, ProjectRepository projectRepository, ILabelsSearcher labelsSearcher, IMembershipService authorizationService, UserRepository userRepository, ISprintSearcher sprintSearcher, CallContext callContext)
         {
             this.nfrRepository = nfrRepository;
             this.issueFactory = issueFactory;
@@ -53,8 +53,8 @@ namespace ProjectManagement.Issue.Handlers.CommandHandlers
 
         public async Task HandleAsync(CreateNfr command)
         {            
-            var issue = await issueFactory.GenerateNfr(command);
-            await nfrRepository.AddAsync(issue);
+            var issue = await issueFactory.Create(command);
+            await nfrRepository.AddAsync((Model.Nfr)issue);
         }
 
         public async Task HandleAsync(AssignLabelsToNfr command)
