@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Autofac;
-using ProjectManagement.Infrastructure.Primitives.Exceptions;
-using ProjectManagement.Infrastructure.Message.CommandQueryBus;
-using ProjectManagement.Infrastructure.Message.EventDispatcher;
-using ProjectManagement.Contracts.Project.Commands;
-using ProjectManagement.Contracts.Project.Queries;
 using ProjectManagement.Tests.Infrastructure;
 using Xunit;
 
