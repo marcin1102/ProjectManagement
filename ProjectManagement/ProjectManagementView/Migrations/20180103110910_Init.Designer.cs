@@ -15,8 +15,8 @@ using UserManagement.Contracts.User.Enums;
 namespace ProjectManagementView.Migrations
 {
     [DbContext(typeof(ProjectManagementViewContext))]
-    [Migration("20171224125453_EmailToUser")]
-    partial class EmailToUser
+    [Migration("20180103110910_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,6 +63,8 @@ namespace ProjectManagementView.Migrations
                     b.Property<Guid>("ProjectId");
 
                     b.Property<Guid?>("ReporterId");
+
+                    b.Property<Guid?>("SprintId");
 
                     b.Property<int>("Status");
 
@@ -175,8 +177,6 @@ namespace ProjectManagementView.Migrations
 
                     b.Property<Guid?>("NfrId");
 
-                    b.Property<Guid?>("SprintId");
-
                     b.Property<Guid?>("TaskId");
 
                     b.HasIndex("NfrId");
@@ -196,8 +196,6 @@ namespace ProjectManagementView.Migrations
                 {
                     b.HasBaseType("ProjectManagementView.Storage.Models.Abstract.Issue");
 
-                    b.Property<Guid?>("SprintId")
-                        .HasColumnName("Nfr_SprintId");
 
                     b.HasIndex("ProjectId");
 
@@ -211,9 +209,6 @@ namespace ProjectManagementView.Migrations
             modelBuilder.Entity("ProjectManagementView.Storage.Models.Subtask", b =>
                 {
                     b.HasBaseType("ProjectManagementView.Storage.Models.Abstract.Issue");
-
-                    b.Property<Guid?>("SprintId")
-                        .HasColumnName("Subtask_SprintId");
 
                     b.Property<Guid?>("TaskId")
                         .HasColumnName("Subtask_TaskId");
@@ -233,8 +228,6 @@ namespace ProjectManagementView.Migrations
                 {
                     b.HasBaseType("ProjectManagementView.Storage.Models.Abstract.Issue");
 
-                    b.Property<Guid?>("SprintId")
-                        .HasColumnName("Task_SprintId");
 
                     b.HasIndex("ProjectId");
 

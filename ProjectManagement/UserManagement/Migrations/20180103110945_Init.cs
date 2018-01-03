@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UserManagement.Migrations
 {
-    public partial class User : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,6 +28,20 @@ namespace UserManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tokens",
+                schema: "user-management",
+                columns: table => new
+                {
+                    Value = table.Column<string>(nullable: false),
+                    LastlyUsed = table.Column<DateTimeOffset>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tokens", x => x.Value);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 schema: "user-management",
                 columns: table => new
@@ -36,7 +50,9 @@ namespace UserManagement.Migrations
                     Email = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
-                    Role = table.Column<string>(nullable: false)
+                    Password = table.Column<string>(nullable: false),
+                    Role = table.Column<int>(nullable: false),
+                    Version = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,6 +65,10 @@ namespace UserManagement.Migrations
         {
             migrationBuilder.DropTable(
                 name: "EventEnvelope",
+                schema: "user-management");
+
+            migrationBuilder.DropTable(
+                name: "Tokens",
                 schema: "user-management");
 
             migrationBuilder.DropTable(

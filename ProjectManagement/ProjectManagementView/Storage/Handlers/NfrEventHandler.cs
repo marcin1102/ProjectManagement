@@ -30,8 +30,9 @@ namespace ProjectManagementView.Storage.Handlers
         private readonly IRepository<Models.Sprint> sprintRepository;
         private readonly ILabelSearcher labelSearcher;
         private readonly IRepository<Models.Bug> bugRepository;
+        private readonly ProjectManagementViewContext db;
 
-        public NfrEventHandler(IRepository<Models.Project> projectRepository, IRepository<Models.Nfr> nfrRepository, IRepository<Models.User> userRepository, IRepository<Models.Sprint> sprintRepository, ILabelSearcher labelSearcher, IRepository<Models.Bug> bugRepository)
+        public NfrEventHandler(IRepository<Models.Project> projectRepository, IRepository<Models.Nfr> nfrRepository, IRepository<Models.User> userRepository, IRepository<Models.Sprint> sprintRepository, ILabelSearcher labelSearcher, IRepository<Models.Bug> bugRepository, ProjectManagementViewContext db)
         {
             this.projectRepository = projectRepository;
             this.nfrRepository = nfrRepository;
@@ -39,6 +40,7 @@ namespace ProjectManagementView.Storage.Handlers
             this.sprintRepository = sprintRepository;
             this.labelSearcher = labelSearcher;
             this.bugRepository = bugRepository;
+            this.db = db;
         }
 
         public async Task HandleAsync(NfrCreated @event)
@@ -66,9 +68,9 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var sprint = await sprintRepository.GetAsync(@event.SprintId);
             var Nfr = await nfrRepository.GetAsync(@event.IssueId);
-            sprint.Nfrs.Add(Nfr);
-            Nfr.Version = @event.AggregateVersion;
-            await sprintRepository.Update(sprint);
+            var sqlQuery = $"UPDATE \"project-management-views\".\"Issues\" SET \"SprintId\" = '{@event.SprintId}', \"Version\" = '{@event.AggregateVersion}' WHERE \"project-management-views\".\"Issues\".\"Id\" = '{Nfr.Id}'";
+            await db.Database.ExecuteSqlCommandAsync(sqlQuery);
+            await db.SaveChangesAsync();
         }
 
         public async Task HandleAsync(AssigneeAssignedToNfr @event)

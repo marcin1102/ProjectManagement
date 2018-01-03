@@ -37,8 +37,9 @@ namespace ProjectManagementView.Storage.Handlers
         private readonly IRepository<Models.Sprint> sprintRepository;
         private readonly ILabelSearcher labelSearcher;
         private readonly IRepository<Models.Subtask> subtaskRepository;
+        private readonly ProjectManagementViewContext db;
 
-        public TaskEventHandler(IRepository<Models.Project> projectRepository, IRepository<Models.Task> taskRepository, IRepository<Models.User> userRepository, IRepository<Models.Sprint> sprintRepository, ILabelSearcher labelSearcher, IRepository<Models.Subtask> subtaskRepository)
+        public TaskEventHandler(IRepository<Models.Project> projectRepository, IRepository<Models.Task> taskRepository, IRepository<Models.User> userRepository, IRepository<Models.Sprint> sprintRepository, ILabelSearcher labelSearcher, IRepository<Models.Subtask> subtaskRepository, ProjectManagementViewContext db)
         {
             this.projectRepository = projectRepository;
             this.taskRepository = taskRepository;
@@ -46,6 +47,7 @@ namespace ProjectManagementView.Storage.Handlers
             this.sprintRepository = sprintRepository;
             this.labelSearcher = labelSearcher;
             this.subtaskRepository = subtaskRepository;
+            this.db = db;
         }
 
         public async Task HandleAsync(TaskCreated @event)
@@ -73,10 +75,14 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var sprint = await sprintRepository.GetAsync(@event.SprintId);
             var task = await taskRepository.GetAsync(@event.IssueId);
-            sprint.Tasks.Add(task);
-            await sprintRepository.Update(sprint);
-            task.Version = @event.AggregateVersion;
-            await taskRepository.Update(task);
+
+            var sqlQuery = $"UPDATE \"project-management-views\".\"Issues\" SET \"SprintId\" = '{@event.SprintId}', \"Version\" = '{@event.AggregateVersion}' WHERE \"project-management-views\".\"Issues\".\"Id\" = '{task.Id}'";
+            await db.Database.ExecuteSqlCommandAsync(sqlQuery);
+            await db.SaveChangesAsync();
+            //sprint.Tasks.Add(task);
+            //await sprintRepository.Update(sprint);
+            //task.Version = @event.AggregateVersion;
+            //await taskRepository.Update(task);
         }
 
         public async Task HandleAsync(AssigneeAssignedToTask @event)
@@ -181,8 +187,9 @@ namespace ProjectManagementView.Storage.Handlers
         {
             var sprint = await sprintRepository.GetAsync(@event.SprintId);
             var subtask = await subtaskRepository.GetAsync(@event.IssueId);
-            sprint.Subtasks.Add(subtask);
-            await sprintRepository.Update(sprint);
+            var sqlQuery = $"UPDATE \"project-management-views\".\"Issues\" SET \"SprintId\" = '{@event.SprintId}', \"Version\" = '{@event.AggregateVersion}' WHERE \"project-management-views\".\"Issues\".\"Id\" = '{subtask.Id}'";
+            await db.Database.ExecuteSqlCommandAsync(sqlQuery);
+            await db.SaveChangesAsync();
         }
 
         public async Task HandleAsync(SubtaskCommented @event)

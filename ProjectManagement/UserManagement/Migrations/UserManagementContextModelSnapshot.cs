@@ -22,7 +22,7 @@ namespace UserManagement.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
-            modelBuilder.Entity("Infrastructure.Message.EventEnvelope", b =>
+            modelBuilder.Entity("ProjectManagement.Infrastructure.Message.EventEnvelope", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();

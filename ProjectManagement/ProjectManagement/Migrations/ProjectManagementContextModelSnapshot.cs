@@ -3,9 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using ProjectManagement;
+using ProjectManagement.Contracts.Issue.Enums;
+using ProjectManagement.Contracts.Sprint.Enums;
 using System;
+using UserManagement.Contracts.User.Enums;
 
 namespace ProjectManagement.Migrations
 {

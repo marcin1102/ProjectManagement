@@ -55,7 +55,7 @@ namespace ProjectManagement.WebApi
 
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("api", new Info { Title = "DDD-app" });
+                x.SwaggerDoc("api", new Info { Title = "Project Management" });
                 var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "WebApi.xml");
                 x.IncludeXmlComments(filePath);
             });

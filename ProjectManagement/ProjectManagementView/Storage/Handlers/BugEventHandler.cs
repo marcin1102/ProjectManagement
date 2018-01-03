@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManagementView.Storage.Handlers
 {
@@ -29,9 +30,10 @@ namespace ProjectManagementView.Storage.Handlers
         private readonly IRepository<Models.Task> taskRepository;
         private readonly IRepository<Models.Nfr> nfrRepository;
         private readonly ILabelSearcher labelSearcher;
+        private readonly ProjectManagementViewContext db;
 
         public BugEventHandler(IRepository<Models.Project> projectRepository, IRepository<Models.Bug> bugRepository, IRepository<Models.User> userRepository,
-            IRepository<Models.Sprint> sprintRepository, IRepository<Models.Task> taskRepository, IRepository<Models.Nfr> nfrRepository, ILabelSearcher labelSearcher)
+            IRepository<Models.Sprint> sprintRepository, IRepository<Models.Task> taskRepository, IRepository<Models.Nfr> nfrRepository, ILabelSearcher labelSearcher, ProjectManagementViewContext db)
         {
             this.projectRepository = projectRepository;
             this.bugRepository = bugRepository;
@@ -40,6 +42,7 @@ namespace ProjectManagementView.Storage.Handlers
             this.taskRepository = taskRepository;
             this.nfrRepository = nfrRepository;
             this.labelSearcher = labelSearcher;
+            this.db = db;
         }
 
         public async Task HandleAsync(BugCreated @event)
@@ -65,9 +68,9 @@ namespace ProjectManagementView.Storage.Handlers
         public async Task HandleAsync(BugAssignedToSprint @event)
         {
             var sprint = await sprintRepository.GetAsync(@event.SprintId);
-            var Bug = await bugRepository.GetAsync(@event.IssueId);
-            sprint.Bugs.Add(Bug);
-            await sprintRepository.Update(sprint);
+            var bug = await bugRepository.GetAsync(@event.IssueId);
+            var sqlQuery = $"UPDATE \"project-management-views\".\"Issues\" SET \"SprintId\" = '{@event.SprintId}', \"Version\" = '{@event.AggregateVersion}' WHERE \"project-management-views\".\"Issues\".\"Id\" = '{bug.Id}'";
+            await db.Database.ExecuteSqlCommandAsync(sqlQuery);
         }
 
         public async Task HandleAsync(AssigneeAssignedToBug @event)
