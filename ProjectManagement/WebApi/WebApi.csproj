@@ -5,10 +5,15 @@
     <UserSecretsId>e8921138-c477-42c9-8b05-81dbc3c9cb6e</UserSecretsId>
     <ApplicationIcon />
     <Win32Resource />
+    <StartupObject>ProjectManagement.WebApi.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netcoreapp2.0\WebApi.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp2.0\WebApi.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

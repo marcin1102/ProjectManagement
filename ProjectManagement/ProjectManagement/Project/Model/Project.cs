@@ -26,7 +26,7 @@ namespace ProjectManagement.Project.Model
 
         public string Name { get; private set; }
 
-        public string members { get; private set; }
+        private string members { get; set; }
         public ICollection<Guid> Members
         {
             get => JsonConvert.DeserializeObject<ICollection<Guid>>(members);

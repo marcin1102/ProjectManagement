@@ -24,7 +24,8 @@ namespace WebApi.Middlewares
 
         public async Task Invoke(HttpContext context, CallContext callContext, AuthTokenStore tokenStore, ILogger<ExceptionFilter> logger)
         {
-            if (!context.Request.Path.Value.Contains("api/user-management/users/login") && !context.Request.Path.Value.Contains("swagger/ui") && !context.Request.Path.Value.Contains("swagger/api"))
+            if (!context.Request.Path.Value.Contains("api/user-management/users/login") &&
+                !context.Request.Path.Value.Contains("swagger/ui") && !context.Request.Path.Value.Contains("swagger/api"))
             {
                 var token = context.Request.Headers.SingleOrDefault(x => x.Key == "AccessToken");
 

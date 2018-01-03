@@ -37,7 +37,7 @@ namespace ProjectManagement
                 x.HasKey(y => y.Id);
                 x.Property(y => y.Id).ValueGeneratedNever();
                 x.Property(y => y.Name).IsRequired();
-                x.Property(y => y.members);
+                x.Property("members");
                 x.Property(y => y.Version);
                 x.HasMany(y => y.Labels);
                 x.Ignore(y => y.Members);

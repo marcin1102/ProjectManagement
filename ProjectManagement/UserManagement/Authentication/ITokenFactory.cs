@@ -23,7 +23,7 @@ namespace UserManagement.Authentication
             var encryptor = new System.Security.Cryptography.Rfc2898DeriveBytes(Guid.NewGuid().ToString(), Guid.NewGuid().ToByteArray());
             var value = Convert.ToBase64String(encryptor.GetBytes(500));
             var token = new Token(value, userId);
-            db.Tokens.Add(token);
+            await db.Tokens.AddAsync(token);
             await db.SaveChangesAsync();
             return ToAccessToken(token);
         }
